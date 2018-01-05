@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[HIDTransferTest.vcproj]
+SCC_Aux_Path = "\\nthcrdvss01\PU00\pu00"
+SCC_Project_Name = "$/Cortex M0/BSP/NUC121BSP/SampleCode/StdDriver/USBD_Audio_HID_Transfer/WindowsTool/HIDTransferTest", QBIOAAAA

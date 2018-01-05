@@ -1,0 +1,31 @@
+
+
+FLASH 0x00000000
+{
+    FLASH +0
+    {
+         startup_NUC121.o(RESET, +First)
+         startup_NUC121.o
+         system_NUC121.o
+         anon$$obj.o
+         init.o
+         entry*.o
+         handlers.o
+    }
+
+	SRAM1 0x20000000
+    {
+        * (+RO)
+    }
+    SRAM2 0x20001800
+    {
+        * (+RW)
+    }
+
+	ZI +0
+	{
+		*(+ZI)
+	}
+
+}
+
