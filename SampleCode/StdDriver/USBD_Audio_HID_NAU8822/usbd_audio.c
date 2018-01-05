@@ -139,14 +139,14 @@ void USBD_IRQHandler(void)
 
 #ifdef SUPPORT_LPM
 
-        if (u32State & USBD_ATTR_L1SUSPEND_Msk) {
+        if (u32State & USBD_STATE_L1SUSPEND) {
             /*
                TODO: Implement LPM SUSPEND flag here.
-                     Remember to implement the power-saving function in main loop.
+                     Recommend implementing the power-saving function in main loop.
             */
         }
 
-        if (u32State & USBD_ATTR_L1RESUME_Msk) {
+        if (u32State & USBD_STATE_L1RESUME) {
             /*
                TODO: Implement LPM RESUME flag here.
             */
