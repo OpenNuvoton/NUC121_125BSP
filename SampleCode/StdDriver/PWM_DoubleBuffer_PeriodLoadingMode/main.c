@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -33,11 +33,14 @@ void PWM0_IRQHandler(void)
     static int toggle = 0;
 
     /* Update PWM0 channel 0 period and duty */
-    if (toggle == 0) {
+    if (toggle == 0)
+    {
         PWM_SET_CNR(PWM0, 0, 99);
         PWM_SET_CMR(PWM0, 0, 40);
         PWM_SET_CMR(PWM0, 1, 40);
-    } else {
+    }
+    else
+    {
         PWM_SET_CNR(PWM0, 0, 399);
         PWM_SET_CMR(PWM0, 0, 200);
         PWM_SET_CMR(PWM0, 1, 200);
@@ -79,10 +82,10 @@ void SYS_Init(void)
 
     /* PWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     /* case 1.PWM clock frequency is set equal to HCLK: select PWM module clock source as PCLK */
-    CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PCLK0, NULL);
+    CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PCLK0, 0);
 
     /* case 2.PWM clock frequency is set double to HCLK: select PWM module clock source as PLL */
-    //CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PLL, NULL);
+    //CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PLL, 0);
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Enable UART module clock */
@@ -167,7 +170,7 @@ int32_t main(void)
                                       |<-   CNR + 1  ->|  CNR + 1 = 99 + 1 CLKs
                                                |<-CMR->|  CMR = 60 CLKs
 
-                        ______________          _______ 
+                        ______________          _______
         |_____200______|     200      |____60__|   40  |____ PWM waveform
 
     */

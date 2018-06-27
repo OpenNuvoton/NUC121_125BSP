@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show how to wake up system form Power-down mode by UART interrupt.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -141,12 +141,16 @@ void UART0_IRQHandler(void)
 {
     uint32_t u32Data;
 
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_WKINT_Msk)) {  /* UART wake-up interrupt flag */
+    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_WKINT_Msk))    /* UART wake-up interrupt flag */
+    {
         UART_ClearIntFlag(UART0, UART_INTSTS_WKINT_Msk);
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
-    } else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk)) { /* UART receive data available flag */
-        while (UART_GET_RX_EMPTY(UART0) == 0) {
+    }
+    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))     /* UART receive data available flag */
+    {
+        while (UART_GET_RX_EMPTY(UART0) == 0)
+        {
             u32Data = UART_READ(UART0);
             printf("Data: 0x%X\n", u32Data);
         }
@@ -211,7 +215,8 @@ void UART_PowerDownWakeUpTest(void)
     u32Item = getchar();
     printf("%c\n\n", u32Item);
 
-    switch (u32Item) {
+    switch (u32Item)
+    {
     case '1':
         UART_CTSWakeUp();
         break;

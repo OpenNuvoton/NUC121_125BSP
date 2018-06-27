@@ -5,10 +5,10 @@
  * @brief    Show how to wake up system from Power-down mode
  *           by USCI interrupt in UART mode.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -138,13 +138,17 @@ void USCI_IRQHandler(void)
     uint32_t u32IntSts = UUART_GET_PROT_STATUS(UUART0);
     uint32_t u32WkSts = UUART_GET_WAKEUP_FLAG(UUART0);
 
-    if (u32WkSts & UUART_WKSTS_WKF_Msk) { /* USCI UART wake-up flag */
+    if (u32WkSts & UUART_WKSTS_WKF_Msk)   /* USCI UART wake-up flag */
+    {
         UUART_CLR_WAKEUP_FLAG(UUART0);
         printf("USCI UART wake-up.\n");
-    } else if (u32IntSts & UUART_PROTSTS_RXENDIF_Msk) { /* USCI UART receive end interrupt flag */
+    }
+    else if (u32IntSts & UUART_PROTSTS_RXENDIF_Msk)     /* USCI UART receive end interrupt flag */
+    {
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
 
-        while (UUART_GET_RX_EMPTY(UUART0) == 0) {
+        while (UUART_GET_RX_EMPTY(UUART0) == 0)
+        {
             printf("Data: 0x%X\n", UUART_READ(UUART0));
         }
     }
@@ -157,7 +161,6 @@ void USCI_UART_CTSWakeUp(void)
 {
     /* Enable UART nCTS wake-up function */
     UUART_EnableWakeup(UUART0, UUART_PROTCTL_CTSWKEN_Msk);
-
     printf("System enter to Power-down mode.\n");
     printf("Toggle USCI-UART0 nCTS to wake-up system.\n\n");
 }
@@ -208,7 +211,8 @@ void USCI_UART_PowerDownWakeUpTest(void)
     u32Item = getchar();
     printf("%c\n\n", u32Item);
 
-    switch (u32Item) {
+    switch (u32Item)
+    {
     case '1':
         USCI_UART_CTSWakeUp();
         break;

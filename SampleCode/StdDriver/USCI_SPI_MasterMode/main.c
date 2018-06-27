@@ -7,7 +7,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define TEST_COUNT 16
 
@@ -33,14 +33,16 @@ void USCI_IRQHandler(void)
     USPI_CLR_PROT_INT_FLAG(USPI0, USPI_PROTSTS_TXENDIF_Msk);
 
     /* Check RX EMPTY flag */
-    while (USPI_GET_RX_EMPTY_FLAG(USPI0) == 0) {
+    while (USPI_GET_RX_EMPTY_FLAG(USPI0) == 0)
+    {
         /* Read RX Buffer */
         u32RxData = USPI_READ_RX(USPI0);
         g_au32DestinationData[g_u32RxDataCount++] = u32RxData;
     }
 
     /* Check TX data count */
-    if (g_u32TxDataCount < TEST_COUNT) {
+    if (g_u32TxDataCount < TEST_COUNT)
+    {
         /* Write to TX Buffer */
         USPI_WRITE_TX(USPI0, g_au32SourceData[g_u32TxDataCount++]);
     }
@@ -158,7 +160,8 @@ int main()
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
     printf("The USCI_SPI master configuration is ready.\n");
 
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         /* Write the initial value to source buffer */
         g_au32SourceData[u32DataCount] = 0x5500 + u32DataCount;
         /* Clear destination buffer */
@@ -167,8 +170,9 @@ int main()
 
     printf("Before starting the data transfer, make sure the slave device is ready.\n");
     printf("Press any key to start the transfer.");
-    getchar();
     printf("\n");
+    getchar();
+
 
     /* Enable TX end interrupt */
     USPI_EnableInt(USPI0, USPI_TXEND_INT_MASK);
@@ -185,7 +189,8 @@ int main()
     /* Print the received data */
     printf("Received data:\n");
 
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         printf("%d:\t0x%X\n", u32DataCount, g_au32DestinationData[u32DataCount]);
     }
 

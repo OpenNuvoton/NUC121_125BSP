@@ -7,7 +7,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 typedef void (FUNC_PTR)(void);
 
@@ -81,9 +81,11 @@ static int SetIAPBoot(void)
     /* Read current boot mode */
     u32CBS = (FMC->ISPSTS & FMC_ISPSTS_CBS_Msk) >> FMC_ISPSTS_CBS_Pos;
 
-    if (u32CBS & 1) {
+    if (u32CBS & 1)
+    {
         /* Modify User Configuration when it is not in IAP mode */
-        for (i = 0; i < 2; i++) {
+        for (i = 0; i < 2; i++)
+        {
             FMC->ISPCMD = FMC_ISPCMD_READ;
             FMC->ISPADDR = FMC_CONFIG_BASE + i * 4;
             FMC->ISPDAT = 0;
@@ -95,7 +97,8 @@ static int SetIAPBoot(void)
             au32Config[i] = FMC->ISPDAT;
         }
 
-        if (au32Config[0] & 0x40) {
+        if (au32Config[0] & 0x40)
+        {
             /* Enable updating config */
             FMC->ISPCTL |= FMC_ISPCTL_CFGUEN_Msk;
             au32Config[0] &= ~0x40;
@@ -108,7 +111,8 @@ static int SetIAPBoot(void)
             while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
 
             /* write back config */
-            for (i = 0; i < 2; i++) {
+            for (i = 0; i < 2; i++)
+            {
                 FMC->ISPCMD = FMC_ISPCMD_PROGRAM;
                 FMC->ISPADDR = FMC_CONFIG_BASE + i * 4;
                 FMC->ISPDAT = au32Config[i];
@@ -135,7 +139,8 @@ static int  LoadImage(uint32_t u32ImageBase, uint32_t u32ImageLimit, uint32_t u3
     printf("Program image to flash address 0x%x...", u32FlashAddr);
     pu32Loader = (uint32_t *)u32ImageBase;
 
-    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE) {
+    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE)
+    {
         /* Do Page Erase */
         FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
         FMC->ISPADDR = u32FlashAddr + i;
@@ -145,7 +150,8 @@ static int  LoadImage(uint32_t u32ImageBase, uint32_t u32ImageLimit, uint32_t u3
         while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
 
         /* Program image to LDROM */
-        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4) {
+        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4)
+        {
             FMC->ISPCMD = FMC_ISPCMD_PROGRAM;
             FMC->ISPADDR = u32FlashAddr + i + j;
             FMC->ISPDAT = pu32Loader[(i + j) / 4];
@@ -161,8 +167,10 @@ static int  LoadImage(uint32_t u32ImageBase, uint32_t u32ImageLimit, uint32_t u3
     printf("Verify ...");
 
     /* Verify loader */
-    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE) {
-        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4) {
+    for (i = 0; i < u32ImageSize; i += FMC_FLASH_PAGE_SIZE)
+    {
+        for (j = 0; j < FMC_FLASH_PAGE_SIZE; j += 4)
+        {
             FMC->ISPCMD = FMC_ISPCMD_READ;
             FMC->ISPADDR = u32FlashAddr + i + j;
             FMC->ISPDAT = 0;
@@ -173,7 +181,8 @@ static int  LoadImage(uint32_t u32ImageBase, uint32_t u32ImageLimit, uint32_t u3
 
             u32Data = FMC->ISPDAT;
 
-            if (u32Data != pu32Loader[(i + j) / 4]) {
+            if (u32Data != pu32Loader[(i + j) / 4])
+            {
                 printf("data mismatch on 0x%x, [0x%x], [0x%x]\n", u32FlashAddr + i + j, u32Data, pu32Loader[(i + j) / 4]);
                 return -1;
             }
@@ -214,7 +223,8 @@ int main()
     /* Enable FMC ISP function */
     FMC->ISPCTL |=  FMC_ISPCTL_ISPEN_Msk;
 
-    if (SetIAPBoot() < 0) {
+    if (SetIAPBoot() < 0)
+    {
         printf("Failed to set IAP boot mode!\n");
         goto lexit;
     }
@@ -268,7 +278,8 @@ int main()
     u32Data = FMC->ISPDAT;
     printf("  User Config 1 ......................... [0x%08x]\n", u32Data);
 
-    do {
+    do
+    {
         printf("\n\n\n");
         printf("+----------------------------------------+\n");
         printf("|               Select                   |\n");
@@ -280,12 +291,14 @@ int main()
         u8Item = getchar();
         printf("%c\n", u8Item);
 
-        switch (u8Item) {
+        switch (u8Item)
+        {
         case '0':
             FMC->ISPCTL |= FMC_ISPCTL_LDUEN_Msk;
 
             if (LoadImage((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
-                          FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0) {
+                          FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+            {
                 printf("Load image to LDROM failed!\n");
                 goto lexit;
             }
@@ -318,7 +331,8 @@ int main()
         default :
             break;
         }
-    } while (1);
+    }
+    while (1);
 
 
 lexit:

@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show how to set GPIO pin mode and use pin data input/output control.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 void SYS_Init(void)
 {
@@ -102,10 +102,14 @@ int32_t main(void)
     i32TimeOutCnt = 100;
 
     /* Wait for PD.1 input pin status is low for a while */
-    while (PD1 != 0) {
-        if (i32TimeOutCnt > 0) {
+    while (PD1 != 0)
+    {
+        if (i32TimeOutCnt > 0)
+        {
             i32TimeOutCnt--;
-        } else {
+        }
+        else
+        {
             i32Err = 1;
             break;
         }
@@ -118,19 +122,26 @@ int32_t main(void)
     i32TimeOutCnt = 100;
 
     /* Wait for PD.1 input pin status is high for a while */
-    while (PD1 != 1) {
-        if (i32TimeOutCnt > 0) {
+    while (PD1 != 1)
+    {
+        if (i32TimeOutCnt > 0)
+        {
             i32TimeOutCnt--;
-        } else {
+        }
+        else
+        {
             i32Err = 1;
             break;
         }
     }
 
     /* Print test result */
-    if (i32Err) {
+    if (i32Err)
+    {
         printf("  [FAIL].\n");
-    } else {
+    }
+    else
+    {
         printf("  [OK].\n");
     }
 

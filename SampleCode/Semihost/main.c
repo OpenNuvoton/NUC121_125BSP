@@ -2,14 +2,16 @@
  * @file     main.c
  * @version  V3.00
  * @brief    A sample code to show how to debug with semihost message print.
- * 
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
-
+#if defined (__GNUC__) && defined(OS_USE_SEMIHOSTING)
+    extern void initialise_monitor_handles(void);
+#endif
 /*---------------------------------------------------------------------------------------------------------*/
 /* Main Function                                                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -30,10 +32,13 @@ int32_t main()
         NOTE2: Semihost only works with Nuvoton NuLink ICE Dongle in debug mode.
         NOTE3: It does not print any message if Nuvoton NuLink ICE Dongle is not connected.
     */
-
+#if defined (__GNUC__) && defined(OS_USE_SEMIHOSTING)
+    initialise_monitor_handles();
+#endif
     printf("\n Start SEMIHOST test: \n");
 
-    while (1) {
+    while (1)
+    {
         /* Get input character */
         item = getchar();
 

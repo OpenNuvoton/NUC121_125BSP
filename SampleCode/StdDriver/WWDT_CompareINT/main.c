@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -25,7 +25,8 @@ volatile uint32_t g_u32WWDTINTCount = 0;
  */
 void WDT_IRQHandler(void)
 {
-    if (WWDT_GET_INT_FLAG() == 1) {
+    if (WWDT_GET_INT_FLAG() == 1)
+    {
         /* Clear WWDT compare match interrupt flag */
         WWDT_CLEAR_INT_FLAG();
 
@@ -33,7 +34,8 @@ void WDT_IRQHandler(void)
 
         g_u32WWDTINTCount++;
 
-        if (g_u32WWDTINTCount < 10) {
+        if (g_u32WWDTINTCount < 10)
+        {
             /* To reload the WWDT counter value to 0x3F */
             WWDT_RELOAD_COUNTER();
         }
@@ -112,7 +114,8 @@ int main(void)
     printf("+------------------------------------------------+\n\n");
 
     /* To check if system has been reset by WWDT time-out reset or not */
-    if (WWDT_GET_RESET_FLAG() == 1) {
+    if (WWDT_GET_RESET_FLAG() == 1)
+    {
         WWDT_CLEAR_RESET_FLAG();
         printf("*** System has been reset by WWDT time-out reset event. [WWDT_CTL: 0x%08X] ***\n\n", WWDT->CTL);
 

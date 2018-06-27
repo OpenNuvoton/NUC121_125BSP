@@ -4,16 +4,14 @@
  * @brief    Show how to use auto baud rate detection function.
  *           This sample code needs to work with UART_AutoBaudRate_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 uint32_t GetUartBaudrate(UART_T *uart);
 void AutoBaudRate_RxTest(void);
 
@@ -207,11 +205,14 @@ void AutoBaudRate_RxTest()
     /* Wait until auto baud rate detect finished or time-out */
     while ((UART0->ALTCTL & UART_ALTCTL_ABRIF_Msk) == 0);
 
-    if (UART0->FIFOSTS & UART_FIFOSTS_ABRDIF_Msk) {
+    if (UART0->FIFOSTS & UART_FIFOSTS_ABRDIF_Msk)
+    {
         /* Clear auto baud rate detect finished flag */
         UART0->FIFOSTS = UART_FIFOSTS_ABRDIF_Msk;
         printf("Baud rate is %dbps.\n", GetUartBaudrate(UART0));
-    } else if (UART0->FIFOSTS & UART_FIFOSTS_ABRDTOIF_Msk) {
+    }
+    else if (UART0->FIFOSTS & UART_FIFOSTS_ABRDTOIF_Msk)
+    {
         /* Clear auto baud rate detect time-out flag */
         UART0->FIFOSTS = UART_FIFOSTS_ABRDTOIF_Msk;
         printf("Time-out!\n");

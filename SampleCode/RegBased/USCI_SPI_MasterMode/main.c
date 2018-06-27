@@ -7,7 +7,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define TEST_COUNT 16
 
@@ -34,7 +34,8 @@ void USCI_IRQHandler(void)
     USPI0->PROTSTS = USPI_PROTSTS_TXENDIF_Msk;
 
     /* Check RX EMPTY flag */
-    while ((USPI0->BUFSTS & USPI_BUFSTS_RXEMPTY_Msk) == 0) {
+    while ((USPI0->BUFSTS & USPI_BUFSTS_RXEMPTY_Msk) == 0)
+    {
         /* Read RX Buffer */
         u32RxData = USPI0->RXDAT;
 
@@ -42,7 +43,8 @@ void USCI_IRQHandler(void)
     }
 
     /* Check TX data count */
-    if (g_u32TxDataCount < TEST_COUNT) {
+    if (g_u32TxDataCount < TEST_COUNT)
+    {
         /* Write to TX Buffer */
         USPI0->TXDAT = g_au32SourceData[g_u32TxDataCount++];
     }
@@ -199,7 +201,8 @@ int main()
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
     printf("The USCI_SPI master configuration is ready.\n");
 
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         /* Write the initial value to source buffer */
         g_au32SourceData[u32DataCount] = 0x5500 + u32DataCount;
         /* Clear destination buffer */
@@ -228,7 +231,8 @@ int main()
     /* Print the received data */
     printf("Received data:\n");
 
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         printf("%d:\t0x%X\n", u32DataCount, g_au32DestinationData[u32DataCount]);
     }
 

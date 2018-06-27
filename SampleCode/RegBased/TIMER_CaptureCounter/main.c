@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -25,7 +25,8 @@ volatile uint32_t g_au32TMRINTCount[4] = {0};
   */
 void TMR2_IRQHandler(void)
 {
-    if (TIMER_GetCaptureIntFlag(TIMER2) == 1) {
+    if (TIMER_GetCaptureIntFlag(TIMER2) == 1)
+    {
         /* Clear Timer2 capture trigger interrupt flag */
         TIMER_ClearCaptureIntFlag(TIMER2);
 
@@ -169,17 +170,23 @@ int main(void)
     TIMER2->EXTCTL = TIMER_EXTCTL_CAPEN_Msk | TIMER_CAPTURE_FREE_COUNTING_MODE | TIMER_CAPTURE_FALLING_EDGE | TIMER_EXTCTL_CAPIEN_Msk;
 
     /* Check Timer2 capture trigger interrupt counts */
-    while (g_au32TMRINTCount[2] <= 10) {
-        if (g_au32TMRINTCount[2] != u32InitCount) {
+    while (g_au32TMRINTCount[2] <= 10)
+    {
+        if (g_au32TMRINTCount[2] != u32InitCount)
+        {
             au32CAPValue[u32InitCount] = TIMER2->CAP;
 
-            if (u32InitCount ==  0) {
+            if (u32InitCount ==  0)
+            {
                 printf("    [%2d]: %4d. (1st captured value)\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount]);
-            } else {
+            }
+            else
+            {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
                 printf("    [%2d]: %4d. Diff: %d.\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount], u32CAPDiff);
 
-                if (u32CAPDiff != 500) {
+                if (u32CAPDiff != 500)
+                {
                     printf("*** FAIL ***\n");
 
                     while (1);
@@ -213,17 +220,23 @@ int main(void)
     TIMER2->EXTCTL = TIMER_EXTCTL_CAPEN_Msk | TIMER_CAPTURE_FREE_COUNTING_MODE | TIMER_CAPTURE_RISING_EDGE | TIMER_EXTCTL_CAPIEN_Msk;
 
     /* Check Timer2 capture trigger interrupt counts */
-    while (g_au32TMRINTCount[2] <= 10) {
-        if (g_au32TMRINTCount[2] != u32InitCount) {
+    while (g_au32TMRINTCount[2] <= 10)
+    {
+        if (g_au32TMRINTCount[2] != u32InitCount)
+        {
             au32CAPValue[u32InitCount] = TIMER_GetCaptureData(TIMER2);
 
-            if (u32InitCount ==  0) {
+            if (u32InitCount ==  0)
+            {
                 printf("    [%2d]: %4d. (1st captured value)\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount]);
-            } else {
+            }
+            else
+            {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
                 printf("    [%2d]: %4d. Diff: %d.\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount], u32CAPDiff);
 
-                if (u32CAPDiff != 500) {
+                if (u32CAPDiff != 500)
+                {
                     printf("*** FAIL ***\n");
 
                     while (1);

@@ -4,16 +4,14 @@
  * @brief    Show how to use auto baud rate detection function.
  *           This sample code needs to work with UART_AutoBaudRate_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void AutoBaudRate_TestItem(void);
 void AutoBaudRate_TxTest(void);
 
@@ -176,13 +174,15 @@ void AutoBaudRate_TxTest()
     printf("|    calculates correct baud rate.                          |\n");
     printf("+-----------------------------------------------------------+\n");
 
-    do {
+    do
+    {
         AutoBaudRate_TestItem();
         u32Item = getchar();
         printf("%c\n", u32Item);
 
         /* Set different baud rate */
-        switch (u32Item) {
+        switch (u32Item)
+        {
         case '1':
             UUART0->BRGEN = ((103 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
             break;
@@ -197,6 +197,7 @@ void AutoBaudRate_TxTest()
         }
 
         UUART0->TXDAT = 0x55;
-    } while (u32Item != 27);
+    }
+    while (u32Item != 27);
 
 }

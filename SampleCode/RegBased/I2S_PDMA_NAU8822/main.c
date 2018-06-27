@@ -8,7 +8,7 @@
  ******************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /* use Line-in as source, undefine it if MIC is used */
 //#define INPUT_IS_LIN
@@ -20,7 +20,8 @@
 #define BUFF_LEN        256
 #define BUFF_HALF_LEN   (BUFF_LEN/2)
 
-typedef struct {
+typedef struct
+{
     uint32_t CTL;
     uint32_t SA;
     uint32_t DA;
@@ -290,12 +291,14 @@ static uint32_t I2S_GetSourceClockFreq(SPI_T *i2s)
 {
     uint32_t u32Freq, u32HCLKFreq;
 
-    if (i2s == SPI0) {
+    if (i2s == SPI0)
+    {
         if ((CLK->CLKSEL2 & CLK_CLKSEL2_SPI0SEL_Msk) == CLK_CLKSEL2_SPI0SEL_HXT)
             u32Freq = __HXT; /* Clock source is HXT */
         else if ((CLK->CLKSEL2 & CLK_CLKSEL2_SPI0SEL_Msk) == CLK_CLKSEL2_SPI0SEL_PLL)
             u32Freq = CLK_GetPLLClockFreq(); /* Clock source is PLL */
-        else if ((CLK->CLKSEL2 & CLK_CLKSEL2_SPI0SEL_Msk) == CLK_CLKSEL2_SPI0SEL_PCLK0) {
+        else if ((CLK->CLKSEL2 & CLK_CLKSEL2_SPI0SEL_Msk) == CLK_CLKSEL2_SPI0SEL_PCLK0)
+        {
             /* Get system clock frequency */
             u32HCLKFreq = SystemCoreClock;
 
@@ -304,7 +307,8 @@ static uint32_t I2S_GetSourceClockFreq(SPI_T *i2s)
                 u32Freq = (u32HCLKFreq / 2);
             else
                 u32Freq = u32HCLKFreq;
-        } else
+        }
+        else
             u32Freq = __HIRC; /* Clock source is HIRC */
 
         return u32Freq;
@@ -322,7 +326,8 @@ uint32_t I2S_EnableMCLK(SPI_T *i2s, uint32_t u32BusClock)
 
     if (u32BusClock == u32SrcClk)
         u32Divider = 0;
-    else {
+    else
+    {
         u32Divider = (u32SrcClk / u32BusClock) >> 1;
 
         /* MCLKDIV is a 6-bit width configuration. The maximum value is 0x3F. */
@@ -404,13 +409,17 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA->INTSTS;
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if ((PDMA->ABTSTS) & 0x4)
             PDMA->ABTSTS |= PDMA_ABTSTS_ABTIF1_Msk;
 
         PDMA->ABTSTS |= PDMA_ABTSTS_ABTIF2_Msk;
-    } else if (u32Status & 0x2) {
-        if ((PDMA->TDSTS) & 0x4) {          /* channel 2 done */
+    }
+    else if (u32Status & 0x2)
+    {
+        if ((PDMA->TDSTS) & 0x4)            /* channel 2 done */
+        {
             /* Copy RX data to TX buffer */
             memcpy(&PcmTxBuff[u8TxIdx ^ 1], &PcmRxBuff[u8RxIdx], BUFF_LEN * 4);
             /* Reset PDMA Scater-Gatter table */
@@ -418,7 +427,8 @@ void PDMA_IRQHandler(void)
             u8RxIdx ^= 1;
         }
 
-        if ((PDMA->TDSTS) & 0x2) {          /* channel 1 done */
+        if ((PDMA->TDSTS) & 0x2)            /* channel 1 done */
+        {
             /* Reset PDMA Scater-Gatter table */
             PDMA_ResetTxSGTable(u8TxIdx);
             u8TxIdx ^= 1;
@@ -426,7 +436,8 @@ void PDMA_IRQHandler(void)
 
         PDMA->TDSTS |= PDMA_TDSTS_TDIF1_Msk;
         PDMA->TDSTS |= PDMA_TDSTS_TDIF2_Msk;
-    } else
+    }
+    else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
 

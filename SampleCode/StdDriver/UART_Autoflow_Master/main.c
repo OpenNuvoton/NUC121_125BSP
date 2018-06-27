@@ -4,18 +4,16 @@
  * @brief    Transmit and receive data with auto flow control.
  *           This sample code needs to work with UART_Autoflow_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define RXBUFSIZE   1024
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void AutoFlow_FunctionTxTest(void);
 
 
@@ -156,13 +154,14 @@ void AutoFlow_FunctionTxTest()
     printf("|    after getting 1k bytes data.                           |\n");
     printf("|    Press any key to start...                              |\n");
     printf("+-----------------------------------------------------------+\n");
-    GetChar();
+    getchar();
 
     /* Enable RTS and CTS autoflow control */
     UART_EnableFlowCtrl(UART0);
 
     /* Send 1k bytes data */
-    for (u32i = 0; u32i < RXBUFSIZE; u32i++) {
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
+    {
         /* Send 1 byte data */
         UART_WRITE(UART0, u32i & 0xFF);
 

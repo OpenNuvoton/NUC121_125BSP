@@ -45,7 +45,7 @@
         </option>
         <option>
           <name>MemFile</name>
-          <state></state>
+          <state>$TOOLKIT_DIR$\CONFIG\debugger\Nuvoton\ionuc121ae.ddf</state>
         </option>
         <option>
           <name>RunToEnable</name>
@@ -89,7 +89,7 @@
         </option>
         <option>
           <name>OCLastSavedByProductVersion</name>
-          <state>6.50.6.4952</state>
+          <state>6.70.2.6303</state>
         </option>
         <option>
           <name>OCDownloadAttachToProgram</name>
@@ -257,7 +257,7 @@
       <name>CMSISDAP_ID</name>
       <archiveVersion>2</archiveVersion>
       <data>
-        <version>0</version>
+        <version>1</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -397,6 +397,26 @@
         <option>
           <name>CMSISDAPMultiCPUNumber</name>
           <state>0</state>
+        </option>
+        <option>
+          <name>OCProbeCfgOverride</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>OCProbeConfig</name>
+          <state></state>
+        </option>
+        <option>
+          <name>CMSISDAPProbeConfigRadio</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CMSISDAPSelectedCPUBehaviour</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>ICpuName</name>
+          <state></state>
         </option>
       </data>
     </settings>
@@ -1166,7 +1186,7 @@
         <debug>0</debug>
         <option>
           <name>CThirdPartyDriverDll</name>
-          <state>C:\Program Files (x86)\Nuvoton Tools\Nu-Link_IAR\Nu-Link_IAR.dll</state>
+          <state>$TOOLKIT_DIR$\..\..\..\Nuvoton Tools\Nu-Link_IAR\Nu-Link_IAR.dll </state>
         </option>
         <option>
           <name>CThirdPartyLogFileCheck</name>
@@ -1267,6 +1287,10 @@
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\ThreadX\ThreadXArmPlugin.ENU.ewplugin</file>
+        <loadFlag>0</loadFlag>
+      </plugin>
+      <plugin>
+        <file>$TOOLKIT_DIR$\plugins\rtos\TI-RTOS\tirtosplugin.ewplugin</file>
         <loadFlag>0</loadFlag>
       </plugin>
       <plugin>

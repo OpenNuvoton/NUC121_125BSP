@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define SPI_MASTER_TX_DMA_CH 0
 #define SPI_MASTER_RX_DMA_CH 1
@@ -57,8 +57,9 @@ int main(void)
     printf("    SPI0_SS (PC00), SPI0_CLK (PC01)\n");
     printf("    SPI0_MISO (PC02) <--> SPI0_MOSI (PC03)\n");
     printf("Please press any key to start transmission ...");
-    getchar();
     printf("\n");
+    getchar();
+
 
     SpiLoopTest_WithPDMA();
 
@@ -222,25 +223,34 @@ void SpiLoopTest_WithPDMA(void)
 
     i32Err = 0;
 
-    for (u32TestCycle = 0; u32TestCycle < 10000; u32TestCycle++) {
+    for (u32TestCycle = 0; u32TestCycle < 10000; u32TestCycle++)
+    {
         if ((u32TestCycle & 0x1FF) == 0)
+        {
             putchar('.');
+            fflush(stdout);
+        }
 
-        while (1) {
+        while (1)
+        {
             u32RegValue = PDMA->INTSTS;
 
             /* Check the DMA transfer done interrupt flag */
-            if (u32RegValue & PDMA_INTSTS_TDIF_Msk) {
+            if (u32RegValue & PDMA_INTSTS_TDIF_Msk)
+            {
                 if ((PDMA->TDSTS & ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH))) ==
-                        ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH))) {
+                        ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH)))
+                {
                     /* Clear the DMA transfer done flag */
                     PDMA->TDSTS = ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH));
                     /* Disable SPI master's DMA transfer function */
                     SPI0->PDMACTL = 0;
 
                     /* Check the transfer data */
-                    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
-                        if (g_au32MasterToSlaveTestPattern[u32DataCount] != g_au32MasterRxBuffer[u32DataCount]) {
+                    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+                    {
+                        if (g_au32MasterToSlaveTestPattern[u32DataCount] != g_au32MasterRxBuffer[u32DataCount])
+                        {
                             i32Err = 1;
                             break;
                         }
@@ -273,7 +283,8 @@ void SpiLoopTest_WithPDMA(void)
             }
 
             /* Check the DMA transfer abort interrupt flag */
-            if (u32RegValue & PDMA_INTSTS_ABTIF_Msk) {
+            if (u32RegValue & PDMA_INTSTS_ABTIF_Msk)
+            {
                 /* Get the target abort flag */
                 u32Abort = PDMA->ABTSTS;
                 /* Clear the target abort flag */
@@ -283,7 +294,8 @@ void SpiLoopTest_WithPDMA(void)
             }
 
             /* Check the DMA time-out interrupt flag */
-            if (u32RegValue & 0x00000300) {
+            if (u32RegValue & 0x00000300)
+            {
                 /* Clear the time-out flag */
                 PDMA->INTSTS = u32RegValue & 0x00000300;
                 i32Err = 1;
@@ -298,9 +310,12 @@ void SpiLoopTest_WithPDMA(void)
     /* Disable PDMA clock */
     CLK->AHBCLK &= ~CLK_AHBCLK_PDMACKEN_Msk;
 
-    if (i32Err) {
+    if (i32Err)
+    {
         printf(" [FAIL]\n");
-    } else {
+    }
+    else
+    {
         printf(" [PASS]\n");
     }
 

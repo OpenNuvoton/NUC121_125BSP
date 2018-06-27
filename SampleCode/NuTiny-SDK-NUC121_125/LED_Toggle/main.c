@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Toggle PB.4 to turn on/off LED.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 void SYS_Init(void)
 {
@@ -59,10 +59,13 @@ void delay_loop(void)
 {
     __IO uint32_t j;
 
-    for(j=0; j<60000; j++);
-    for(j=0; j<60000; j++);
-    for(j=0; j<60000; j++);
-    for(j=0; j<60000; j++);
+    for (j = 0; j < 60000; j++);
+
+    for (j = 0; j < 60000; j++);
+
+    for (j = 0; j < 60000; j++);
+
+    for (j = 0; j < 60000; j++);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -88,13 +91,13 @@ int32_t main(void)
     printf("+-------------------------------------------------+\n\n");
 
     /* Configure PB.4 as Output mode */
-		PB4 = 1;
+    PB4 = 1;
     GPIO_SetMode(PB, BIT4, GPIO_MODE_OUTPUT);
 
-    while(1)
-		{
-				PB4 ^= 1;
-				delay_loop();
-		}
+    while (1)
+    {
+        PB4 ^= 1;
+        delay_loop();
+    }
 
 }

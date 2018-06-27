@@ -3,17 +3,16 @@
  * @version  V3.00
  * @brief    Show how to wake up system from Power-down mode by UART interrupt.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define RS485_ADDRESS 0xC0UL
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void UART_RxThresholdWakeUp(void);
 void UART_RS485WakeUp(void);
 void UART_PowerDown_TestItem(void);
@@ -42,6 +41,14 @@ void PowerDownFunction(void)
 
 void SYS_Init(void)
 {
+    /* Set X32_OUT(PF.0) and X32_IN(PF.1) to input mode */
+    PF->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk);
+
+    /* Disable digital input path of analog pin X32_OUT to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PF, (1ul << 0));
+
+    /* Disable digital input path of analog pin XT32_IN to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PF, (1ul << 1));
 
     /* Set PF multi-function pins for X32_OUT(PF.0) and X32_IN(PF.1) */
     SYS->GPF_MFPL = (SYS->GPF_MFPL & (~SYS_GPF_MFPL_PF0MFP_Msk)) | SYS_GPF_MFPL_PF0MFP_XT_OUT;
@@ -165,12 +172,16 @@ void UART0_IRQHandler(void)
     uint32_t u32WkSts = UART0->WKSTS;
     uint32_t u32Data;
 
-    if (u32IntSts & UART_INTSTS_WKINT_Msk) {            /* UART wake-up interrupt flag */
-        UART0->WKSTS = UART0->WKSTS;
+    if (u32IntSts & UART_INTSTS_WKINT_Msk)              /* UART wake-up interrupt flag */
+    {
+        UART0->WKSTS = (UART0->WKSTS);
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
-    } else if (u32IntSts & (UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk)) { /* UART receive data available flag */
-        while ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) {
+    }
+    else if (u32IntSts & (UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))     /* UART receive data available flag */
+    {
+        while ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
+        {
             u32Data = UART0->DAT;
 
             if (u32Data & UART_DAT_PARITY_Msk)
@@ -279,7 +290,8 @@ void UART_PowerDownWakeUpTest(void)
     u32Item = getchar();
     printf("%c\n\n", u32Item);
 
-    switch (u32Item) {
+    switch (u32Item)
+    {
     case '1':
         UART_RxThresholdWakeUp();
         break;

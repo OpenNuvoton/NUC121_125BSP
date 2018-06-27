@@ -1,13 +1,9 @@
 ;/**************************************************************************//**
 ; * @file     startup_NUC121.s
 ; * @version  V3.00
-; * $Revision: 4 $
-; * $Date: 16/12/30 1:22p $ 
 ; * @brief    NUC121 Series Startup Source File for IAR Platform
 ; *
-; * @note
-; * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
-; *
+; * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 ; ******************************************************************************/
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -4,25 +4,25 @@
  * @brief    Show a Master how to access 7-bit address Slave
  *           This sample code needs to work with USCI_I2C_Master
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_au8SlvData[256];
+volatile uint8_t g_au8SlvData[256];
 volatile uint32_t slave_buff_addr;
-uint8_t g_au8SlvRxData[4];
+volatile uint8_t g_au8SlvRxData[4];
 volatile uint16_t g_u16SlvRcvAddr;
 volatile uint8_t g_u8SlvDataLen;
 
-enum UI2C_SLAVE_EVENT s_Event;
+enum UI2C_SLAVE_EVENT volatile s_Event;
 
 typedef void (*UI2C_FUNC)(uint32_t u32Status);
 
-static UI2C_FUNC s_UI2C0HandlerFn = NULL;
+static volatile UI2C_FUNC s_UI2C0HandlerFn = NULL;
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C IRQ Handler                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -44,7 +44,8 @@ void UI2C_SlaveTRx(uint32_t u32Status)
 {
     uint8_t u8data;
 
-    if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk) {
+    if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk)
+    {
         /* Clear START INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STARIF_Msk);
 
@@ -55,38 +56,52 @@ void UI2C_SlaveTRx(uint32_t u32Status)
 
         /* Trigger UI2C0 */
         UI2C0->PROTCTL |= UI2C_PROTCTL_PTRG_Msk;
-    } else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk)
+    {
         /* Clear ACK INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_ACKIF_Msk);
 
         /* Event process */
-        if (s_Event == SLAVE_ADDRESS_ACK) {
+        if (s_Event == SLAVE_ADDRESS_ACK)
+        {
             g_u8SlvDataLen = 0;
 
-            if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk) {
+            if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk)
+            {
                 /* Own SLA+R has been receive; ACK has been return */
                 s_Event = SLAVE_SEND_DATA;
                 UI2C_SET_DATA(UI2C0, g_au8SlvData[slave_buff_addr]);
                 slave_buff_addr++;
-            } else {
+            }
+            else
+            {
                 s_Event = SLAVE_GET_DATA;
             }
 
             g_u16SlvRcvAddr = (unsigned char)(UI2C0->RXDAT);
-        } else if (s_Event == SLAVE_GET_DATA) {
+        }
+        else if (s_Event == SLAVE_GET_DATA)
+        {
             u8data = (unsigned char)(UI2C0->RXDAT);
 
-            if (g_u8SlvDataLen < 2) {
+            if (g_u8SlvDataLen < 2)
+            {
                 g_au8SlvRxData[g_u8SlvDataLen++] = u8data;
                 slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
-            } else {
+            }
+            else
+            {
                 g_au8SlvData[slave_buff_addr++] = u8data;
 
-                if (slave_buff_addr == 256) {
+                if (slave_buff_addr == 256)
+                {
                     slave_buff_addr = 0;
                 }
             }
-        } else if (s_Event == SLAVE_SEND_DATA) {
+        }
+        else if (s_Event == SLAVE_SEND_DATA)
+        {
             UI2C_SET_DATA(UI2C0, g_au8SlvData[slave_buff_addr]);
             slave_buff_addr++;
         }
@@ -95,7 +110,9 @@ void UI2C_SlaveTRx(uint32_t u32Status)
 
         /* Trigger USCI I2C */
         UI2C0->PROTCTL |= UI2C_PROTCTL_PTRG_Msk;
-    } else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk)
+    {
         /* Clear NACK INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_NACKIF_Msk);
 
@@ -106,7 +123,9 @@ void UI2C_SlaveTRx(uint32_t u32Status)
 
         /* Trigger USCI I2C */
         UI2C0->PROTCTL |= UI2C_PROTCTL_PTRG_Msk;
-    } else if ((u32Status & UI2C_PROTSTS_STORIF_Msk) == UI2C_PROTSTS_STORIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_STORIF_Msk) == UI2C_PROTSTS_STORIF_Msk)
+    {
         /* Clear STOP INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STORIF_Msk);
 

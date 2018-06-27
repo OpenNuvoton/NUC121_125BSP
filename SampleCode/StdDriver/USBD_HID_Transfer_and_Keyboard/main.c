@@ -9,7 +9,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "HID_Transfer_and_Keyboard.h"
 
 
@@ -108,7 +108,8 @@ int32_t main(void)
     /* Enable USB device interrupt */
     NVIC_EnableIRQ(USBD_IRQn);
 
-    while (1) {
+    while (1)
+    {
         HID_UpdateKbData();
     }
 }

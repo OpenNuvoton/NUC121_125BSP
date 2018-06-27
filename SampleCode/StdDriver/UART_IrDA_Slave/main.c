@@ -4,16 +4,14 @@
  * @brief    Transmit and receive data in UART IrDA mode.
  *           This sample code needs to work with UART_IrDA_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void IrDA_FunctionRxTest(void);
 
 
@@ -79,12 +77,15 @@ void IrDA_FunctionRxTest()
     printf("Waiting...\n");
 
     /* Use polling method to wait master data */
-    do {
-        if (UART_IS_RX_READY(UART0)) {
+    do
+    {
+        if (UART_IS_RX_READY(UART0))
+        {
             u8InChar = UART_READ(UART0);
             printf("   Input: %c \n", u8InChar);
         }
-    } while (u8InChar != '0');
+    }
+    while (u8InChar != '0');
 
 }
 

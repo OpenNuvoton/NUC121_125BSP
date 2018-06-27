@@ -9,7 +9,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "HID_Transfer_and_MSC.h"
 #include "massstorage.h"
 
@@ -98,13 +98,15 @@ int32_t main(void)
     FMC_ReadConfig(au32Config, 2);
 
     /* Check if Data Flash Size is 36K. If not, to re-define Data Flash size and to enable Data Flash function */
-    if (((au32Config[0] & 0x01) == 1) || ((au32Config[0] & 0x04) == 0x4) || (au32Config[1] != DATA_FLASH_BASE)) {
+    if (((au32Config[0] & 0x01) == 1) || ((au32Config[0] & 0x04) == 0x4) || (au32Config[1] != DATA_FLASH_BASE))
+    {
         FMC_EnableConfigUpdate();
         au32Config[0] &= ~0x5;
         au32Config[1] = DATA_FLASH_BASE;
         FMC_Erase(CONFIG_BASE);
 
-        if (FMC_WriteConfig(au32Config, 2) < 0) {
+        if (FMC_WriteConfig(au32Config, 2) < 0)
+        {
             printf("Error! Fail to write User Configuration.\n");
             /* Disable FMC ISP function */
             FMC_Close();
@@ -113,7 +115,8 @@ int32_t main(void)
 
         FMC_ReadConfig(au32Config, 2);
 
-        if (((au32Config[0] & 0x01) == 1) || ((au32Config[0] & 0x04) == 0x4) || (au32Config[1] != DATA_FLASH_BASE)) {
+        if (((au32Config[0] & 0x01) == 1) || ((au32Config[0] & 0x04) == 0x4) || (au32Config[1] != DATA_FLASH_BASE))
+        {
             printf("Error! Program User Configuration Failed!\n");
             /* Disable FMC ISP function */
             FMC_Close();
@@ -137,7 +140,8 @@ int32_t main(void)
     USBD_Start();
     NVIC_EnableIRQ(USBD_IRQn);
 
-    while (1) {
+    while (1)
+    {
         MSC_ProcessCmd();
     }
 }

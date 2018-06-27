@@ -26,7 +26,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "massstorage.h"
 
 #define CONFIG_BASE      0x00300000
@@ -115,7 +115,8 @@ int32_t main(void)
     USBD_Start();
     NVIC_EnableIRQ(USBD_IRQn);
 
-    while (1) {
+    while (1)
+    {
         MSC_ProcessCmd();
 #ifdef NONBLOCK_PRINTF
         putchar(0); // Flush the data in software FIFO to UART

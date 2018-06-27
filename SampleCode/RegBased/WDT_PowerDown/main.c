@@ -6,7 +6,7 @@
  * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -45,7 +45,8 @@ void PowerDownFunction(void)
  */
 void WDT_IRQHandler(void)
 {
-    if ((WDT_GET_TIMEOUT_INT_FLAG() == 1) && (WDT_GET_TIMEOUT_WAKEUP_FLAG() == 1)) {
+    if ((WDT_GET_TIMEOUT_INT_FLAG() == 1) && (WDT_GET_TIMEOUT_WAKEUP_FLAG() == 1))
+    {
         /* Clear WDT time-out interrupt and wake-up flag */
         WDT_CLEAR_TIMEOUT_INT_FLAG();
         WDT_CLEAR_TIMEOUT_WAKEUP_FLAG();
@@ -165,7 +166,8 @@ int main(void)
     PowerDownFunction();
 
     /* Check if WDT time-out interrupt and wake-up interrupt flag occurred */
-    while (1) {
+    while (1)
+    {
         if (((CLK->PWRCTL & CLK_PWRCTL_PDWKIF_Msk) == CLK_PWRCTL_PDWKIF_Msk) && (g_u8IsWDTWakeupINT == 1))
             break;
     }

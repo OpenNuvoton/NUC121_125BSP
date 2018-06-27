@@ -5,28 +5,28 @@
  *           Show a Slave how to receive data from Master in GC (General Call) mode.
  *           This sample code needs to work with USCI_I2C_GCMode_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ***********************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_au8SlvData[256];
-uint8_t g_u8DeviceAddr;
+volatile uint8_t g_au8SlvData[256];
+volatile uint8_t g_u8DeviceAddr;
 volatile uint32_t slave_buff_addr;
-uint8_t g_au8SlvRxData[4];
+volatile uint8_t g_au8SlvRxData[4];
 volatile uint16_t g_u16SlvRcvAddr;
 volatile uint8_t g_u8SlvDataLen;
 volatile uint8_t g_u8SlvEndFlag;
 volatile uint8_t g_au8SlvTxData[3];
 
-enum UI2C_SLAVE_EVENT s_Event;
+enum UI2C_SLAVE_EVENT volatile s_Event;
 
 typedef void (*UI2C_FUNC)(uint32_t u32Status);
 
-static UI2C_FUNC s_UI2C0HandlerFn = NULL;
+static volatile UI2C_FUNC s_UI2C0HandlerFn = NULL;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C IRQ Handler                                                                                   */
@@ -47,7 +47,8 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void UI2C_SlaveTRx(uint32_t u32Status)
 {
-    if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk) {
+    if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk)
+    {
         /* Clear START INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STARIF_Msk);
 
@@ -56,34 +57,44 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         s_Event = SLAVE_ADDRESS_ACK;
 
         UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
-    } else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk)
+    {
         /* Clear ACK INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_ACKIF_Msk);
 
         /* Event process */
-        if (s_Event == SLAVE_ADDRESS_ACK) {
+        if (s_Event == SLAVE_ADDRESS_ACK)
+        {
             g_u8SlvDataLen = 0;
 
-            if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk) {
+            if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk)
+            {
                 /* Own SLA+R has been receive; ACK has been return */
                 s_Event = SLAVE_SEND_DATA;
                 UI2C_SET_DATA(UI2C0, g_au8SlvData[slave_buff_addr]);
                 slave_buff_addr++;
-            } else {
+            }
+            else
+            {
                 s_Event = SLAVE_GET_DATA;
             }
 
             g_u16SlvRcvAddr = (uint8_t)UI2C_GET_DATA(UI2C0);
-        } else if (s_Event == SLAVE_GET_DATA) {
+        }
+        else if (s_Event == SLAVE_GET_DATA)
+        {
             g_au8SlvRxData[g_u8SlvDataLen] = (uint8_t)UI2C_GET_DATA(UI2C0);
             g_u8SlvDataLen++;
 
-            if (g_u8SlvDataLen == 2) {
+            if (g_u8SlvDataLen == 2)
+            {
                 /* Address has been received; ACK has been returned*/
                 slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
             }
 
-            if (g_u8SlvDataLen == 3) {
+            if (g_u8SlvDataLen == 3)
+            {
                 g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
                 g_u8SlvDataLen = 0;
 
@@ -93,7 +104,9 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         }
 
         UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
-    } else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk)
+    {
         /* Clear NACK INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_NACKIF_Msk);
 
@@ -102,7 +115,9 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         s_Event = SLAVE_ADDRESS_ACK;
 
         UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
-    } else if ((u32Status & UI2C_PROTSTS_STORIF_Msk) == UI2C_PROTSTS_STORIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_STORIF_Msk) == UI2C_PROTSTS_STORIF_Msk)
+    {
         /* Clear STOP INT Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STORIF_Msk);
 
@@ -256,7 +271,8 @@ int32_t main(void)
 
     UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvData[i] = 0;
     }
 
@@ -266,12 +282,14 @@ int32_t main(void)
     while (g_u8SlvEndFlag == 0);
 
     /* Check receive data correct or not */
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
         g_au8SlvTxData[1] = (uint8_t)(i & 0x00FF);
         g_au8SlvTxData[2] = (uint8_t)(g_au8SlvTxData[1] + 3);
 
-        if (g_au8SlvData[i] != g_au8SlvTxData[2]) {
+        if (g_au8SlvData[i] != g_au8SlvTxData[2])
+        {
             printf("GC Mode Receive data fail.\n");
 
             while (1);

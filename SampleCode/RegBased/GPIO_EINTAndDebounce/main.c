@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show the usage of GPIO external interrupt function and de-bounce function.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ***************************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /**
  * @brief       External INT0/2/4 IRQ

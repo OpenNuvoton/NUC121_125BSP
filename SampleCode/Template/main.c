@@ -2,12 +2,12 @@
  * @file        main.c
  * @version     V3.00
  * @brief       Software Development Template.
- * 
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ *
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 void SYS_Init(void)
@@ -40,13 +40,15 @@ int main()
     printf("Simple Demo Code\n\n");
     printf("Please Input Any Key\n\n");
 
-    do {
+    do
+    {
         int8_t ch;
 
         printf("Input: ");
         ch = getchar();
         printf("%c\n", ch);
-    } while (1);
+    }
+    while (1);
 } // main()
 
 

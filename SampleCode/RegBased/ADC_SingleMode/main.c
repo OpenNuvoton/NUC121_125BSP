@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -109,14 +109,16 @@ void AdcSingleModeTest()
     printf("|                      ADC single mode sample code                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    while (1) {
+    while (1)
+    {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Set the ADC operation mode as single, input mode as single-end and enable the analog input channel 2 */
             ADC->ADCR = (ADC->ADCR & (~(ADC_ADCR_DIFFEN_Msk | ADC_ADCR_ADMD_Msk))) |
                         ADC_ADCR_DIFFEN_SINGLE_END |
@@ -150,7 +152,9 @@ void AdcSingleModeTest()
             i32ConversionData = (ADC->ADDR[2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
             printf("Conversion result of channel 2: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Set the ADC operation mode as single, input mode as differential and
                enable analog input channel 2 for differential input channel pair 1 */
             ADC->ADCR = (ADC->ADCR & (~(ADC_ADCR_DIFFEN_Msk | ADC_ADCR_ADMD_Msk))) |
@@ -184,7 +188,8 @@ void AdcSingleModeTest()
             i32ConversionData = (ADC->ADDR[2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
             printf("Conversion result of channel pair 1: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
-        } else
+        }
+        else
             return ;
     }
 }

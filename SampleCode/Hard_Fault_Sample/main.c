@@ -8,7 +8,7 @@
  ******************************************************************************/
 #include "stdio.h"
 #include <string.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 void SYS_Init(void)
 {

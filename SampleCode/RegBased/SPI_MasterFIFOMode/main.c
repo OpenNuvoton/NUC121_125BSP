@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define TEST_COUNT 16
 
@@ -46,7 +46,7 @@ int main(void)
 
     printf("\n\n");
     printf("+----------------------------------------------------------------------+\n");
-    printf("|             SPI Master Mode Sample Code (M05xxDN/DE only)            |\n");
+    printf("|             SPI Master Mode Sample Code (NUC121 DN/DE only)          |\n");
     printf("+----------------------------------------------------------------------+\n");
     printf("\n");
     printf("Configure SPI0 as a master.\n");
@@ -59,7 +59,8 @@ int main(void)
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
     printf("The SPI master configuration is ready.\n");
 
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         /* Write the initial value to source buffer */
         g_au32SourceData[u32DataCount] = 0x00550000 + u32DataCount;
         /* Clear destination buffer */
@@ -82,7 +83,8 @@ int main(void)
     /* Print the received data */
     printf("Received data:\n");
 
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         printf("%d:\t0x%X\n", u32DataCount, g_au32DestinationData[u32DataCount]);
     }
 
@@ -192,13 +194,15 @@ void SPI_Init(void)
 void SPI0_IRQHandler(void)
 {
     /* Check RX EMPTY flag */
-    while ((SPI0->STATUS & SPI_STATUS_RXEMPTY_Msk) == 0) {
+    while ((SPI0->STATUS & SPI_STATUS_RXEMPTY_Msk) == 0)
+    {
         /* Read RX FIFO */
         g_au32DestinationData[g_u32RxDataCount++] = SPI0->RX;
     }
 
     /* Check TX FULL flag and TX data count */
-    while (((SPI0->STATUS & SPI_STATUS_TXFULL_Msk) == 0) && (g_u32TxDataCount < TEST_COUNT)) {
+    while (((SPI0->STATUS & SPI_STATUS_TXFULL_Msk) == 0) && (g_u32TxDataCount < TEST_COUNT))
+    {
         /* Write to TX FIFO */
         SPI0->TX = g_au32SourceData[g_u32TxDataCount++];
     }
@@ -207,7 +211,8 @@ void SPI0_IRQHandler(void)
         SPI0->FIFOCTL &= (~SPI_FIFOCTL_TXTHIEN_Msk); /* Disable TX FIFO threshold interrupt */
 
     /* Check the RX FIFO time-out interrupt flag */
-    if (SPI0->STATUS & SPI_FIFOCTL_RXTOIEN_Msk) {
+    if (SPI0->STATUS & SPI_FIFOCTL_RXTOIEN_Msk)
+    {
         /* If RX FIFO is not empty, read RX FIFO. */
         while ((SPI0->STATUS & SPI_STATUS_RXEMPTY_Msk) == 0)
             g_au32DestinationData[g_u32RxDataCount++] = SPI0->RX;

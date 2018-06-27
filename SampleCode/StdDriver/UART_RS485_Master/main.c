@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data in UART RS485 mode.
  *           This sample code needs to work with UART_RS485_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define MATCH_ADDRSS1       0xC0
 #define MATCH_ADDRSS2       0xA2
@@ -17,8 +17,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void RS485_SendAddressByte(uint8_t u8data);
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 void RS485_9bitModeMaster(void);
@@ -66,7 +64,7 @@ void RS485_9bitModeMaster()
     printf("| another board and wait its ready to receive.              |\n");
     printf("| Press any key to start...                                 |\n");
     printf("+-----------------------------------------------------------+\n\n");
-    GetChar();
+    getchar();
 
     /* Set RS485-Master as AUD mode */
     /* Enable AUD mode to HW control RTS pin automatically */
@@ -81,7 +79,8 @@ void RS485_9bitModeMaster()
     UART0->TOUT = 0x2000;
 
     /* Prepare Data to transmit*/
-    for (i32 = 0; i32 < 10; i32++) {
+    for (i32 = 0; i32 < 10; i32++)
+    {
         g_u8SendDataGroup1[i32] = i32;
         g_u8SendDataGroup2[i32] = i32 + 10;
         g_u8SendDataGroup3[i32] = i32 + 20;

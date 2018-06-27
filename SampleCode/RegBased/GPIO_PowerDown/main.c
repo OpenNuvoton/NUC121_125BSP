@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show how to wake up system from Power-down mode by GPIO interrupt.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function for System Entry to Power Down Mode                                                           */
@@ -40,13 +40,16 @@ void PowerDownFunction(void)
 void GPAB_IRQHandler(void)
 {
     /* To check if PB.3 interrupt occurred */
-    if (PB->INTSRC & BIT3) {
+    if (PB->INTSRC & BIT3)
+    {
         PB->INTSRC = BIT3;
         printf("PB.3 INT occurred.\n");
-    } else {
+    }
+    else
+    {
         /* Un-expected interrupt. Just clear all PORTA, PORTB interrupts */
-        PA->INTSRC = PA->INTSRC;
-        PB->INTSRC = PB->INTSRC;
+        PA->INTSRC = (PA->INTSRC);
+        PB->INTSRC = (PB->INTSRC);
         printf("Un-expected interrupts.\n");
     }
 }

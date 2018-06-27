@@ -5,10 +5,10 @@
  *           Show how to use UI2C Single byte API Read and Write data to Slave.
  *           Needs to work with USCI_I2C_Slave sample code.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -143,7 +143,8 @@ int32_t main(void)
 
     err = 0;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         u8tmp = (uint8_t)i + 3;
 
         /* Single Byte Write (Two Registers) */
@@ -152,7 +153,8 @@ int32_t main(void)
         /* Single Byte Read (Two Registers) */
         u8data = UI2C_ReadByteTwoRegs(UI2C0, g_u8DeviceAddr, i);
 
-        if (u8data != u8tmp) {
+        if (u8data != u8tmp)
+        {
             err = 1;
             printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", i, u8tmp, u8data);
         }

@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -32,20 +32,30 @@ void PDMA_IRQHandler(void)
     uint32_t u32Status = PDMA_GET_INT_STATUS();
     uint32_t u32TDStatus = PDMA_GET_TD_STS();
 
-    if (u32Status & PDMA_INTSTS_TDIF_Msk) {
-        if (u32TDStatus & PDMA_TDSTS_TDIF0_Msk) { /* CH0 */
+    if (u32Status & PDMA_INTSTS_TDIF_Msk)
+    {
+        if (u32TDStatus & PDMA_TDSTS_TDIF0_Msk)   /* CH0 */
+        {
             g_u32PdmaTDoneInt = 1;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF0_Msk);
-        } else if (u32TDStatus & PDMA_TDSTS_TDIF1_Msk) { /* CH1 */
+        }
+        else if (u32TDStatus & PDMA_TDSTS_TDIF1_Msk)     /* CH1 */
+        {
             g_u32PdmaTDoneInt = 2;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);
-        } else if (u32TDStatus & PDMA_TDSTS_TDIF2_Msk) { /* CH2 */
+        }
+        else if (u32TDStatus & PDMA_TDSTS_TDIF2_Msk)     /* CH2 */
+        {
             g_u32PdmaTDoneInt = 3;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF2_Msk);
-        } else if (u32TDStatus & PDMA_TDSTS_TDIF3_Msk) { /* CH3 */
+        }
+        else if (u32TDStatus & PDMA_TDSTS_TDIF3_Msk)     /* CH3 */
+        {
             g_u32PdmaTDoneInt = 4;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF3_Msk);
-        } else if (u32TDStatus & PDMA_TDSTS_TDIF4_Msk) { /* CH4 */
+        }
+        else if (u32TDStatus & PDMA_TDSTS_TDIF4_Msk)     /* CH4 */
+        {
             g_u32PdmaTDoneInt = 5;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF4_Msk);
         }
@@ -92,6 +102,9 @@ void SYS_Init(void)
     /*------------------------------------------------------------------------------------------------------*/
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
+
+    /* Set PD.0 ~ PD.3 to input mode */
+    PD->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk | GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE3_Msk);
 
     /* Set PD0 ~ PD3 to ADC mode for ADC input channel 0 ~ 3 */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD0MFP_Msk | SYS_GPD_MFPL_PD1MFP_Msk | SYS_GPD_MFPL_PD2MFP_Msk | SYS_GPD_MFPL_PD3MFP_Msk);
@@ -207,14 +220,16 @@ void AdcSingleCycleScanModePDMATest()
     /* Init PDMA channel to transfer ADC conversion results */
     PDMA_Init();
 
-    while (1) {
+    while (1)
+    {
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (input channel pair 0 and 1)\n");
         printf("  Other keys: exit single cycle scan mode with PDMA test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Reload transfer count and operation mode of PDMA channel for ADC continuous scan mode test. */
             PDMA_ConfigReload();
 
@@ -242,14 +257,17 @@ void AdcSingleCycleScanModePDMATest()
             /* Start A/D conversion */
             ADC_START_CONV(ADC);
 
-            while (1) {
+            while (1)
+            {
                 uint32_t u32Ch;
 
-                if (ADC_GET_INT_FLAG(ADC, ADC_ADF_INT)) {
+                if (ADC_GET_INT_FLAG(ADC, ADC_ADF_INT))
+                {
                     /* Clear the ADC interrupt flag */
                     ADC_CLR_INT_FLAG(ADC, ADC_ADF_INT);
 
-                    for (u32Ch = 0; u32Ch < 4; u32Ch++) {
+                    for (u32Ch = 0; u32Ch < 4; u32Ch++)
+                    {
                         au32AdcData[u32DataCount++] = ADC_GET_CONVERSION_DATA(ADC, u32Ch);
 
                         if (u32DataCount >= ADC_TEST_COUNT)
@@ -267,8 +285,10 @@ void AdcSingleCycleScanModePDMATest()
             while (g_u32PdmaTDoneInt == 0);
 
             /* Compare the log of ADC conversion data register with the content of PDMA target buffer */
-            for (u32DataCount = 0; u32DataCount < ADC_TEST_COUNT; u32DataCount++) {
-                if (au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF)) {
+            for (u32DataCount = 0; u32DataCount < ADC_TEST_COUNT; u32DataCount++)
+            {
+                if (au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF))
+                {
                     printf("*** Count %d, conversion result: 0x%X, PDMA result: 0x%X.\n",
                            u32DataCount, au32AdcData[u32DataCount], g_au32RxPDMADestination[u32DataCount]);
                     u32ErrorCount++;
@@ -279,7 +299,9 @@ void AdcSingleCycleScanModePDMATest()
                 printf("\n    PASS!\n");
             else
                 printf("\n    FAIL!\n");
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Reload transfer count and operation mode of PDMA channel for ADC continuous scan mode test. */
             PDMA_ConfigReload();
 
@@ -307,14 +329,17 @@ void AdcSingleCycleScanModePDMATest()
             /* Start A/D conversion */
             ADC_START_CONV(ADC);
 
-            while (1) {
+            while (1)
+            {
                 uint32_t u32Ch;
 
-                if (ADC_GET_INT_FLAG(ADC, ADC_ADF_INT)) {
+                if (ADC_GET_INT_FLAG(ADC, ADC_ADF_INT))
+                {
                     /* Clear the ADC interrupt flag */
                     ADC_CLR_INT_FLAG(ADC, ADC_ADF_INT);
 
-                    for (u32Ch = 0; u32Ch < 4; u32Ch += 2) {
+                    for (u32Ch = 0; u32Ch < 4; u32Ch += 2)
+                    {
                         au32AdcData[u32DataCount++] = ADC_GET_CONVERSION_DATA(ADC, u32Ch);
 
                         if (u32DataCount >= ADC_TEST_COUNT)
@@ -332,8 +357,10 @@ void AdcSingleCycleScanModePDMATest()
             while (g_u32PdmaTDoneInt == 0);
 
             /* Compare the log of ADC conversion data register with the content of PDMA target buffer */
-            for (u32DataCount = 0; u32DataCount < ADC_TEST_COUNT; u32DataCount++) {
-                if (au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF)) {
+            for (u32DataCount = 0; u32DataCount < ADC_TEST_COUNT; u32DataCount++)
+            {
+                if (au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF))
+                {
                     printf("*** Count %d, conversion result: 0x%X, PDMA result: 0x%X.\n",
                            u32DataCount, au32AdcData[u32DataCount], g_au32RxPDMADestination[u32DataCount]);
                     u32ErrorCount++;
@@ -344,7 +371,8 @@ void AdcSingleCycleScanModePDMATest()
                 printf("\n    PASS!\n");
             else
                 printf("\n    FAIL!\n");
-        } else
+        }
+        else
             return ;
 
     }

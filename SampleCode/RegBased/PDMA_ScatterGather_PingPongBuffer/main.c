@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 uint32_t PDMA_TEST_COUNT = 50;
 uint32_t g_au32SrcArray0[1] = {0x55555555};
@@ -30,30 +30,100 @@ PDMA_DSCT_T DMA_DESC[2]; /* Descriptor table */
  */
 void PDMA_IRQHandler(void)
 {
-    /* Check channel transfer done status */
-    //if (PDMA->TDSTS == PDMA_TDSTS_TDIF4_Msk)
+
+    uint32_t u32intsts = PDMA_GET_INT_STATUS();
+
+    if (u32intsts & PDMA_INTSTS_TDIF_Msk)
     {
-        /* Reload PDMA Descriptor table configuration after transmission finished */
-        DMA_DESC[s_u32TableIndex].CTL = g_u32DMAConfig;
-        s_u32TableIndex ^= 1;
-        /* When finished a descriptor table then g_u32TransferredCount increases 1 */
-        g_u32TransferredCount++;
 
-        /* Check if PDMA has finished PDMA_TEST_COUNT tasks */
-        if (g_u32TransferredCount >= PDMA_TEST_COUNT) {
-            /* Set PDMA into idle state by Descriptor table */
-            DMA_DESC[0].CTL &= ~PDMA_DSCT_CTL_OPMODE_Msk;
-            DMA_DESC[1].CTL &= ~PDMA_DSCT_CTL_OPMODE_Msk;
-            g_u32IsTestOver = 1;
+        /* Check channel transfer done status */
+        if (PDMA_GET_TD_STS() == PDMA_TDSTS_TDIF4_Msk)
+        {
 
-            /* Clear table empty flag of channel 4 */
-            PDMA_CLR_EMPTY_FLAG(PDMA_SCATSTS_TEMPTYF4_Msk);
+            /* Reload PDMA Descriptor table configuration after transmission finished */
+            DMA_DESC[s_u32TableIndex].CTL = g_u32DMAConfig;
+            s_u32TableIndex ^= 1;
+
+            /* When finished a descriptor table then g_u32TransferredCount increases 1 */
+            g_u32TransferredCount++;
+
+            /* Check if PDMA has finished PDMA_TEST_COUNT tasks */
+            if (g_u32TransferredCount == PDMA_TEST_COUNT)
+            {
+                /* Set PDMA into idle state by Descriptor table */
+                DMA_DESC[0].CTL &= ~PDMA_DSCT_CTL_OPMODE_Msk;
+                DMA_DESC[1].CTL &= ~PDMA_DSCT_CTL_OPMODE_Msk;
+                g_u32IsTestOver = 1;
+            }
+
+            /* Clear transfer done flag of channel 4 */
+            PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF4_Msk);
+        }
+        else
+        {
+
+            /* Un expected channel transfer done */
+            while (1);
         }
 
-        /* Clear transfer done flag of channel 4 */
-        PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF4_Msk);
+    }
+    else if (u32intsts & PDMA_INTSTS_TEIF_Msk)
+    {
+        /*
+           The flag will set if scatter-gather table is empty while PDMA transferring.
+           User should reserve enough time for scatter-gather table reloading in PDMA handler.
+           PDMA controller will stop the transfer if the flag is set.
+        */
+        uint32_t u32EmptySts = PDMA_GET_EMPTY_STS();
+
+        if (u32EmptySts & PDMA_SCATSTS_TEMPTYF4_Msk)
+        {
+            if (g_u32IsTestOver)
+            {
+
+                /*
+                    Because the PDMA is still transferring while the transfer count reach 50,
+                    PDMA assert the scatter-gather table empty event while getting the scatter-table that mode is IDLE.
+                    User can stop PDMA transferring by scatter-gather table empty event, that is, setting scatter-table mode to IDLE.
+                */
+
+                /* Clear table empty flag of channel 4 */
+                PDMA_CLR_EMPTY_FLAG(PDMA_SCATSTS_TEMPTYF4_Msk);
+
+
+            }
+            else
+            {
+                /* Not transfer over but PDMA fetch the IDLE scatter-gather table */
+                PDMA_CLR_EMPTY_FLAG(PDMA_SCATSTS_TEMPTYF4_Msk);
+
+                while (1);
+            }
+
+        }
+        else
+        {
+            /* Un-expected channel sets assert scatter-table empty event. */
+            while (1);
+        }
+    }
+    else if (u32intsts & PDMA_INTSTS_ABTIF_Msk)
+    {
+
+        /*
+            This flag indicates which PDMA controller has target abort error or transfer source and destination
+            address not alignment.
+        */
+        while (1);
+
+    }
+    else
+    {
+        /*unknown handler state: should not happen*/
+        while (1);
     }
 }
+
 
 void SYS_Init(void)
 {
@@ -130,7 +200,7 @@ int main(void)
 
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+-----------------------------------------------------------------------+ \n");
-    printf("|    NUC121 PDMA Driver Ping-Pong Buffer Sample Code (Scatter-gather)    | \n");
+    printf("|    NUC121 PDMA Driver Ping-Pong Buffer Sample Code (Scatter-gather)   | \n");
     printf("+-----------------------------------------------------------------------+ \n");
 
     /* This sample will transfer data by looped around two descriptor tables from two different source to the same destination buffer in sequence.
@@ -173,13 +243,13 @@ int main(void)
 
     /* Scatter-Gather descriptor table configuration in SRAM */
     g_u32DMAConfig = \
-                     (0 << PDMA_DSCT_CTL_TXCNT_Pos) | /* Transfer count is 1 */ \
-                     PDMA_WIDTH_32 |  /* Transfer width is 32 bits(one word) */ \
-                     PDMA_SAR_FIX |   /* Source increment size is fixed(no increment) */ \
-                     PDMA_DAR_FIX |   /* Destination increment size is fixed(no increment) */ \
-                     PDMA_REQ_BURST | /* Transfer type is burst transfer type */ \
-                     PDMA_BURST_1 |   /* Burst size is 128. No effect in single transfer type */ \
-                     PDMA_OP_SCATTER; /* Operation mode is scatter-gather mode */
+                     (16383 << PDMA_DSCT_CTL_TXCNT_Pos) | /* Transfer count is 1                */ \
+                     PDMA_WIDTH_32  |   /* Transfer width is 32 bits(one word)                  */ \
+                     PDMA_SAR_FIX   |   /* Source increment size is fixed(no increment)         */ \
+                     PDMA_DAR_FIX   |   /* Destination increment size is fixed(no increment)    */ \
+                     PDMA_REQ_BURST |   /* Transfer type is burst transfer type                 */ \
+                     PDMA_BURST_1   |   /* Burst size is 128. No effect in single transfer type */ \
+                     PDMA_OP_SCATTER;   /* Operation mode is scatter-gather mode                */
     /*-----------------------------------------------------------------------------------------------------------------------------------------------------------
        Note: PDMA_REQ_BURST is only supported in memory-to-memory transfer mode.
              PDMA transfer type should be set as PDMA_REQ_SINGLE in memory-to-peripheral and peripheral-to-memory transfer mode,
@@ -260,13 +330,17 @@ int main(void)
     /* Start PDMA operatin */
     PDMA->SWREQ = BIT4;
 
-    while (1) {
-        if (g_u32IsTestOver == 1) {
-            g_u32IsTestOver = 0;
+    while (1)
+    {
+        if (g_u32IsTestOver == 1)
+        {
             printf("test done...\n");
-
-            /* Close channel 4 */
-            PDMA->CHCTL &= ~BIT4;
+            break;
         }
     }
+
+    /* Close channel 4 */
+    //PDMA->CHCTL &= ~BIT4;
+
+    while (1);
 }

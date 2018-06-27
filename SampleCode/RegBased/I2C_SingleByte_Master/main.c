@@ -5,10 +5,10 @@
  *           Show how to Read and Write single byte data to Slave.
  *           Needs to work with I2C_Slave sample code.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *********************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -119,10 +119,12 @@ uint8_t I2C_WriteByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAd
 
     I2C_START(i2c);                                                         /* Send START */
 
-    while (u8Xfering && (u8Err == 0)) {
+    while (u8Xfering && (u8Err == 0))
+    {
         I2C_WAIT_READY(i2c);
 
-        switch (I2C_GET_STATUS(i2c)) {
+        switch (I2C_GET_STATUS(i2c))
+        {
         case 0x08:
             I2C_SET_DATA(i2c, (u8SlaveAddr << 1 | 0x00));               /* Write SLA+W to Register I2CDAT */
             u8Ctrl = I2C_CTL_SI;                                        /* Clear SI */
@@ -139,13 +141,18 @@ uint8_t I2C_WriteByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAd
             break;
 
         case 0x28:
-            if (u8Addr) {
+            if (u8Addr)
+            {
                 I2C_SET_DATA(i2c, (uint8_t)(u16DataAddr & 0xFF));       /* Write Lo byte address of register */
                 u8Addr = 0;
-            } else if ((u32txLen < 1) && (u8Addr == 0)) {
+            }
+            else if ((u32txLen < 1) && (u8Addr == 0))
+            {
                 I2C_SET_DATA(i2c, data);
                 u32txLen++;
-            } else {
+            }
+            else
+            {
                 u8Ctrl = I2C_CTL_STO_SI;                              /* Clear SI and send STOP */
                 u8Xfering = 0;
             }
@@ -174,10 +181,12 @@ uint8_t I2C_ReadByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAdd
 
     I2C_START(i2c);                                                         /* Send START */
 
-    while (u8Xfering && (u8Err == 0)) {
+    while (u8Xfering && (u8Err == 0))
+    {
         I2C_WAIT_READY(i2c);
 
-        switch (I2C_GET_STATUS(i2c)) {
+        switch (I2C_GET_STATUS(i2c))
+        {
         case 0x08:
             I2C_SET_DATA(i2c, (u8SlaveAddr << 1 | 0x00));               /* Write SLA+W to Register I2CDAT */
             u8Ctrl = I2C_CTL_SI;                                      /* Clear SI */
@@ -194,10 +203,12 @@ uint8_t I2C_ReadByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAdd
             break;
 
         case 0x28:
-            if (u8Addr) {
+            if (u8Addr)
+            {
                 I2C_SET_DATA(i2c, (uint8_t)(u16DataAddr & 0xFF));       /* Write Lo byte address of register */
                 u8Addr = 0;
-            } else
+            }
+            else
                 u8Ctrl = I2C_CTL_STA_SI;                              /* Clear SI and send repeat START */
 
             break;
@@ -283,7 +294,8 @@ int32_t main(void)
 
     err = 0;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         u8tmp = (uint8_t)i + 3;
 
         /* Single Byte Write (Two Registers) */
@@ -292,7 +304,8 @@ int32_t main(void)
         /* Single Byte Read (Two Registers) */
         u8data = I2C_ReadByteTwoRegs(I2C0, g_u8DeviceAddr, i);
 
-        if (u8data != u8tmp) {
+        if (u8data != u8tmp)
+        {
             err = 1;
             printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", i, u8tmp, u8data);
         }

@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data in UART RS485 mode.
  *           This sample code needs to work with UART_RS485_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define IS_USE_RS485NMM     1      //1:Select NMM_Mode , 0:Select AAD_Mode
 #define MATCH_ADDRSS1       0xC0
@@ -18,7 +18,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
 void RS485_HANDLE(void);
 void RS485_9bitModeSlave(void);
 void RS485_FunctionTest(void);
@@ -39,8 +38,10 @@ void RS485_HANDLE()
 {
     volatile uint32_t addr = 0;
 
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RLSINT_Msk) && UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk)) {   /* RLS INT & RDA INT */
-        if (UART_RS485_GET_ADDR_FLAG(UART0)) {      /* ADD_IF, RS485 mode */
+    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RLSINT_Msk) && UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))     /* RLS INT & RDA INT */
+    {
+        if (UART_RS485_GET_ADDR_FLAG(UART0))        /* ADD_IF, RS485 mode */
+        {
             addr = UART_READ(UART0);
             UART_RS485_CLEAR_ADDR_FLAG(UART0);      /* clear ADD_IF flag */
             printf("\nAddr=0x%x,Get:", addr);
@@ -49,9 +50,12 @@ void RS485_HANDLE()
 
             /* if address match, enable RX to receive data, otherwise to disable RX. */
             /* In NMM mode,user can decide multi-address filter. In AAD mode,only one address can set */
-            if ((addr == MATCH_ADDRSS1) || (addr == MATCH_ADDRSS2)) {
+            if ((addr == MATCH_ADDRSS1) || (addr == MATCH_ADDRSS2))
+            {
                 UART0->FIFO &= ~UART_FIFO_RXOFF_Msk;   /* Enable RS485 RX */
-            } else {
+            }
+            else
+            {
                 printf("\n");
                 UART0->FIFO |= UART_FIFO_RXOFF_Msk;    /* Disable RS485 RX */
                 UART0->FIFO |= UART_FIFO_RXRST_Msk;    /* Clear data from RX FIFO */
@@ -59,15 +63,23 @@ void RS485_HANDLE()
 
 #endif
         }
-    } else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk)) {  /* Rx Ready */
+    }
+    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))      /* Rx Ready */
+    {
         /* Handle received data */
         printf("%d,", UART0->DAT);
-    } else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RXTOINT_Msk)) {  /* Time-out INT */
+    }
+    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RXTOINT_Msk))      /* Time-out INT */
+    {
         /* Handle received data */
-        do {
+        do
+        {
             printf("%d,", UART0->DAT);
-        } while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
-    } else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_BUFERRINT_Msk)) {  /* Buffer Error INT */
+        }
+        while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
+    }
+    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_BUFERRINT_Msk))      /* Buffer Error INT */
+    {
         printf("\nBuffer Error...\n");
         UART_ClearIntFlag(UART0, UART_INTSTS_BUFERRINT_Msk);
     }
@@ -126,10 +138,11 @@ void RS485_9bitModeSlave()
     NVIC_EnableIRQ(UART0_IRQn);
 
     printf("Ready to receive data...(Press any key to stop test)\n");
-    GetChar();
+    getchar();
 
     /* Flush FIFO */
-    while (UART_GET_RX_EMPTY(UART0) == 0) {
+    while (UART_GET_RX_EMPTY(UART0) == 0)
+    {
         UART_READ(UART0);
     }
 

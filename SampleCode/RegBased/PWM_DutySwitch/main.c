@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -202,7 +202,8 @@ int32_t main(void)
     /* Start */
     PWM0->CNTEN |= PWM_CNTEN_CNTEN0_Msk;
 
-    while (1) {
+    while (1)
+    {
         printf("\nSelect new duty: \n");
         printf("[1] 100%% \n");
         printf("[2] 75%% \n");
@@ -212,15 +213,24 @@ int32_t main(void)
         u8Option = getchar();
         printf("Select : %d \n", u8Option - 48);
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             u32NewDutyCycle = 100;
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             u32NewDutyCycle = 75;
-        } else if (u8Option == '3') {
+        }
+        else if (u8Option == '3')
+        {
             u32NewDutyCycle = 25;
-        } else if (u8Option == '4') {
+        }
+        else if (u8Option == '4')
+        {
             u32NewDutyCycle = 0;
-        } else {
+        }
+        else
+        {
             printf("Exit\n");
             break;
         }
@@ -229,6 +239,7 @@ int32_t main(void)
         u32NewCMR = CalNewDutyCMR(PWM0, 0, u32NewDutyCycle, 100);
         /* Set new comparator value to register */
         PWM_SET_CMR(PWM0, 0, u32NewCMR);
+
     }
 
     /* Stop PWM counter */

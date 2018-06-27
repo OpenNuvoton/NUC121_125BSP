@@ -7,7 +7,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -26,7 +26,8 @@ volatile uint8_t g_u8IsWDTTimeoutINT = 0;
  */
 void WDT_IRQHandler(void)
 {
-    if (WDT_GET_TIMEOUT_INT_FLAG() == 1) {
+    if (WDT_GET_TIMEOUT_INT_FLAG() == 1)
+    {
         /* Clear WDT time-out interrupt flag */
         WDT_CLEAR_TIMEOUT_INT_FLAG();
 
@@ -102,7 +103,8 @@ int main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    if (WDT_GET_RESET_FLAG() == 1) {
+    if (WDT_GET_RESET_FLAG() == 1)
+    {
         /* Use PA.12 to check time-out period time */
         GPIO_SetMode(PA, BIT12, GPIO_MODE_OUTPUT);
         PA12 = 1;

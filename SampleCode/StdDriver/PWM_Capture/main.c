@@ -7,7 +7,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -49,7 +49,8 @@ void CalPeriodTime(PWM_T *PWM, uint32_t u32Ch)
 
     u32i = 0;
 
-    while (u32i < 4) {
+    while (u32i < 4)
+    {
         /* Wait for Capture Falling Indicator */
         while (PWM_GetCaptureIntFlag(PWM, u32Ch) < 2);
 
@@ -120,10 +121,10 @@ void SYS_Init(void)
 
     /* PWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     /* case 1.PWM clock frequency is set equal to HCLK: select PWM module clock source as PCLK */
-    CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PCLK1, NULL);
+    CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PCLK1, 0);
 
     /* case 2.PWM clock frequency is set double to HCLK: select PWM module clock source as PLL */
-    //CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PLL, NULL);
+    //CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PLL, 0);
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Enable UART module clock */
@@ -198,7 +199,8 @@ int32_t main(void)
     printf("    PWM1 channel 2(PC.2) <--> PWM1 channel 0(PC.0)\n\n");
     printf("Use PWM1 Channel 2(PC.2) to capture the PWM1 Channel 0(PC.0) Waveform\n");
 
-    while (1) {
+    while (1)
+    {
         printf("\n\nPress any key to start PWM Capture Test\n");
         getchar();
 

@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show the usage of clock fail detector and clock frequency monitor function.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define PLL_CLOCK       50000000
 
@@ -24,7 +24,8 @@ void CLKDIRC_IRQHandler(void)
 
     u32Reg = CLK->CLKDSTS;
 
-    if (u32Reg & CLK_CLKDSTS_HXTFIF_Msk) {
+    if (u32Reg & CLK_CLKDSTS_HXTFIF_Msk)
+    {
         /* HCLK is switched to HIRC automatically if HXT clock fail interrupt is happened */
         printf("HXT Clock is stopped!      HCLK is switched to HIRC.\n");
 
@@ -35,7 +36,8 @@ void CLKDIRC_IRQHandler(void)
         CLK->CLKDSTS = CLK_CLKDSTS_HXTFIF_Msk;
     }
 
-    if (u32Reg & CLK_CLKDSTS_LXTFIF_Msk) {
+    if (u32Reg & CLK_CLKDSTS_LXTFIF_Msk)
+    {
         /* LXT clock fail interrupt is happened */
         printf("LXT Clock is stopped!\n");
 
@@ -46,7 +48,8 @@ void CLKDIRC_IRQHandler(void)
         CLK->CLKDSTS = CLK_CLKDSTS_LXTFIF_Msk;
     }
 
-    if (u32Reg & CLK_CLKDSTS_HXTFQIF_Msk) {
+    if (u32Reg & CLK_CLKDSTS_HXTFQIF_Msk)
+    {
         /* HCLK should be switched to HIRC if HXT clock frequency monitor interrupt is happened */
         CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC, CLK_CLKDIV0_HCLK(1));
         printf("HXT Frequency is abnormal! HCLK is switched to HIRC.\n");
@@ -66,6 +69,12 @@ void CLKDIRC_IRQHandler(void)
 
 void SYS_Init(void)
 {
+
+    /* Set XT1_OUT(PF.0) and XT1_IN(PF.1) to input mode */
+    PF->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk);
+
+    /* Disable Digital Input Path of PF.0 and PF.1 */
+    GPIO_DISABLE_DIGITAL_PATH(PF, BIT0 | BIT1);
 
     /* Set PF multi-function pins for X32_OUT(PF.0) and X32_IN(PF.1) */
     SYS->GPF_MFPL = (SYS->GPF_MFPL & (~SYS_GPF_MFPL_PF0MFP_Msk)) | SYS_GPF_MFPL_PF0MFP_XT_OUT;

@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 void SYS_Init(void)
 {
@@ -81,7 +81,8 @@ uint32_t TIMER_GetModuleClock(TIMER_T *timer)
     else
         return 0;
 
-    if (u32Src == 2) {
+    if (u32Src == 2)
+    {
         return (SystemCoreClock);
     }
 
@@ -98,13 +99,16 @@ void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
     timer->CTL = 0;
     timer->EXTCTL = 0;
 
-    if (u32Clk <= 1000000) { // min delay is 1000 us if timer clock source is <= 1 MHz
+    if (u32Clk <= 1000000)   // min delay is 1000 us if timer clock source is <= 1 MHz
+    {
         if (u32Usec < 1000)
             u32Usec = 1000;
 
         if (u32Usec > 1000000)
             u32Usec = 1000000;
-    } else {
+    }
+    else
+    {
         if (u32Usec < 100)
             u32Usec = 100;
 
@@ -112,27 +116,40 @@ void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
             u32Usec = 1000000;
     }
 
-    if (u32Clk <= 1000000) {
+    if (u32Clk <= 1000000)
+    {
         u32Prescale = 0;
         u32NsecPerTick = 1000000000 / u32Clk;
         u32Cmpr = (u32Usec * 1000) / u32NsecPerTick;
-    } else {
-        if (u32Clk > 64000000) {
+    }
+    else
+    {
+        if (u32Clk > 64000000)
+        {
             u32Prescale = 7;    // real prescaler value is 8
             u32Clk >>= 3;
-        } else if (u32Clk > 32000000) {
+        }
+        else if (u32Clk > 32000000)
+        {
             u32Prescale = 3;    // real prescaler value is 4
             u32Clk >>= 2;
-        } else if (u32Clk > 16000000) {
+        }
+        else if (u32Clk > 16000000)
+        {
             u32Prescale = 1;    // real prescaler value is 2
             u32Clk >>= 1;
         }
 
-        if (u32Usec < 250) {
+        if (u32Usec < 250)
+        {
             u32Cmpr = (u32Usec * u32Clk) / 1000000;
-        } else if (u32Clk % 1000000 == 0) {
+        }
+        else if (u32Clk % 1000000 == 0)
+        {
             u32Cmpr = (u32Clk / 1000000) * u32Usec;
-        } else {
+        }
+        else
+        {
             u32NsecPerTick = 1000000000 / u32Clk;
             u32Cmpr = (u32Usec * 1000) / u32NsecPerTick;
         }
@@ -143,7 +160,8 @@ void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
 
     // When system clock is faster than timer clock, it is possible timer active bit cannot set in time while we check it.
     // And the while loop below return immediately, so put a tiny delay here allowing timer start counting and raise active flag.
-    for (; delay > 0; delay--) {
+    for (; delay > 0; delay--)
+    {
         __NOP();
     }
 

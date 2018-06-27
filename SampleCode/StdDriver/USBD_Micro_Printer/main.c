@@ -7,7 +7,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "micro_printer.h"
 
 
@@ -94,7 +94,8 @@ int32_t main(void)
 
     PB->MODE = 0x5000;   // PB.6, PB.7 output mode
 
-    while (1) {
+    while (1)
+    {
         CLK_SysTickDelay(2000);   // delay
 
         if (++Str[1] > 0x39)

@@ -8,7 +8,7 @@
  ******************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 // use LIN as source, undefine it if MIC is used
 //#define INPUT_IS_LIN
@@ -20,7 +20,8 @@
 #define BUFF_LEN        256
 #define BUFF_HALF_LEN   (BUFF_LEN/2)
 
-typedef struct {
+typedef struct
+{
     uint32_t CTL;
     uint32_t SA;
     uint32_t DA;
@@ -300,13 +301,17 @@ void PDMA_IRQHandler(void)
 {
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF1_Msk);
 
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF2_Msk);
-    } else if (u32Status & 0x2) {
-        if (PDMA_GET_TD_STS() & 0x4) {          /* channel 2 done */
+    }
+    else if (u32Status & 0x2)
+    {
+        if (PDMA_GET_TD_STS() & 0x4)            /* channel 2 done */
+        {
             /* Copy RX data to TX buffer */
             memcpy(&PcmTxBuff[u8TxIdx ^ 1], &PcmRxBuff[u8RxIdx], BUFF_LEN * 4);
             /* Reset PDMA Scater-Gatter table */
@@ -314,7 +319,8 @@ void PDMA_IRQHandler(void)
             u8RxIdx ^= 1;
         }
 
-        if (PDMA_GET_TD_STS() & 0x2) {          /* channel 1 done */
+        if (PDMA_GET_TD_STS() & 0x2)            /* channel 1 done */
+        {
             /* Reset PDMA Scater-Gatter table */
             PDMA_ResetTxSGTable(u8TxIdx);
             u8TxIdx ^= 1;
@@ -322,7 +328,8 @@ void PDMA_IRQHandler(void)
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF2_Msk);
-    } else
+    }
+    else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
 

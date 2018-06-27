@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -53,10 +53,10 @@ void SYS_Init(void)
 
     /* PWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     /* case 1.PWM clock frequency is set equal to HCLK: select PWM module clock source as PCLK */
-    CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PCLK0, NULL);
+    CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PCLK0, 0);
 
     /* case 2.PWM clock frequency is set double to HCLK: select PWM module clock source as PLL */
-    //CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PLL, NULL);
+    //CLK_SetModuleClock(PWM0_MODULE, CLK_CLKSEL1_PWM0SEL_PLL, 0);
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Enable UART module clock */
@@ -111,10 +111,10 @@ void UART0_Init()
  */
 uint32_t CalNewDutyCMR(PWM_T *pwm, uint32_t u32ChannelNum, uint32_t u32DutyCycle, uint32_t u32CycleResolution)
 {
-		if(u32DutyCycle >= u32CycleResolution) 
-			return PWM_GET_CNR(pwm, u32ChannelNum);
-    
-		return (u32DutyCycle * (PWM_GET_CNR(pwm, u32ChannelNum) + 1) / u32CycleResolution);
+    if (u32DutyCycle >= u32CycleResolution)
+        return PWM_GET_CNR(pwm, u32ChannelNum);
+
+    return (u32DutyCycle * (PWM_GET_CNR(pwm, u32ChannelNum) + 1) / u32CycleResolution);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -170,7 +170,8 @@ int32_t main(void)
     /* Start PWM counter */
     PWM_Start(PWM0, PWM_CH_0_MASK);
 
-    while (1) {
+    while (1)
+    {
         printf("\nSelect new duty: \n");
         printf("[1] 100%% \n");
         printf("[2] 75%% \n");
@@ -180,15 +181,24 @@ int32_t main(void)
         u8Option = getchar();
         printf("Select: %d \n", u8Option - 48);
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             u32NewDutyCycle = 100;
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             u32NewDutyCycle = 75;
-        } else if (u8Option == '3') {
+        }
+        else if (u8Option == '3')
+        {
             u32NewDutyCycle = 25;
-        } else if (u8Option == '4') {
+        }
+        else if (u8Option == '4')
+        {
             u32NewDutyCycle = 0;
-        } else {
+        }
+        else
+        {
             printf("Exit\n");
             break;
         }

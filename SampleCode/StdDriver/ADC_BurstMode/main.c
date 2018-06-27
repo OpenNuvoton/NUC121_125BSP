@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* Define Function Prototypes                                                                               */
@@ -59,6 +59,9 @@ void SYS_Init(void)
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
 
+    /* Set PD.2 and PD.3 to input mode */
+    PD->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE3_Msk);
+
     /* Set PD2 and PD3 to ADC mode for ADC input channel 2 and 3 */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD2MFP_Msk | SYS_GPD_MFPL_PD3MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD2MFP_ADC_CH2 | SYS_GPD_MFPL_PD3MFP_ADC_CH3);
@@ -102,14 +105,16 @@ void AdcBurstModeTest()
     printf("|                      ADC burst mode sample code                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    while (1) {
+    while (1)
+    {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Set the ADC operation mode as burst, input mode as single-end and enable the analog input channel 2 */
             ADC_Open(ADC, ADC_ADCR_DIFFEN_SINGLE_END, ADC_ADCR_ADMD_BURST, 0x1 << 2);
 
@@ -132,7 +137,8 @@ void AdcBurstModeTest()
             while (g_u32AdcIntFlag == 0);
 
             /* Always read conversion data from channel "0" in burst mode. */
-            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++) {
+            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++)
+            {
                 i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, 0);
                 printf("Conversion result of channel 2 count %d: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
             }
@@ -145,7 +151,9 @@ void AdcBurstModeTest()
 
             /* Close and reset ADC engine */
             ADC_Close(ADC);
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Set the ADC operation mode as burst, input mode as differential and
                enable analog input channel 2 for differential input channel pair 1 */
             ADC_Open(ADC, ADC_ADCR_DIFFEN_DIFFERENTIAL, ADC_ADCR_ADMD_BURST, 0x1 << 2);
@@ -168,7 +176,8 @@ void AdcBurstModeTest()
             while (g_u32AdcIntFlag == 0);
 
             /* Always read conversion data from channel "0" in burst mode. */
-            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++) {
+            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++)
+            {
                 i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, 0);
                 printf("Conversion result of channel pair 1 count %d: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
             }
@@ -181,7 +190,8 @@ void AdcBurstModeTest()
 
             /* Close and reset ADC engine */
             ADC_Close(ADC);
-        } else
+        }
+        else
             return ;
     }
 }

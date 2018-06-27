@@ -9,7 +9,7 @@
 #define __USBD_PRINTER_H__
 
 /* HIRC trim setting:
- *    HIRC trim reference clock is from USB SOF (Start-Of-Frame) packet.
+ *    HIRC trim reference clock is USB signal.
  *    HIRC trim operation is keep going if clock is inaccuracy.
  *    HIRC Trim retry count limitation is 512 loops.
  *    Trim value calculation is based on average difference in 4 clocks of reference clock.

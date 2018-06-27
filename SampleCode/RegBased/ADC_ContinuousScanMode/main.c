@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define Function Prototypes                                                                              */
@@ -134,14 +134,16 @@ void AdcContScanModeTest()
 
     printf("\nIn this test, software will get 2 cycles of conversion result from the specified channels.\n");
 
-    while (1) {
+    while (1)
+    {
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (input channel pair 0 and 1)\n");
         printf("  Other keys: exit continuous scan mode test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Set the ADC operation mode as continuous scan, input mode as single-end and
                  enable the analog input channel 0, 1, 2 and 3 */
             ADC->ADCR = (ADC->ADCR & (~(ADC_ADCR_DIFFEN_Msk | ADC_ADCR_ADMD_Msk))) |
@@ -164,7 +166,8 @@ void AdcContScanModeTest()
             /* Clear the A/D interrupt flag for safe */
             ADC->ADSR0 = ADC_ADF_INT;
 
-            for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++) {
+            for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++)
+            {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
                 printf("Conversion result of channel %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
@@ -176,7 +179,8 @@ void AdcContScanModeTest()
             /* Stop A/D conversion */
             ADC->ADCR &= (~ADC_ADCR_ADST_Msk);
 
-            for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++) {
+            for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++)
+            {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
                 printf("Conversion result of channel %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
@@ -184,7 +188,9 @@ void AdcContScanModeTest()
 
             /* Clear the A/D interrupt flag for safe */
             ADC->ADSR0 = ADC_ADF_INT;
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Set the ADC operation mode as continuous scan, input mode as differential and
                enable analog input channel 0 and 2 */
             ADC->ADCR = (ADC->ADCR & (~(ADC_ADCR_DIFFEN_Msk | ADC_ADCR_ADMD_Msk))) |
@@ -207,7 +213,8 @@ void AdcContScanModeTest()
             /* Clear the A/D interrupt flag for safe */
             ADC->ADSR0 = ADC_ADF_INT;
 
-            for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++) {
+            for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++)
+            {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount * 2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
                 printf("Conversion result of differential input pair %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
@@ -219,7 +226,8 @@ void AdcContScanModeTest()
             /* Stop A/D conversion */
             ADC->ADCR &= (~ADC_ADCR_ADST_Msk);
 
-            for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++) {
+            for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++)
+            {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount * 2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
                 printf("Conversion result of differential input pair %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
@@ -227,7 +235,8 @@ void AdcContScanModeTest()
 
             /* Clear the A/D interrupt flag for safe */
             ADC->ADSR0 = ADC_ADF_INT;
-        } else
+        }
+        else
             return ;
 
     }

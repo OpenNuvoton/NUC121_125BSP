@@ -7,7 +7,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -34,17 +34,21 @@ void PDMA_IRQHandler(void)
 {
     uint32_t status = PDMA_GET_INT_STATUS();
 
-    if (status & 0x1) { /* abort */
+    if (status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x1)
             g_u32IsTestOver = 2;
 
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF0_Msk);
-    } else if (status & 0x2) { /* done */
+    }
+    else if (status & 0x2)     /* done */
+    {
         if (PDMA_GET_TD_STS() & 0x1)
             g_u32IsTestOver = 1;
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF0_Msk);
-    } else
+    }
+    else
         printf("unknown interrupt !!\n");
 }
 
@@ -121,10 +125,10 @@ void SYS_Init(void)
 
     /* PWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     /* case 1.PWM clock frequency is set equal to HCLK: select PWM module clock source as PCLK */
-    CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PCLK1, NULL);
+    CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PCLK1, 0);
 
     /* case 2.PWM clock frequency is set double to HCLK: select PWM module clock source as PLL */
-    //CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PLL, NULL);
+    //CLK_SetModuleClock(PWM1_MODULE, CLK_CLKSEL1_PWM1SEL_PLL, 0);
     /*---------------------------------------------------------------------------------------------------------*/
 
     /* Enable PDMA module clock */
@@ -206,7 +210,8 @@ int32_t main(void)
     printf("    PWM1 channel 2(PC.2) <--> PWM1 channel 0(PC.0)\n\n");
     printf("Use PWM1 Channel 2(PC.2) to capture the PWM1 Channel 0(PC.0) Waveform\n");
 
-    while (1) {
+    while (1)
+    {
         printf("\n\nPress any key to start PWM Capture Test\n");
         getchar();
 

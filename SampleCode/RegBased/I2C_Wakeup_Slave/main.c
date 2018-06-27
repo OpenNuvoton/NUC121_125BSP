@@ -5,10 +5,10 @@
  *           Show how to wake up MCU from Power-down mode through I2C interface.
  *           This sample code needs to work with I2C_Wakeup_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -24,7 +24,7 @@ volatile uint8_t g_u8SlvDataLen;
 
 typedef void (*I2C_FUNC)(uint32_t u32Status);
 
-static I2C_FUNC s_I2C0HandlerFn = NULL;
+static volatile I2C_FUNC s_I2C0HandlerFn = NULL;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I2C0 IRQ Handler                                                                                       */
@@ -34,7 +34,8 @@ void I2C0_IRQHandler(void)
     uint32_t u32Status;
 
     /* Check I2C Wake-up interrupt flag set or not */
-    if ((I2C0->WKSTS & I2C_WKSTS_WKIF_Msk) == I2C_WKSTS_WKIF_Msk) {
+    if ((I2C0->WKSTS & I2C_WKSTS_WKIF_Msk) == I2C_WKSTS_WKIF_Msk)
+    {
         /* Clear I2C Wake-up interrupt flag */
         I2C0->WKSTS = I2C_WKSTS_WKIF_Msk;
 
@@ -45,10 +46,13 @@ void I2C0_IRQHandler(void)
 
     u32Status = I2C0->STATUS;
 
-    if (I2C0->TOCTL & I2C_TOCTL_TOIF_Msk) {
+    if (I2C0->TOCTL & I2C_TOCTL_TOIF_Msk)
+    {
         /* Clear I2C0 Timeout Flag */
         I2C0->TOCTL |= I2C_TOCTL_TOIF_Msk;
-    } else {
+    }
+    else
+    {
         if (s_I2C0HandlerFn != NULL)
             s_I2C0HandlerFn(u32Status);
     }
@@ -59,7 +63,8 @@ void I2C0_IRQHandler(void)
 void PWRWU_IRQHandler(void)
 {
     /* Check system power down mode wake-up interrupt flag */
-    if (((CLK->PWRCTL) & CLK_PWRCTL_PDWKIF_Msk) != 0) {
+    if (((CLK->PWRCTL) & CLK_PWRCTL_PDWKIF_Msk) != 0)
+    {
         /* Clear system power down wake-up interrupt flag */
         CLK->PWRCTL |= CLK_PWRCTL_PDWKIF_Msk;
         g_u8SlvPWRDNWK = 1;
@@ -71,45 +76,56 @@ void PWRWU_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_SlaveTRx(uint32_t u32Status)
 {
-    if (u32Status == 0x60) {                    /* Own SLA+W has been receive; ACK has been return */
+    if (u32Status == 0x60)                      /* Own SLA+W has been receive; ACK has been return */
+    {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x80)                 /* Previously address with own SLA address
+    }
+    else if (u32Status == 0x80)                 /* Previously address with own SLA address
                                                    Data has been received; ACK has been returned*/
     {
         g_au8SlvRxData[g_u8SlvDataLen] = (unsigned char)(I2C0->DAT);
         g_u8SlvDataLen++;
 
-        if (g_u8SlvDataLen == 2) {
+        if (g_u8SlvDataLen == 2)
+        {
             slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
 
-        if (g_u8SlvDataLen == 3) {
+        if (g_u8SlvDataLen == 3)
+        {
             g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
             g_u8SlvDataLen = 0;
         }
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA8) {             /* Own SLA+R has been receive; ACK has been return */
+    }
+    else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
+    {
 
         I2C0->DAT = g_au8SlvData[slave_buff_addr];
         slave_buff_addr++;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
+    }
+    else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
     {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
+    }
+    else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
                                                    been returned */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
+    }
+    else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still
                                                    addressed as Slave/Receiver*/
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -259,7 +275,8 @@ int32_t main(void)
     /* Init I2C0 */
     I2C0_Init();
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvData[i] = 0;
     }
 
@@ -288,7 +305,7 @@ int32_t main(void)
     CLK->PWRCTL |= CLK_PWRCTL_PDEN_Msk;
 
     printf("\n");
-    printf("Enter PD 0x%x 0x%x 0x%x\n", I2C0->CTL , I2C0->STATUS, CLK->PWRCTL);
+    printf("Enter PD 0x%x 0x%x 0x%x\n", I2C0->CTL, I2C0->STATUS, CLK->PWRCTL);
 
     printf("\n");
     printf("CHIP enter power down status.\n");
@@ -296,7 +313,8 @@ int32_t main(void)
     /* Waiting for UART printf finish*/
     while (((UART0->FIFOSTS) & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
-    if (((I2C0->CTL)&I2C_CTL_SI_Msk) != 0) {
+    if (((I2C0->CTL)&I2C_CTL_SI_Msk) != 0)
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
 

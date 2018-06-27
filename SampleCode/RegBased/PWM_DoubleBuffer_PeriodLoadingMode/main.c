@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -33,11 +33,14 @@ void PWM0_IRQHandler(void)
     static int toggle = 0;
 
     /* Update PWM0 channel 0 period and duty */
-    if (toggle == 0) {
+    if (toggle == 0)
+    {
         PWM_SET_CNR(PWM0, 0, 99);
         PWM_SET_CMR(PWM0, 0, 40);
         PWM_SET_CMR(PWM0, 1, 40);
-    } else {
+    }
+    else
+    {
         PWM_SET_CNR(PWM0, 0, 399);
         PWM_SET_CMR(PWM0, 0, 200);
         PWM_SET_CMR(PWM0, 1, 200);

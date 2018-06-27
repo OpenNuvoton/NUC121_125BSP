@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "usbd_audio.h"
 
 void HID_UpdateKbData(void);
@@ -141,7 +141,7 @@ int32_t main(void)
 
         Media Key:
             PC5  ==> Play/Pause
-            PD11 ==> Next (Not support on M45xD/M45xC)
+            PD11 ==> Next
             PF2  ==> Previous
             PD8  ==> Vol+
             PC8  ==> Vol-
@@ -213,7 +213,8 @@ int32_t main(void)
     g_u8MediaKeyReady = 1;
 
 
-    while (SYS->PDID) {
+    while (SYS->PDID)
+    {
         uint8_t ch;
         uint32_t u32Reg, u32Data;
         extern int32_t kbhit(void);
@@ -225,7 +226,8 @@ int32_t main(void)
         VolumnControl();
 
         /* User can change audio codec settings by I2C at run-time if necessary */
-        if (!kbhit()) {
+        if (!kbhit())
+        {
             printf("\nEnter codec setting:\n");
             // Get Register number
             ch = getchar();
@@ -267,38 +269,49 @@ void HID_UpdateKbData(void)
     // Select the hardware key function
     i32Mode = 0;
 
-    switch (i32Mode) {
-    case 0: { // Keyboard
+    switch (i32Mode)
+    {
+    case 0:   // Keyboard
+    {
 
         // PC5 => 'a'
         // PD11=> 'b'
         n = 8;
 
-        if (g_u8KeyReady) {
+        if (g_u8KeyReady)
+        {
             buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(HID_KEY_IN_EP));
 
             key = (!PC5) | (!PD11 << 1);
 
 
-            if (key == 0) {
-                for (i = 0; i < n; i++) {
+            if (key == 0)
+            {
+                for (i = 0; i < n; i++)
+                {
                     buf[i] = 0;
                 }
 
-                if (key != preKey) {
+                if (key != preKey)
+                {
                     preKey = key;
                     g_u8KeyReady = 0;
                     /* Trigger to note key release */
                     USBD_SET_PAYLOAD_LEN(HID_KEY_IN_EP, n);
                 }
-            } else {
+            }
+            else
+            {
                 preKey = key;
                 buf[2] = 0;
 
-                if (!PC5) {
+                if (!PC5)
+                {
                     buf[2] = 0x04; /* Key A */
                     printf("PC5 button pressed\n");
-                } else if (!PD11) {
+                }
+                else if (!PD11)
+                {
                     buf[2] = 0x05; /* key B */
                     printf("PD11 button pressed\n");
                 }
@@ -312,10 +325,12 @@ void HID_UpdateKbData(void)
         break;
     }
 
-    case 1: { // MultiMedia key
+    case 1:   // MultiMedia key
+    {
         n = 8;
 
-        if (g_u8MediaKeyReady) {
+        if (g_u8MediaKeyReady)
+        {
             buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(HID_MEDIA_IN_EP));
 
             // PC5, play/pause
@@ -325,38 +340,53 @@ void HID_UpdateKbData(void)
             // PC8, Vol-
             key = !PC5 | (!PD11 << 1) | (!PF2 << 1) | (!PD8 << 1) | (!PC8 << 1);
 
-            if (key == 0) {
-                for (i = 0; i < n; i++) {
+            if (key == 0)
+            {
+                for (i = 0; i < n; i++)
+                {
                     buf[i] = 0;
                 }
 
-                if (key != preKey) {
+                if (key != preKey)
+                {
                     preKey = key;
                     g_u8MediaKeyReady = 0;
                     /* Trigger to note key release */
                     USBD_SET_PAYLOAD_LEN(HID_MEDIA_IN_EP, n);
                 }
-            } else {
+            }
+            else
+            {
 
                 // Don't repeat key when it is media key
-                if (preKey != key) {
+                if (preKey != key)
+                {
                     preKey = key;
                     buf[0] = 0;
                     buf[1] = 0;
 
-                    if (!PC5) {
+                    if (!PC5)
+                    {
                         buf[1] |= HID_CTRL_PAUSE;
                         printf("Pause\n");
-                    } else if (!PD11) {
+                    }
+                    else if (!PD11)
+                    {
                         buf[1] |= HID_CTRL_NEXT;
                         printf("Next\n");
-                    } else if (!PF2) {
+                    }
+                    else if (!PF2)
+                    {
                         buf[1] |= HID_CTRL_PREVIOUS;
                         printf("Previous\n");
-                    } else if (!PD8) {
+                    }
+                    else if (!PD8)
+                    {
                         buf[0] |= HID_CTRL_VOLUME_INC;
                         printf("Vol+\n");
-                    } else if (!PC8) {
+                    }
+                    else if (!PC8)
+                    {
                         buf[0] |= HID_CTRL_VOLUME_DEC;
                         printf("Vol-\n");
                     }

@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define TEST_COUNT  64
 #define TEST_CYCLE  10000
@@ -66,8 +66,8 @@ int main(void)
     printf("    USCI_SPI0_MISO (PC.2) <--> USCI_SPI0_MOSI (PC.3)\n\n");
     printf("Please connect USPI0_MISO with USPI0_MOSI before starting the test ...\n");
     printf("Press any key to start transmission ...");
-    getchar();
     printf("\n");
+    getchar();
 
     USCI_SPI_LoopTest_WithPDMA();
 
@@ -199,7 +199,8 @@ void USCI_SPI_LoopTest_WithPDMA(void)
     printf("\nUSCI_SPI0 Loop test with PDMA ");
 
     /* Source data initiation */
-    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+    {
         g_au32MasterToSlaveTestPattern[u32DataCount] = 0x55000000 | (u32DataCount + 1);
     }
 
@@ -288,22 +289,29 @@ void USCI_SPI_LoopTest_WithPDMA(void)
 
     i32Err = 0;
 
-    for (u32TestCycle = 0; u32TestCycle < TEST_CYCLE; u32TestCycle++) {
+    for (u32TestCycle = 0; u32TestCycle < TEST_CYCLE; u32TestCycle++)
+    {
         if ((u32TestCycle & 0x1FF) == 0)
+        {
             putchar('.');
+            fflush(stdout);
+        }
 
-        while (1) {
+        while (1)
+        {
             /* Get interrupt status */
             /* u32RegValue = PDMA_GET_INT_STATUS(); */
             u32RegValue = PDMA->INTSTS;
 
             /* Check the PDMA transfer done interrupt flag */
-            if (u32RegValue & PDMA_INTSTS_TDIF_Msk) {
+            if (u32RegValue & PDMA_INTSTS_TDIF_Msk)
+            {
                 /* Check the PDMA transfer done flags */
                 /* if((PDMA_GET_TD_STS() & ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH) )) ==
                         ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH))) */
                 if ((PDMA->TDSTS & ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH))) ==
-                        ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH))) {
+                        ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH)))
+                {
                     /* Clear the PDMA transfer done flags */
                     /* PDMA_CLR_TD_FLAG((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH)); */
                     PDMA->TDSTS = ((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH));
@@ -313,9 +321,11 @@ void USCI_SPI_LoopTest_WithPDMA(void)
                     USPI0->PDMACTL &= ~(USPI_PDMACTL_TXPDMAEN_Msk | USPI_PDMACTL_RXPDMAEN_Msk | USPI_PDMACTL_PDMAEN_Msk);
 
                     /* Check the transfer data */
-                    for (u32DataCount = 0; u32DataCount < (TEST_COUNT / 2); u32DataCount++) {
+                    for (u32DataCount = 0; u32DataCount < (TEST_COUNT / 2); u32DataCount++)
+                    {
                         /* printf("data[%d] Tx = 0x%X, Rx = 0x%X\n", u32DataCount, g_au32MasterToSlaveTestPattern[u32DataCount], g_au32MasterRxBuffer[u32DataCount]); */
-                        if (g_au32MasterToSlaveTestPattern[u32DataCount] != g_au32MasterRxBuffer[u32DataCount]) {
+                        if (g_au32MasterToSlaveTestPattern[u32DataCount] != g_au32MasterRxBuffer[u32DataCount])
+                        {
                             i32Err = 1;
                             break;
                         }
@@ -325,7 +335,8 @@ void USCI_SPI_LoopTest_WithPDMA(void)
                         break;
 
                     /* Source data initiation */
-                    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++) {
+                    for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
+                    {
                         g_au32MasterToSlaveTestPattern[u32DataCount]++;
                     }
 
@@ -362,7 +373,8 @@ void USCI_SPI_LoopTest_WithPDMA(void)
             }
 
             /* Check the DMA transfer abort interrupt flag */
-            if (u32RegValue & PDMA_INTSTS_ABTIF_Msk) {
+            if (u32RegValue & PDMA_INTSTS_ABTIF_Msk)
+            {
                 /* Get the target abort flag */
                 /* u32Abort = PDMA_GET_ABORT_STS(); */
                 u32Abort = PDMA->ABTSTS;
@@ -376,7 +388,8 @@ void USCI_SPI_LoopTest_WithPDMA(void)
             }
 
             /* Check the DMA time-out interrupt flag */
-            if (u32RegValue & 0x00000300) {
+            if (u32RegValue & 0x00000300)
+            {
                 /* Clear the time-out flag */
                 PDMA->INTSTS = u32RegValue & 0x00000300;
                 i32Err = 1;
@@ -391,9 +404,12 @@ void USCI_SPI_LoopTest_WithPDMA(void)
     /* Disable all PDMA channels */
     PDMA->CHCTL = 0;
 
-    if (i32Err) {
+    if (i32Err)
+    {
         printf(" [FAIL]\n");
-    } else {
+    }
+    else
+    {
         printf(" [PASS]\n");
     }
 

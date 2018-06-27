@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data in RS485 mode.
  *           This sample code needs to work with USCI_UART_RS485_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define ADDR_NUM 4
 #define DATA_NUM 10
@@ -47,25 +47,32 @@ void RS485_HANDLE()
     volatile uint32_t u32BufSts = UUART0->BUFSTS;
     volatile uint32_t u32Data;
 
-    if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk) {   /* Receive end interrupt */
+    if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)     /* Receive end interrupt */
+    {
         /* Handle received data */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
         u32Data = UUART0->RXDAT;
 
         if (u32Data & 0x100)
             u32AddrBuffer[u8AddrIndex++] = u32Data;
-        else {
+        else
+        {
             u32DataBuffer[u8AddrIndex - 1][u8DataIndex++] = u32Data;
 
-            if (u8DataIndex == DATA_NUM) {
-                if (u8AddrIndex == ADDR_NUM) {
+            if (u8DataIndex == DATA_NUM)
+            {
+                if (u8AddrIndex == ADDR_NUM)
+                {
                     u8ReceiveDone = 1;
                     return;
-                } else
+                }
+                else
                     u8DataIndex = 0;
             }
         }
-    } else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk) { /* Receive buffer over-run error interrupt */
+    }
+    else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk)     /* Receive buffer over-run error interrupt */
+    {
         UUART_CLR_BUF_INT_FLAG(UUART0, UUART_BUFSTS_RXOVIF_Msk);
         printf("\nBuffer Error...\n");
     }
@@ -99,7 +106,8 @@ void RS485_9bitModeSlave()
     /* Wait receive complete */
     while (u8ReceiveDone == 0);
 
-    for (u8AddrIndex = 0; u8AddrIndex < ADDR_NUM; u8AddrIndex++) {
+    for (u8AddrIndex = 0; u8AddrIndex < ADDR_NUM; u8AddrIndex++)
+    {
         printf("\nAddr=0x%x,Get:", (u32AddrBuffer[u8AddrIndex] & 0xFF));
 
         for (u8DataIndex = 0; u8DataIndex < DATA_NUM; u8DataIndex++)

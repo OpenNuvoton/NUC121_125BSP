@@ -8,14 +8,23 @@
 #ifndef __DATA_FLASH_PROG_H__
 #define __DATA_FLASH_PROG_H__
 
-#define MASS_STORAGE_OFFSET       0x00002000  /* To avoid the code to write APROM */
-#define DATA_FLASH_STORAGE_SIZE   (24*1024)  /* Configure the DATA FLASH storage size. To pass USB-IF MSC Test, it needs > 64KB */ 
-                                             /*Windows 7 will take about 20KB to format. actually we can not get full 24 KB free space*/
+#if defined(__GNUC__)
+
+    #define MASS_STORAGE_OFFSET       0x00004000  /* To avoid the code to write APROM */
+    #define DATA_FLASH_STORAGE_SIZE   (16*1024)  /* Configure the DATA FLASH storage size. To pass USB-IF MSC Test, it needs > 64KB */
+    /* Windows 7 will take about 20 KB to do formatting. We cannot format the flash due to the free space is not enough. */
+#else //for KEIL/IAR
+
+    #define MASS_STORAGE_OFFSET       0x00002000 /* To avoid the code to write APROM */
+    #define DATA_FLASH_STORAGE_SIZE   (24*1024)  /* Configure the DATA FLASH storage size. To pass USB-IF MSC Test, it needs > 64KB */
+    /* Windows 7 will take about 20KB to do formatting. We only get free space, 4 KB, to use after the flash is formatted */
+#endif
+
 #define FLASH_PAGE_SIZE           512
 #define BUFFER_PAGE_SIZE          512
 
 /* HIRC trim setting:
- *    HIRC trim reference clock is from USB SOF (Start-Of-Frame) packet.
+ *    HIRC trim reference clock is from USB signal.
  *    HIRC trim operation is keep going if clock is inaccuracy.
  *    HIRC Trim retry count limitation is 512 loops.
  *    Trim value calculation is based on average difference in 4 clocks of reference clock.

@@ -5,10 +5,10 @@
  *           Show how to wake up system form Power-down mode
  *           by brown-out detector interrupt.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function for System Entry to Power Down Mode                                                           */
@@ -49,7 +49,8 @@ void BOD_IRQHandler(void)
 void PWRWU_IRQHandler(void)
 {
     /* Check system power down mode wake-up interrupt status flag */
-    if (CLK->PWRCTL & CLK_PWRCTL_PDWKIF_Msk) {
+    if (CLK->PWRCTL & CLK_PWRCTL_PDWKIF_Msk)
+    {
         /* Clear system power down wake-up interrupt flag */
         CLK->PWRCTL |= CLK_PWRCTL_PDWKIF_Msk;
 

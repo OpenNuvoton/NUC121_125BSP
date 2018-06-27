@@ -8,7 +8,7 @@
  ******************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define I2S_TXData_DMA_CH 1
 #define I2S_RX_DMA_CH 2
@@ -19,7 +19,8 @@
 #define BUFF_LEN 16
 #define TX_BUFF_LEN 32
 
-typedef struct {
+typedef struct
+{
     uint32_t CTL;
     uint32_t SA;
     uint32_t DA;
@@ -33,13 +34,13 @@ void SYS_Init(void);
 
 /* Global variable declaration */
 volatile uint8_t u8RxIdx = 0;
-uint32_t PcmRxBuff[2][BUFF_LEN] = {0};
-uint32_t PcmTxDataBuff[1][TX_BUFF_LEN] = {0};
+volatile uint32_t PcmRxBuff[2][BUFF_LEN] = {0};
+volatile uint32_t PcmTxDataBuff[1][TX_BUFF_LEN] = {0};
 
 /* Since ping-pong buffer would record infinitely, in this case we only want to make sure the first buffer of RX Buffer1 and Buffer2 are correct.
    Hence use g_PcmRxBuff and g_count to check and record the first buffer of RX Buffer1 and Buffer2*/
-uint32_t g_PcmRxBuff[2][BUFF_LEN] = {0};
-uint8_t g_count = 0;
+volatile uint32_t g_PcmRxBuff[2][BUFF_LEN] = {0};
+volatile uint8_t g_count = 0;
 
 /* Once PDMA has transferred, software need to reset Scatter-Gather table */
 void PDMA_ResetRxSGTable(uint8_t id)
@@ -99,7 +100,8 @@ int32_t main(void)
        to simulate recording case with ping-pong buffer, ie. RX record samples that are played by TX */
     printf("expected record samples:\n");
 
-    for (u32DataCount = 0; u32DataCount < TX_BUFF_LEN; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < TX_BUFF_LEN; u32DataCount++)
+    {
         PcmTxDataBuff[0][u32DataCount] = u32InitValue;
         u32InitValue += 0x00010001;
         printf("0x%8X\n", PcmTxDataBuff[0][u32DataCount]);
@@ -150,7 +152,8 @@ int32_t main(void)
        in this case we only need to make sure the on-going data is correct */
     printf("RX Buffer 1\tRX Buffer 2\n");
 
-    for (u32DataCount = 0; u32DataCount < BUFF_LEN; u32DataCount++) {
+    for (u32DataCount = 0; u32DataCount < BUFF_LEN; u32DataCount++)
+    {
         printf("0x%X\t\t0x%X\n", g_PcmRxBuff[0][u32DataCount], g_PcmRxBuff[1][u32DataCount]);
     }
 
@@ -226,16 +229,23 @@ void PDMA_IRQHandler(void)
     uint32_t u32DataCount = 0;
     uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (u32Status & 0x1) { /* abort */
+    if (u32Status & 0x1)   /* abort */
+    {
         if (PDMA_GET_ABORT_STS() & 0x4)
             PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF2_Msk);
-    } else if (u32Status & 0x2) {
-        if (PDMA_GET_TD_STS() & 0x4) {          /* channel 2 done */
+    }
+    else if (u32Status & 0x2)
+    {
+        if (PDMA_GET_TD_STS() & 0x4)            /* channel 2 done */
+        {
             /* record the first buffer */
-            if (g_count == 0) {
+            if (g_count == 0)
+            {
                 for (u32DataCount = 0; u32DataCount < BUFF_LEN; u32DataCount++)
                     g_PcmRxBuff[0][u32DataCount] = PcmRxBuff[0][u32DataCount];
-            } else if (g_count == 1) {
+            }
+            else if (g_count == 1)
+            {
                 for (u32DataCount = 0; u32DataCount < BUFF_LEN; u32DataCount++)
                     g_PcmRxBuff[1][u32DataCount] = PcmRxBuff[1][u32DataCount];
             }
@@ -247,7 +257,8 @@ void PDMA_IRQHandler(void)
         }
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF2_Msk);
-    } else
+    }
+    else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);
 }
 

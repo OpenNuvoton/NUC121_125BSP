@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 #define TEST_COUNT 16
@@ -59,7 +59,8 @@ int main(void)
     printf("In the meanwhile the SPI controller will receive %d data from the off-chip master device.\n", TEST_COUNT);
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
 
-    for (u32TxDataCount = 0; u32TxDataCount < TEST_COUNT; u32TxDataCount++) {
+    for (u32TxDataCount = 0; u32TxDataCount < TEST_COUNT; u32TxDataCount++)
+    {
         /* Write the initial value to source buffer */
         g_au32SourceData[u32TxDataCount] = 0x00AA0000 + u32TxDataCount;
         /* Clear destination buffer */
@@ -76,7 +77,8 @@ int main(void)
     SPI_SetFIFO(SPI0, 2, 2);
 
     /* Access TX and RX FIFO */
-    while (u32RxDataCount < TEST_COUNT) {
+    while (u32RxDataCount < TEST_COUNT)
+    {
         /* Check TX FULL flag and TX data count */
         if ((SPI_GET_TX_FIFO_FULL_FLAG(SPI0) == 0) && (u32TxDataCount < TEST_COUNT))
             SPI_WRITE_TX(SPI0, g_au32SourceData[u32TxDataCount++]); /* Write to TX FIFO */
@@ -89,7 +91,8 @@ int main(void)
     /* Print the received data */
     printf("Received data:\n");
 
-    for (u32RxDataCount = 0; u32RxDataCount < TEST_COUNT; u32RxDataCount++) {
+    for (u32RxDataCount = 0; u32RxDataCount < TEST_COUNT; u32RxDataCount++)
+    {
         printf("%d:\t0x%X\n", u32RxDataCount, g_au32DestinationData[u32RxDataCount]);
     }
 
@@ -167,7 +170,9 @@ void SPI_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Configure as a slave, clock idle low, 32-bit transaction, drive output on falling clock edge and latch input on rising edge. */
     /* Configure SPI0 as a low level active device. */
-    SPI_Open(SPI0, SPI_SLAVE, SPI_MODE_0, 32, NULL);
+    SPI_Open(SPI0, SPI_SLAVE, SPI_MODE_0, 32, 0);
+
+
 }
 
 void UART0_Init(void)

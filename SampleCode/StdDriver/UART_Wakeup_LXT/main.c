@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show how to wake up system form Power-down mode by UART interrupt.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 #define RS485_ADDRESS 0xC0
@@ -34,6 +34,14 @@ void PowerDownFunction(void)
 
 void SYS_Init(void)
 {
+    /* Set X32_OUT(PF.0) and X32_IN(PF.1) to input mode */
+    PF->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk);
+
+    /* Disable digital input path of analog pin X32_OUT to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PF, (1ul << 0));
+
+    /* Disable digital input path of analog pin XT32_IN to prevent leakage */
+    GPIO_DISABLE_DIGITAL_PATH(PF, (1ul << 1));
 
     /* Set PF multi-function pins for X32_OUT(PF.0) and X32_IN(PF.1) */
     SYS->GPF_MFPL = (SYS->GPF_MFPL & (~SYS_GPF_MFPL_PF0MFP_Msk)) | SYS_GPF_MFPL_PF0MFP_XT_OUT;
@@ -150,12 +158,16 @@ void UART0_IRQHandler(void)
 {
     uint32_t u32Data;
 
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_WKINT_Msk)) {  /* UART wake-up interrupt flag */
+    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_WKINT_Msk))    /* UART wake-up interrupt flag */
+    {
         UART_ClearIntFlag(UART0, UART_INTSTS_WKINT_Msk);
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
-    } else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk)) { /* UART receive data available flag */
-        while (UART_GET_RX_EMPTY(UART0) == 0) {
+    }
+    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))     /* UART receive data available flag */
+    {
+        while (UART_GET_RX_EMPTY(UART0) == 0)
+        {
             u32Data = UART_READ(UART0);
 
             if (u32Data & UART_DAT_PARITY_Msk)
@@ -259,7 +271,8 @@ void UART_PowerDownWakeUpTest(void)
     u32Item = getchar();
     printf("%c\n\n", u32Item);
 
-    switch (u32Item) {
+    switch (u32Item)
+    {
     case '1':
         UART_RxThresholdWakeUp();
         break;

@@ -7,7 +7,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define APROM_TEST_BASE     0x4000
 
@@ -97,7 +97,8 @@ int main()
     u32Addr = APROM_TEST_BASE;
     FMC_Erase(u32Addr); /* Erase page */
 
-    for (i = 0; i < 0x100; i += 4) {
+    for (i = 0; i < 0x100; i += 4)
+    {
 
         /* Write Demo */
         u32Data = i + 0x12345678;
@@ -109,7 +110,8 @@ int main()
         /* Read Demo */
         u32RData = FMC_Read(u32Addr + i);
 
-        if (u32Data != u32RData) {
+        if (u32Data != u32RData)
+        {
             printf("[Read/Write FAIL]\n");
 
             while (1);

@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief Use PDMA channel 4 to transfer data from memory to memory by scatter-gather mode.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 uint32_t PDMA_TEST_LENGTH = 64;
 uint8_t au8SrcArray[256];

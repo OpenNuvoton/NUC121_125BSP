@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -33,7 +33,8 @@ void BPWM0_IRQHandler(void)
     static int toggle = 0;
 
     /* Update BPWM0 period and duty */
-    if (toggle == 0) {
+    if (toggle == 0)
+    {
         BPWM_SET_CNR(BPWM0, 0, 99);
         BPWM_SET_CMR(BPWM0, 0, 40);
         BPWM_SET_CMR(BPWM0, 1, 40);
@@ -41,7 +42,9 @@ void BPWM0_IRQHandler(void)
         BPWM_SET_CMR(BPWM0, 3, 40);
         BPWM_SET_CMR(BPWM0, 4, 40);
         BPWM_SET_CMR(BPWM0, 5, 40);
-    } else {
+    }
+    else
+    {
         BPWM_SET_CNR(BPWM0, 0, 399);
         BPWM_SET_CMR(BPWM0, 0, 200);
         BPWM_SET_CMR(BPWM0, 1, 200);
@@ -232,11 +235,12 @@ int32_t main(void)
     BPWM0->POEN = 0x3F;
 
     /* Enable BPWM0 channel 0 period interrupt, use channel 0 to measure time. */
-    BPWM0->INTEN = (BPWM0->INTEN & ~BPWM_INTEN_PIEN0_Msk) | BPWM_INTEN_PIEN0_Msk;
+    BPWM0->INTEN |= BPWM_INTEN_PIEN0_Msk;
     NVIC_EnableIRQ(BPWM0_IRQn);
 
     /* Start */
     BPWM0->CNTEN |= BPWM_CNTEN_CNTEN0_Msk;
+
 
     while (1);
 }

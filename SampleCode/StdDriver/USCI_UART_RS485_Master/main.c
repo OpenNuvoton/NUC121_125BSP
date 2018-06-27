@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data in RS485 mode.
  *           This sample code needs to work with USCI_UART_RS485_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define ADDRSS1 0xC0
 #define ADDRSS2 0xA2
@@ -37,7 +37,8 @@ void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
 {
     uint32_t u32Count;
 
-    for (u32Count = 0; u32Count != u32WriteBytes; u32Count++) {
+    for (u32Count = 0; u32Count != u32WriteBytes; u32Count++)
+    {
         while (UUART_GET_TX_FULL(UUART0));          /* Wait if Tx is full */
 
         UUART_WRITE(UUART0, pu8TxBuf[u32Count]);    /* Send UART Data from buffer */
@@ -74,7 +75,8 @@ void RS485_9bitModeMaster()
     UUART0->PROTCTL |= UUART_PROTCTL_RTSAUDIREN_Msk;
 
     /* Prepare data to transmit */
-    for (i32 = 0; i32 < 10; i32++) {
+    for (i32 = 0; i32 < 10; i32++)
+    {
         g_u8SendDataGroup1[i32] = i32;
         g_u8SendDataGroup2[i32] = i32 + 10;
         g_u8SendDataGroup3[i32] = i32 + 20;

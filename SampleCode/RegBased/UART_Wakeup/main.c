@@ -3,15 +3,14 @@
  * @version  V3.00
  * @brief    Show how to wake up system from Power-down mode by UART interrupt.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
-#include "stdio.h"
-#include "NUC121.h"
+#include <stdio.h>
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-int32_t main(void);
 void UART_DataWakeUp(void);
 void UART_CTSWakeUp(void);
 void UART_PowerDown_TestItem(void);
@@ -154,12 +153,16 @@ void UART0_IRQHandler(void)
     uint32_t u32WkSts = UART0->WKSTS;
     uint32_t u32Data;
 
-    if (u32IntSts & UART_INTSTS_WKINT_Msk) {            /* UART wake-up interrupt flag */
-        UART0->WKSTS = UART0->WKSTS;
+    if (u32IntSts & UART_INTSTS_WKINT_Msk)              /* UART wake-up interrupt flag */
+    {
+        UART0->WKSTS = (UART0->WKSTS);
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
-    } else if (u32IntSts & (UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk)) { /* UART receive data available flag */
-        while ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) {
+    }
+    else if (u32IntSts & (UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))     /* UART receive data available flag */
+    {
+        while ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
+        {
             u32Data = UART0->DAT;
             printf("Data: 0x%X\n", u32Data);
         }
@@ -225,7 +228,8 @@ void UART_PowerDownWakeUpTest(void)
     u32Item = getchar();
     printf("%c\n\n", u32Item);
 
-    switch (u32Item) {
+    switch (u32Item)
+    {
     case '1':
         UART_CTSWakeUp();
         break;

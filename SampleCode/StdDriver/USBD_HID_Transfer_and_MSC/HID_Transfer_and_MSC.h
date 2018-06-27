@@ -1,9 +1,8 @@
-/******************************************************************************
+/******************************************************************************//**
  * @file     HID_Transfer_and_MSC.h
  * @brief    NUC121 series USB device header file
  *
- * @note
- * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __USBD_HID_MSC_H__
 #define __USBD_HID_MSC_H__
@@ -68,7 +67,7 @@
 
 
 /* HIRC trim setting:
- *    HIRC trim reference clock is from USB SOF (Start-Of-Frame) packet.
+ *    HIRC trim reference clock is USB signal.
  *    HIRC trim operation is keep going if clock is inaccuracy.
  *    HIRC Trim retry count limitation is 512 loops.
  *    Trim value calculation is based on average difference in 4 clocks of reference clock.

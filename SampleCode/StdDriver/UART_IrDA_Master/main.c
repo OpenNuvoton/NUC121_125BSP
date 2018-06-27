@@ -4,18 +4,15 @@
  * @brief    Transmit and receive data in UART IrDA mode.
  *           This sample code needs to work with UART_IrDA_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void IrDA_FunctionTxTest(void);
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  IrDA Function Transmit Test                                                                            */
@@ -74,11 +71,13 @@ void IrDA_FunctionTxTest()
     UART_SelectIrDAMode(UART0, 57600, UART_IRDA_TXEN);
 
     /* Wait Terminal input to send data to UART0 TX pin */
-    do {
-        u8OutChar = GetChar();
+    do
+    {
+        u8OutChar = getchar();
         printf("   Input: %c , Send %c out\n", u8OutChar, u8OutChar);
         UART_WRITE(UART0, u8OutChar);
-    } while (u8OutChar != '0');
+    }
+    while (u8OutChar != '0');
 
     printf("\nIrDA Sample Code End.\n");
 

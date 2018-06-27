@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -25,7 +25,8 @@ volatile uint8_t g_u8IsWDTTimeoutINT = 0;
  */
 void WDT_IRQHandler(void)
 {
-    if (WDT_GET_TIMEOUT_INT_FLAG() == 1) {
+    if (WDT_GET_TIMEOUT_INT_FLAG() == 1)
+    {
         /* Clear WDT time-out interrupt flag */
         WDT_CLEAR_TIMEOUT_INT_FLAG();
 
@@ -135,7 +136,8 @@ int main(void)
     /* Enable WDT NVIC */
     NVIC_EnableIRQ(WDT_IRQn);
 
-    while (1) {
+    while (1)
+    {
         /* Check if WDT time-out interrupt occurred or not */
         while (g_u8IsWDTTimeoutINT == 0);
 
@@ -143,6 +145,7 @@ int main(void)
         PA12 ^= 1;
 
         printf("WDT time-out interrupt occurred. INT counts: %d      \r", ++u32IntCnts);
+        fflush(stdout);
     }
 }
 

@@ -7,7 +7,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -51,8 +51,8 @@ void SYS_Init(void)
 
     /* BPWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     /* case 1.BPWM clock frequency is set equal to HCLK: select BPWM module clock source as PCLK */
-    CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL1_BPWM0SEL_PCLK0, NULL);
-    CLK_SetModuleClock(BPWM1_MODULE, CLK_CLKSEL1_BPWM1SEL_PCLK1, NULL);
+    CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL1_BPWM0SEL_PCLK0, 0);
+    CLK_SetModuleClock(BPWM1_MODULE, CLK_CLKSEL1_BPWM1SEL_PCLK1, 0);
 
     /* case 2.BPWM clock frequency is set double to HCLK: select BPWM module clock source as PLL */
     //CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL1_BPWM0SEL_PLL, NULL);

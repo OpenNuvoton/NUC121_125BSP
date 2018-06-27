@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief    Show the usage of GPIO interrupt function.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /**
  * @brief       PortA/PortB IRQ
@@ -20,13 +20,16 @@
 void GPAB_IRQHandler(void)
 {
     /* To check if PB.14 interrupt occurred */
-    if (GPIO_GET_INT_FLAG(PB, BIT14)) {
+    if (GPIO_GET_INT_FLAG(PB, BIT14))
+    {
         GPIO_CLR_INT_FLAG(PB, BIT14);
         printf("PB.14 INT occurred.\n");
-    } else {
+    }
+    else
+    {
         /* Un-expected interrupt. Just clear all PORTA, PORTB interrupts */
-        PA->INTSRC = PA->INTSRC;
-        PB->INTSRC = PB->INTSRC;
+        PA->INTSRC = (PA->INTSRC);
+        PB->INTSRC = (PB->INTSRC);
         printf("Un-expected interrupts.\n");
     }
 }
@@ -43,15 +46,18 @@ void GPAB_IRQHandler(void)
 void GPCDEF_IRQHandler(void)
 {
     /* To check if PD.11 interrupt occurred */
-    if (GPIO_GET_INT_FLAG(PD, BIT11)) {
+    if (GPIO_GET_INT_FLAG(PD, BIT11))
+    {
         GPIO_CLR_INT_FLAG(PD, BIT11);
         printf("PD.11 INT occurred.\n");
-    } else {
+    }
+    else
+    {
         /* Un-expected interrupt. Just clear all PORTC, PORTD, PORTE and PORTF interrupts */
-        PC->INTSRC = PC->INTSRC;
-        PD->INTSRC = PD->INTSRC;
-        PE->INTSRC = PE->INTSRC;
-        PF->INTSRC = PF->INTSRC;
+        PC->INTSRC = (PC->INTSRC);
+        PD->INTSRC = (PD->INTSRC);
+        PE->INTSRC = (PE->INTSRC);
+        PF->INTSRC = (PF->INTSRC);
         printf("Un-expected interrupts.\n");
     }
 }

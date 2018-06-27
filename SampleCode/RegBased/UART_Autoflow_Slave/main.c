@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data with auto flow control.
  *           This sample code needs to work with UART_Autoflow_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define RXBUFSIZE 1024
 
@@ -21,8 +21,6 @@ volatile int32_t g_i32pointer = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void AutoFlow_FunctionRxTest(void);
 
 
@@ -151,19 +149,23 @@ void UART0_IRQHandler(void)
     volatile uint32_t u32IntSts = UART0->INTSTS;;
 
     /* Rx Ready or Time-out INT */
-    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk)) {
+    if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))
+    {
         /* Handle received data */
         g_u8RecData[g_i32pointer] = UART_READ(UART0);
         g_i32pointer++;
     }
     /* Time out */
-    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RXTOINT_Msk)) {
-        do {
+    else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RXTOINT_Msk))
+    {
+        do
+        {
             /* Handle received data */
             g_u8RecData[g_i32pointer] = UART_READ(UART0);
             g_i32pointer++;
             /* Read data when FIFO RX pointer is not 0 */
-        } while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
+        }
+        while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
     }
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -196,7 +198,7 @@ void AutoFlow_FunctionRxTest()
     printf("|    after getting 1k bytes data.                           |\n");
     printf("|    Press any key to start...                              |\n");
     printf("+-----------------------------------------------------------+\n");
-    GetChar();
+    getchar();
 
     /* Enable RTS autoflow control */
     UART0->INTEN |= UART_INTEN_ATORTSEN_Msk;
@@ -226,8 +228,10 @@ void AutoFlow_FunctionRxTest()
     while (g_i32pointer < RXBUFSIZE);
 
     /* Compare Data */
-    for (u32i = 0; u32i < RXBUFSIZE; u32i++) {
-        if (g_u8RecData[u32i] != (u32i & 0xFF)) {
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
+    {
+        if (g_u8RecData[u32i] != (u32i & 0xFF))
+        {
             printf("Compare Data Failed\n");
 
             while (1);

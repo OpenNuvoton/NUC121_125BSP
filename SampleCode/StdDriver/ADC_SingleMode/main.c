@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -60,6 +60,9 @@ void SYS_Init(void)
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
 
+    /* Set PD.2 and PD.3 to input mode */
+    PD->MODE &= ~(GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE3_Msk);
+
     /* Set PD2 and PD3 to ADC mode for ADC input channel 2 and 3 */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD2MFP_Msk | SYS_GPD_MFPL_PD3MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD2MFP_ADC_CH2 | SYS_GPD_MFPL_PD3MFP_ADC_CH3);
@@ -102,14 +105,16 @@ void AdcSingleModeTest()
     printf("|                      ADC single mode sample code                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    while (1) {
+    while (1)
+    {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Set the ADC operation mode as single, input mode as single-end and enable the analog input channel 2 */
             ADC_Open(ADC, ADC_ADCR_DIFFEN_SINGLE_END, ADC_ADCR_ADMD_SINGLE, 0x1 << 2);
 
@@ -137,7 +142,9 @@ void AdcSingleModeTest()
             /* Get the conversion result of the ADC channel 2 */
             i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, 2);
             printf("Conversion result of channel 2: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Set the ADC operation mode as single, input mode as differential and
                enable analog input channel 2 for differential input channel pair 1 */
             ADC_Open(ADC, ADC_ADCR_DIFFEN_DIFFERENTIAL, ADC_ADCR_ADMD_SINGLE, 0x1 << 2);
@@ -165,7 +172,8 @@ void AdcSingleModeTest()
             /* Get the conversion result of the specified ADC channel */
             i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, 2);
             printf("Conversion result of channel pair 1: 0x%X (%d)\n\n", i32ConversionData, i32ConversionData);
-        } else
+        }
+        else
             return ;
     }
 }

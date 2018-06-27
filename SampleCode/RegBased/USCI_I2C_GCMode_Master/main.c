@@ -5,23 +5,23 @@
  *           Show how a Master uses UI2C address 0x0 to write data to Slave.
  *           This sample code needs to work with USCI_I2C_GCMode_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_u8DeviceAddr;
-uint8_t g_au8MstTxData[3];
+volatile uint8_t g_u8DeviceAddr;
+volatile uint8_t g_au8MstTxData[3];
 volatile uint8_t g_u8MstRxData;
 volatile uint8_t g_u8MstDataLen;
 volatile uint8_t g_u8MstEndFlag = 0;
 
-enum UI2C_MASTER_EVENT m_Event;
+enum UI2C_MASTER_EVENT volatile m_Event;
 typedef void (*UI2C_FUNC)(uint32_t u32Status);
-static UI2C_FUNC s_UI2C0HandlerFn = NULL;
+static volatile UI2C_FUNC s_UI2C0HandlerFn = NULL;
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C IRQ Handler                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -41,47 +41,64 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void USCI_I2C_MasterTx(uint32_t u32Status)
 {
-    if (UI2C_GET_TIMEOUT_FLAG(UI2C0)) {
+    if (UI2C_GET_TIMEOUT_FLAG(UI2C0))
+    {
         /* Clear USCI_I2C0 Timeout Flag */
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_TOIF_Msk); /* Clear START INT Flag */
-    } else if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk)
+    {
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_STARIF_Msk); /* Clear START INT Flag */
 
         UI2C_SET_DATA(UI2C0, (g_u8DeviceAddr << 1) | 0x00);     /* Write SLA+W to Register TXDAT */
         m_Event = MASTER_SEND_ADDRESS;
 
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_PTRG);
-    } else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_ACKIF_Msk) == UI2C_PROTSTS_ACKIF_Msk)
+    {
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_ACKIF_Msk);  /* Clear ACK INT Flag */
 
-        if (m_Event == MASTER_SEND_ADDRESS) {
+        if (m_Event == MASTER_SEND_ADDRESS)
+        {
             UI2C_SET_DATA(UI2C0, g_au8MstTxData[g_u8MstDataLen++]);  /* SLA+W has been transmitted and write ADDRESS to Register TXDAT */
             m_Event = MASTER_SEND_DATA;
             UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_PTRG);
-        } else if (m_Event == MASTER_SEND_DATA) {
-            if (g_u8MstDataLen != 3) {
+        }
+        else if (m_Event == MASTER_SEND_DATA)
+        {
+            if (g_u8MstDataLen != 3)
+            {
                 UI2C_SET_DATA(UI2C0, g_au8MstTxData[g_u8MstDataLen++]);  /* ADDRESS has been transmitted and write DATA to Register TXDAT */
                 UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_PTRG);
-            } else {
+            }
+            else
+            {
                 g_u8MstEndFlag = 1;
                 m_Event = MASTER_STOP;
                 UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_STO));        /* Send STOP signal */
             }
         }
-    } else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk) {
+    }
+    else if ((u32Status & UI2C_PROTSTS_NACKIF_Msk) == UI2C_PROTSTS_NACKIF_Msk)
+    {
         UI2C_CLR_PROT_INT_FLAG(UI2C0, UI2C_PROTSTS_NACKIF_Msk); /* Clear NACK INT Flag */
 
         g_u8MstEndFlag = 0;
 
-        if (m_Event == MASTER_SEND_ADDRESS) {
+        if (m_Event == MASTER_SEND_ADDRESS)
+        {
             /* SLA+W has been transmitted and NACK has been received */
             m_Event = MASTER_SEND_START;
             UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_STA));            /* Send START signal */
-        } else if (m_Event == MASTER_SEND_DATA) {
+        }
+        else if (m_Event == MASTER_SEND_DATA)
+        {
             /* ADDRESS has been transmitted and NACK has been received */
             m_Event = MASTER_STOP;
             UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_STO));            /* Send STOP signal */
-        } else
+        }
+        else
             printf("Get Wrong NACK Event\n");
     }
 }
@@ -229,7 +246,8 @@ int32_t main(void)
     printf("Press any key to continue.\n");
     getchar();
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
         g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);

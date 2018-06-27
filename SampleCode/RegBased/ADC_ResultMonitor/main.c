@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -168,11 +168,16 @@ void AdcResultMonitorTest()
     /* ADC_DISABLE_CMP1(ADC); */
     ADC->ADCMPR[1] = 0;
 
-    if (g_u32AdcCmp0IntFlag == 1) {
+    if (g_u32AdcCmp0IntFlag == 1)
+    {
         printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 2 is less than 0x800\n");
-    } else if (g_u32AdcCmp1IntFlag == 1) {
+    }
+    else if (g_u32AdcCmp1IntFlag == 1)
+    {
         printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 2 is greater than or equal to 0x800\n");
-    } else {
+    }
+    else
+    {
         printf("Both Comparator 0 and 1 have no interrupt occurs.\n");
     }
 }
@@ -183,13 +188,15 @@ void AdcResultMonitorTest()
 /*----------------------------------------------------------------------------------------------------------*/
 void ADC_IRQHandler(void)
 {
-    if ((ADC->ADSR0 & ADC_CMP0_INT) != 0) {
+    if ((ADC->ADSR0 & ADC_CMP0_INT) != 0)
+    {
         g_u32AdcCmp0IntFlag = 1;
         /* clear the A/D compare flag 0 */
         ADC->ADSR0 = ADC_CMP0_INT;
     }
 
-    if ((ADC->ADSR0 & ADC_CMP1_INT) != 0) {
+    if ((ADC->ADSR0 & ADC_CMP1_INT) != 0)
+    {
         g_u32AdcCmp1IntFlag = 1;
         /* clear the A/D compare flag 1 */
         ADC->ADSR0 = ADC_CMP1_INT;

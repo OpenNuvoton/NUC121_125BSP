@@ -9,7 +9,7 @@
 #define __USBD_MASS_H__
 
 /* HIRC trim setting:
- *    HIRC trim reference clock is from USB SOF (Start-Of-Frame) packet.
+ *    HIRC trim reference clock is USB signal.
  *    HIRC trim operation is keep going if clock is inaccuracy.
  *    HIRC Trim retry count limitation is 512 loops.
  *    Trim value calculation is based on average difference in 4 clocks of reference clock.
@@ -113,7 +113,8 @@ static __INLINE uint16_t get_be16(uint8_t *buf)
 */
 
 /*!<USB Mass Storage Class - Command Block Wrapper Structure */
-struct CBW {
+struct CBW
+{
     uint32_t  dCBWSignature;
     uint32_t  dCBWTag;
     uint32_t  dCBWDataTransferLength;
@@ -126,7 +127,8 @@ struct CBW {
 };
 
 /*!<USB Mass Storage Class - Command Status Wrapper Structure */
-struct CSW {
+struct CSW
+{
     uint32_t  dCSWSignature;
     uint32_t  dCSWTag;
     uint32_t  dCSWDataResidue;

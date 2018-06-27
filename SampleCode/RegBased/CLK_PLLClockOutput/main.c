@@ -3,10 +3,10 @@
  * @version  V3.00
  * @brief Change system clock to different PLL frequency and output system clock from CLKO pin.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define PLLCTL_SETTING  CLK_PLLCTL_50MHz_HIRC_DIV2
 #define PLL_CLOCK       50000000
@@ -30,7 +30,8 @@ void BOD_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 #define PI_NUM  256
 int32_t f[PI_NUM + 1];
-uint32_t piTbl[19] = {
+uint32_t piTbl[19] =
+{
     3141,
     5926,
     5358,
@@ -64,7 +65,8 @@ int32_t pi(void)
 
     i = 0;
 
-    for (; d = 0, g = c * 2; c -= 14,/*printf("%.4d\n",e+d/a),*/ piResult[i++] = e + d / a, e = d % a) {
+    for (; d = 0, g = c * 2; c -= 14,/*printf("%.4d\n",e+d/a),*/ piResult[i++] = e + d / a, e = d % a)
+    {
         if (i == 19)
             break;
 
@@ -73,7 +75,8 @@ int32_t pi(void)
 
     i32Err = 0;
 
-    for (i = 0; i < 19; i++) {
+    for (i = 0; i < 19; i++)
+    {
         if (piTbl[i] != piResult[i])
             i32Err = -1;
     }
@@ -85,13 +88,15 @@ void Delay(uint32_t x)
 {
     int32_t i;
 
-    for (i = 0; i < x; i++) {
+    for (i = 0; i < x; i++)
+    {
         __NOP();
         __NOP();
     }
 }
 
-uint32_t g_au32PllSetting[] = {
+uint32_t g_au32PllSetting[] =
+{
 
     (CLK_PLLCTL_PLLSRC_HIRC_DIV2 | CLK_PLLCTL_NR(3) | CLK_PLLCTL_NF(25) | CLK_PLLCTL_NO_4), /* PLL = 50MHz */
     (CLK_PLLCTL_PLLSRC_HIRC_DIV2 | CLK_PLLCTL_NR(3) | CLK_PLLCTL_NF(36) | CLK_PLLCTL_NO_4), /* PLL = 72MHz */
@@ -111,7 +116,8 @@ void SYS_PLL_Test(void)
 
     printf("\n-------------------------[ Test PLL ]-----------------------------\n");
 
-    for (i = 0; i < sizeof(g_au32PllSetting) / sizeof(g_au32PllSetting[0]) ; i++) {
+    for (i = 0; i < sizeof(g_au32PllSetting) / sizeof(g_au32PllSetting[0]) ; i++)
+    {
         /* Select HCLK clock source to HIRC and HCLK source divider as 1 */
         CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
         CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_HCLKDIV_Msk)) | CLK_CLKDIV0_HCLK(1);
@@ -147,9 +153,12 @@ void SYS_PLL_Test(void)
         /* The delay loop is used to check if the CPU speed is increasing */
         Delay(0x400000);
 
-        if (pi()) {
+        if (pi())
+        {
             printf("[FAIL]\n");
-        } else {
+        }
+        else
+        {
             printf("[OK]\n");
         }
 
@@ -252,7 +261,8 @@ int32_t main(void)
     printf("|     NUC121 System Driver Sample Code    |\n");
     printf("+----------------------------------------+\n");
 
-    if (M32(FLAG_ADDR) == SIGNATURE) {
+    if (M32(FLAG_ADDR) == SIGNATURE)
+    {
         printf("  CPU Reset success!\n");
         M32(FLAG_ADDR) = 0;
         printf("  Press any key to continue ...\n");
@@ -277,7 +287,8 @@ int32_t main(void)
     SYS_UnlockReg();
 
     /* Check if the write-protected registers are unlocked before BOD setting and CPU Reset */
-    if (SYS->REGLCTL != 0) {
+    if (SYS->REGLCTL != 0)
+    {
         printf("Protected Address is Unlocked\n");
     }
 

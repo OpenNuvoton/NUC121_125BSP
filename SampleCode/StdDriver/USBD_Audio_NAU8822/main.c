@@ -9,7 +9,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "usbd_audio.h"
 
 
@@ -163,7 +163,8 @@ int32_t main(void)
     NVIC_SetPriority(SPI0_IRQn, 2);
 
 
-    while (SYS->PDID) {
+    while (SYS->PDID)
+    {
         uint8_t ch;
         uint32_t u32Reg, u32Data;
         extern int32_t kbhit(void);
@@ -175,7 +176,8 @@ int32_t main(void)
         VolumnControl();
 
         /* User can change audio codec settings by I2C at run-time if necessary */
-        if (!kbhit()) {
+        if (!kbhit())
+        {
             printf("\nEnter codec setting:\n");
             // Get Register number
             ch = getchar();

@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -27,14 +27,16 @@ volatile uint32_t g_au32TMRINTCount[4] = {0};
  */
 void TMR0_IRQHandler(void)
 {
-    if (TIMER_GetIntFlag(TIMER0) == 1) {
+    if (TIMER_GetIntFlag(TIMER0) == 1)
+    {
         /* Clear Timer0 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER0);
 
         g_au32TMRINTCount[0]++;
     }
 
-    if (TIMER_GetWakeupFlag(TIMER0) == 1) {
+    if (TIMER_GetWakeupFlag(TIMER0) == 1)
+    {
         /* Clear Timer0 wake-up flag */
         TIMER_ClearWakeupFlag(TIMER0);
 
@@ -156,11 +158,14 @@ int main(void)
 
     u32InitCount = g_u8IsTMR0WakeupFlag = g_au32TMRINTCount[0] = 0;
 
-    while (g_au32TMRINTCount[0] < 10) {
-        if (g_au32TMRINTCount[0] != u32InitCount) {
+    while (g_au32TMRINTCount[0] < 10)
+    {
+        if (g_au32TMRINTCount[0] != u32InitCount)
+        {
             printf("Timer0 interrupt counts - %d\n", g_au32TMRINTCount[0]);
 
-            if (g_au32TMRINTCount[0] == 3) {
+            if (g_au32TMRINTCount[0] == 3)
+            {
                 /* System enter to Power-down */
                 /* To program PWRCTL register, it needs to disable register protection first. */
                 SYS_UnlockReg();

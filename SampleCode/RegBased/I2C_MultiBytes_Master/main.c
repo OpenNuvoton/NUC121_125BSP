@@ -5,10 +5,10 @@
  *           Show how to Read and Write multi bytes data to Slave.
  *           Needs to work with I2C_Slave sample code.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *********************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -124,10 +124,12 @@ uint32_t I2C_WriteMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u1
 
     I2C_START(i2c);                                                         /* Send START */
 
-    while (u8Xfering && (u8Err == 0)) {
+    while (u8Xfering && (u8Err == 0))
+    {
         I2C_WAIT_READY(i2c);
 
-        switch (I2C_GET_STATUS(i2c)) {
+        switch (I2C_GET_STATUS(i2c))
+        {
         case 0x08:
             I2C_SET_DATA(i2c, (u8SlaveAddr << 1 | 0x00));               /* Write SLA+W to Register I2CDAT */
             u8Ctrl = I2C_CTL_SI;                                      /* Clear SI */
@@ -144,12 +146,15 @@ uint32_t I2C_WriteMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u1
             break;
 
         case 0x28:
-            if (u8Addr) {
+            if (u8Addr)
+            {
                 I2C_SET_DATA(i2c, (uint8_t)(u16DataAddr & 0xFF));       /* Write Lo byte address of register */
                 u8Addr = 0;
-            } else if ((u32txLen < u32wLen) && (u8Addr == 0))
+            }
+            else if ((u32txLen < u32wLen) && (u8Addr == 0))
                 I2C_SET_DATA(i2c, data[u32txLen++]);                           /* Write data to Register I2CDAT*/
-            else {
+            else
+            {
                 u8Ctrl = I2C_CTL_STO_SI;                              /* Clear SI and send STOP */
                 u8Xfering = 0;
             }
@@ -179,10 +184,12 @@ uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16
 
     I2C_START(i2c);                                                         /* Send START */
 
-    while (u8Xfering && (u8Err == 0)) {
+    while (u8Xfering && (u8Err == 0))
+    {
         I2C_WAIT_READY(i2c);
 
-        switch (I2C_GET_STATUS(i2c)) {
+        switch (I2C_GET_STATUS(i2c))
+        {
         case 0x08:
             I2C_SET_DATA(i2c, (u8SlaveAddr << 1 | 0x00));               /* Write SLA+W to Register I2CDAT */
             u8Ctrl = I2C_CTL_SI;                                      /* Clear SI */
@@ -199,10 +206,12 @@ uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16
             break;
 
         case 0x28:
-            if (u8Addr) {
+            if (u8Addr)
+            {
                 I2C_SET_DATA(i2c, (uint8_t)(u16DataAddr & 0xFF));       /* Write Lo byte address of register */
                 u8Addr = 0;
-            } else
+            }
+            else
                 u8Ctrl = I2C_CTL_STA_SI;                              /* Clear SI and send repeat START */
 
             break;
@@ -296,11 +305,13 @@ int32_t main(void)
     err = 0;
 
     /* Prepare data for transmission */
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         txbuf[i] = (uint8_t) i + 3;
     }
 
-    for (i = 0; i < 256; i += 32) {
+    for (i = 0; i < 256; i += 32)
+    {
         /* Write 32 bytes data to Slave */
         while (I2C_WriteMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, i, &txbuf[i], 32) < 32);
     }
@@ -313,8 +324,10 @@ int32_t main(void)
     while (I2C_ReadMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, 0x0000, rDataBuf, 256) < 256);
 
     /* Compare TX data and RX data */
-    for (i = 0; i < 256; i++) {
-        if (txbuf[i] != rDataBuf[i]) {
+    for (i = 0; i < 256; i++)
+    {
+        if (txbuf[i] != rDataBuf[i])
+        {
             err = 1;
             printf("Data compare fail... R[%d] Data: 0x%X\n", i, rDataBuf[i]);
         }

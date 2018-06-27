@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -19,7 +19,8 @@ volatile uint32_t g_au32TMRINTCount[4] = {0};
 /*---------------------------------------------------------------------------------------------------------*/
 void GenerateEventCounterSource(uint32_t u32Port, uint32_t u32Pin, uint32_t u32Counts)
 {
-    while (u32Counts--) {
+    while (u32Counts--)
+    {
         GPIO_PIN_DATA(u32Port, u32Pin) = 1;
         GPIO_PIN_DATA(u32Port, u32Pin) = 0;
     }
@@ -36,7 +37,8 @@ void GenerateEventCounterSource(uint32_t u32Port, uint32_t u32Pin, uint32_t u32C
  */
 void TMR2_IRQHandler(void)
 {
-    if (TIMER_GetIntFlag(TIMER2) == 1) {
+    if (TIMER_GetIntFlag(TIMER2) == 1)
+    {
         /* Clear Timer2 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER2);
 
@@ -147,7 +149,8 @@ int main(void)
     TIMER_Start(TIMER2);
 
     /* To check if counter value of Timer2 should be 0 while event counter mode is enabled */
-    if (TIMER_GetCounter(TIMER2) != 0) {
+    if (TIMER_GetCounter(TIMER2) != 0)
+    {
         printf("Default counter value is not 0. (%d)\n", TIMER_GetCounter(TIMER2));
 
         /* Stop Timer2 counting */
@@ -164,7 +167,8 @@ int main(void)
     /* To check if counter value of Timer2 should be 1 */
     while (TIMER_GetCounter(TIMER2) == 0);
 
-    if (TIMER_GetCounter(TIMER2) != 1) {
+    if (TIMER_GetCounter(TIMER2) != 1)
+    {
         printf("Get unexpected counter value. (%d)\n", TIMER_GetCounter(TIMER2));
 
         /* Stop Timer2 counting */
@@ -176,8 +180,10 @@ int main(void)
     /* To generate remains counts to T2 pin */
     GenerateEventCounterSource(0, 11, (56789 - 1));
 
-    while (1) {
-        if (g_au32TMRINTCount[2] == 1) {
+    while (1)
+    {
+        if (g_au32TMRINTCount[2] == 1)
+        {
             printf("# Timer2 interrupt event occurred.\n");
             break;
         }
@@ -185,9 +191,12 @@ int main(void)
 
     printf("# Get Timer2 event counter value is %d .... ", TIMER_GetCounter(TIMER2));
 
-    if (TIMER_GetCounter(TIMER2) == 56789) {
+    if (TIMER_GetCounter(TIMER2) == 56789)
+    {
         printf("PASS.\n");
-    } else {
+    }
+    else
+    {
         printf("FAIL.\n");
     }
 

@@ -5,10 +5,10 @@
  *           Show how to set UI2C use Multi bytes API Read and Write data to Slave.
  *           Needs to work with USCI_I2C_Slave sample code.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ***********************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -139,11 +139,13 @@ int32_t main(void)
     g_u8DeviceAddr = 0x15;
 
     /* Prepare data for transmission */
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         txbuf[i] = (uint8_t) i + 3;
     }
 
-    for (i = 0; i < 256; i += 32) {
+    for (i = 0; i < 256; i += 32)
+    {
         /* Write 32 bytes data to Slave */
         while (UI2C_WriteMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, i, &txbuf[i], 32) < 32);
     }
@@ -156,7 +158,8 @@ int32_t main(void)
     while (UI2C_ReadMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, 0x0000, rDataBuf, 256) < 256);
 
     /* Compare TX data and RX data */
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         if (txbuf[i] != rDataBuf[i])
             printf("Data compare fail... R[%d] Data: 0x%X\n", i, rDataBuf[i]);
     }

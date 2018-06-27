@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global Interface Variables Declarations                                                                 */
@@ -25,7 +25,8 @@ volatile uint32_t g_au32TMRINTCount[4] = {0};
  */
 void TMR0_IRQHandler(void)
 {
-    if (TIMER_GetIntFlag(TIMER0) == 1) {
+    if (TIMER_GetIntFlag(TIMER0) == 1)
+    {
         /* Clear Timer0 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER0);
 
@@ -44,7 +45,8 @@ void TMR0_IRQHandler(void)
  */
 void TMR1_IRQHandler(void)
 {
-    if (TIMER_GetIntFlag(TIMER1) == 1) {
+    if (TIMER_GetIntFlag(TIMER1) == 1)
+    {
         /* Clear Timer1 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER1);
 
@@ -63,7 +65,8 @@ void TMR1_IRQHandler(void)
  */
 void TMR2_IRQHandler(void)
 {
-    if (TIMER_GetIntFlag(TIMER2) == 1) {
+    if (TIMER_GetIntFlag(TIMER2) == 1)
+    {
         /* Clear Timer2 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER2);
 
@@ -82,7 +85,8 @@ void TMR2_IRQHandler(void)
  */
 void TMR3_IRQHandler(void)
 {
-    if (TIMER_GetIntFlag(TIMER3) == 1) {
+    if (TIMER_GetIntFlag(TIMER3) == 1)
+    {
         /* Clear Timer3 time-out interrupt flag */
         TIMER_ClearIntFlag(TIMER3);
 
@@ -234,15 +238,18 @@ int main(void)
     /* Check Timer0 ~ Timer3 interrupt counts */
     printf("# Timer interrupt counts :\n");
 
-    while (u32InitCount < 20) {
-        if (g_au32TMRINTCount[0] != u32InitCount) {
+    while (u32InitCount < 20)
+    {
+        if (g_au32TMRINTCount[0] != u32InitCount)
+        {
             printf("    TMR0:%3d    TMR1:%3d    TMR2:%3d    TMR3:%3d\n",
                    g_au32TMRINTCount[0], g_au32TMRINTCount[1], g_au32TMRINTCount[2], g_au32TMRINTCount[3]);
             u32InitCount = g_au32TMRINTCount[0];
 
             if ((g_au32TMRINTCount[1] > (g_au32TMRINTCount[0] * 2 + 1)) || (g_au32TMRINTCount[1] < (g_au32TMRINTCount[0] * 2 - 1)) ||
                     (g_au32TMRINTCount[2] > (g_au32TMRINTCount[0] * 4 + 1)) || (g_au32TMRINTCount[2] < (g_au32TMRINTCount[0] * 4 - 1)) ||
-                    (g_au32TMRINTCount[3] > (g_au32TMRINTCount[0] * 8 + 1)) || (g_au32TMRINTCount[3] < (g_au32TMRINTCount[0] * 8 - 1))) {
+                    (g_au32TMRINTCount[3] > (g_au32TMRINTCount[0] * 8 + 1)) || (g_au32TMRINTCount[3] < (g_au32TMRINTCount[0] * 8 - 1)))
+            {
                 printf("*** FAIL ***\n");
 
                 while (1);

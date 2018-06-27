@@ -6,19 +6,21 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 /*!<Includes */
-#include "NUC121.h"
+#include <stdio.h>
+#include "NuMicro.h"
 #include "usbd_audio.h"
 
 /*----------------------------------------------------------------------------*/
 /*!<USB Device Descriptor */
-const uint8_t gu8DeviceDescriptor[] = {
+const uint8_t gu8DeviceDescriptor[] =
+{
     LEN_DEVICE,     /* bLength */
     DESC_DEVICE,    /* bDescriptorType */
 #ifdef SUPPORT_LPM
     0x01, 0x02,     /* bcdUSB => 0x0201 to support LPM */
-#else    
+#else
     0x10, 0x01,     /* bcdUSB */
-#endif    
+#endif
     0x00,           /* bDeviceClass */
     0x00,           /* bDeviceSubClass */
     0x00,           /* bDeviceProtocol */
@@ -26,17 +28,18 @@ const uint8_t gu8DeviceDescriptor[] = {
     /* idVendor */
     USBD_VID & 0x00FF,
     (USBD_VID & 0xFF00) >> 8,
-    /* idProduct */
-    USBD_PID & 0x00FF,
-    (USBD_PID & 0xFF00) >> 8,
-    0x00, 0x01,     /* bcdDevice */
-    0x01,           /* iManufacture */
-    0x02,           /* iProduct */
-    0x03,           /* iSerialNumber */
-    0x01            /* bNumConfigurations */
+                        /* idProduct */
+                        USBD_PID & 0x00FF,
+                        (USBD_PID & 0xFF00) >> 8,
+                        0x00, 0x01,     /* bcdDevice */
+                        0x01,           /* iManufacture */
+                        0x02,           /* iProduct */
+                        0x03,           /* iSerialNumber */
+                        0x01            /* bNumConfigurations */
 };
 
-const uint8_t gu8KeyboardReportDesc[63] = {
+const uint8_t gu8KeyboardReportDesc[63] =
+{
     0x05, 0x01,
     0x09, 0x06,
     0xA1, 0x01,
@@ -72,7 +75,8 @@ const uint8_t gu8KeyboardReportDesc[63] = {
 };
 
 
-const uint8_t gu8MediaKeyReportDesc[67] = {
+const uint8_t gu8MediaKeyReportDesc[67] =
+{
     0x05, 0x0C, // Usage Page (Consumer)
     0x09, 0x01, // Usage(Consumer Control)
     0xA1, 0x01, // Collection(Application )
@@ -110,7 +114,8 @@ const uint8_t gu8MediaKeyReportDesc[67] = {
 };
 
 /*!<USB HID Report Descriptor */
-const uint8_t gu8TransferReportDesc[27] = {
+const uint8_t gu8TransferReportDesc[27] =
+{
     0x05, 0x01, // USAGE_PAGE (Generic Desktop)
     0x09, 0x00, // USAGE (0)
     0xA1, 0x01, // COLLECTION (Application)
@@ -130,7 +135,8 @@ const uint8_t gu8TransferReportDesc[27] = {
 
 
 /*!<USB Configure Descriptor */
-const uint8_t gu8ConfigDescriptor[] = {
+const uint8_t gu8ConfigDescriptor[] =
+{
     LEN_CONFIG,     /* bLength */
     DESC_CONFIG,    /* bDescriptorType */
     0x14, 0x01,     /* wTotalLength */
@@ -374,100 +380,101 @@ const uint8_t gu8ConfigDescriptor[] = {
     sizeof(gu8TransferReportDesc) & 0x00FF,
     (sizeof(gu8TransferReportDesc) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (HID_TRANS_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    HID_TRANS_IN_MAX_PKT_SIZE & 0x00FF,
-    (HID_TRANS_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
-    1,        /* bInterval */
+            /* EP Descriptor: interrupt in. */
+            LEN_ENDPOINT,   /* bLength */
+            DESC_ENDPOINT,  /* bDescriptorType */
+            (HID_TRANS_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+            EP_INT,         /* bmAttributes */
+            /* wMaxPacketSize */
+            HID_TRANS_IN_MAX_PKT_SIZE & 0x00FF,
+            (HID_TRANS_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
+            1,        /* bInterval */
 
-    /* EP Descriptor: interrupt out. */
-    LEN_ENDPOINT,   /* bLength */
-    DESC_ENDPOINT,  /* bDescriptorType */
-    (HID_TRANS_OUT_EP_NUM | EP_OUTPUT),   /* bEndpointAddress */
-    EP_INT,         /* bmAttributes */
-    /* wMaxPacketSize */
-    HID_TRANS_OUT_MAX_PKT_SIZE & 0x00FF,
-    (HID_TRANS_OUT_MAX_PKT_SIZE & 0xFF00) >> 8,
-    1,     /* bInterval */
+            /* EP Descriptor: interrupt out. */
+            LEN_ENDPOINT,   /* bLength */
+            DESC_ENDPOINT,  /* bDescriptorType */
+            (HID_TRANS_OUT_EP_NUM | EP_OUTPUT),   /* bEndpointAddress */
+            EP_INT,         /* bmAttributes */
+            /* wMaxPacketSize */
+            HID_TRANS_OUT_MAX_PKT_SIZE & 0x00FF,
+            (HID_TRANS_OUT_MAX_PKT_SIZE & 0xFF00) >> 8,
+            1,     /* bInterval */
 
-    //------------------------------------------------------------------------
-    /* I/F descr: HID Keyboard*/
-    LEN_INTERFACE,  // bLength
-    DESC_INTERFACE, // bDescriptorType
-    0x04,           // bInterfaceNumber
-    0x00,           // bAlternateSetting
-    0x01,           // bNumEndpoints
-    0x03,           // bInterfaceClass
-    0x01,           // bInterfaceSubClass
-    0x01,           // bInterfaceProtocol
-    0x00,           // iInterface
+            //------------------------------------------------------------------------
+            /* I/F descr: HID Keyboard*/
+            LEN_INTERFACE,  // bLength
+            DESC_INTERFACE, // bDescriptorType
+            0x04,           // bInterfaceNumber
+            0x00,           // bAlternateSetting
+            0x01,           // bNumEndpoints
+            0x03,           // bInterfaceClass
+            0x01,           // bInterfaceSubClass
+            0x01,           // bInterfaceProtocol
+            0x00,           // iInterface
 
-    // HID Descriptor
-    LEN_HID,        // Size of this descriptor in UINT8s.
-    DESC_HID,       // HID descriptor type.
-    0x10, 0x01,     // HID Class Spec. release number.
-    0x00,           // H/W target country.
-    0x01,           // Number of HID class descriptors to follow.
-    DESC_HID_RPT,   // Dscriptor type.
+            // HID Descriptor
+            LEN_HID,        // Size of this descriptor in UINT8s.
+            DESC_HID,       // HID descriptor type.
+            0x10, 0x01,     // HID Class Spec. release number.
+            0x00,           // H/W target country.
+            0x01,           // Number of HID class descriptors to follow.
+            DESC_HID_RPT,   // Dscriptor type.
 
-    /* Total length of report descriptor */
-    sizeof(gu8KeyboardReportDesc) & 0x00FF,
-    (sizeof(gu8KeyboardReportDesc) & 0xFF00) >> 8,
+            /* Total length of report descriptor */
+            sizeof(gu8KeyboardReportDesc) & 0x00FF,
+            (sizeof(gu8KeyboardReportDesc) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in */
-    LEN_ENDPOINT,   // bLength
-    DESC_ENDPOINT,  // bDescriptorType
-    (HID_KEY_IN_EP_NUM | EP_INPUT),         // bEndpointAddress
-    EP_INT,         // bmAttributes
-    // wMaxPacketSize
-    HID_KEY_IN_MAX_PKT_SIZE & 0x00FF,
-    (HID_KEY_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
-    10,              // bInterval
+            /* EP Descriptor: interrupt in */
+            LEN_ENDPOINT,   // bLength
+            DESC_ENDPOINT,  // bDescriptorType
+            (HID_KEY_IN_EP_NUM | EP_INPUT),         // bEndpointAddress
+            EP_INT,         // bmAttributes
+            // wMaxPacketSize
+            HID_KEY_IN_MAX_PKT_SIZE & 0x00FF,
+            (HID_KEY_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
+            10,              // bInterval
 
-    //------------------------------------------------------------------------
-    /* I/F descr: HID Media Key*/
-    LEN_INTERFACE,  // bLength
-    DESC_INTERFACE, // bDescriptorType
-    0x05,           // bInterfaceNumber
-    0x00,           // bAlternateSetting
-    0x01,           // bNumEndpoints
-    0x03,           // bInterfaceClass
-    0x01,           // bInterfaceSubClass
-    0x01,           // bInterfaceProtocol
-    0x00,           // iInterface
+            //------------------------------------------------------------------------
+            /* I/F descr: HID Media Key*/
+            LEN_INTERFACE,  // bLength
+            DESC_INTERFACE, // bDescriptorType
+            0x05,           // bInterfaceNumber
+            0x00,           // bAlternateSetting
+            0x01,           // bNumEndpoints
+            0x03,           // bInterfaceClass
+            0x01,           // bInterfaceSubClass
+            0x01,           // bInterfaceProtocol
+            0x00,           // iInterface
 
-    // HID Descriptor
-    LEN_HID,        // Size of this descriptor in UINT8s.
-    DESC_HID,       // HID descriptor type.
-    0x10, 0x01,     // HID Class Spec. release number.
-    0x00,           // H/W target country.
-    0x01,           // Number of HID class descriptors to follow.
-    DESC_HID_RPT,   // Dscriptor type.
+            // HID Descriptor
+            LEN_HID,        // Size of this descriptor in UINT8s.
+            DESC_HID,       // HID descriptor type.
+            0x10, 0x01,     // HID Class Spec. release number.
+            0x00,           // H/W target country.
+            0x01,           // Number of HID class descriptors to follow.
+            DESC_HID_RPT,   // Dscriptor type.
 
-    /* Total length of report descriptor */
-    sizeof(gu8MediaKeyReportDesc) & 0x00FF,
-    (sizeof(gu8MediaKeyReportDesc) & 0xFF00) >> 8,
+            /* Total length of report descriptor */
+            sizeof(gu8MediaKeyReportDesc) & 0x00FF,
+            (sizeof(gu8MediaKeyReportDesc) & 0xFF00) >> 8,
 
-    /* EP Descriptor: interrupt in */
-    LEN_ENDPOINT,   // bLength
-    DESC_ENDPOINT,  // bDescriptorType
-    (HID_MEDIA_IN_EP_NUM | EP_INPUT),         // bEndpointAddress
-    EP_INT,         // bmAttributes
-    // wMaxPacketSize
-    HID_MEDIA_IN_MAX_PKT_SIZE & 0x00FF,
-    (HID_MEDIA_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
-    10              // bInterval
+            /* EP Descriptor: interrupt in */
+            LEN_ENDPOINT,   // bLength
+            DESC_ENDPOINT,  // bDescriptorType
+            (HID_MEDIA_IN_EP_NUM | EP_INPUT),         // bEndpointAddress
+            EP_INT,         // bmAttributes
+            // wMaxPacketSize
+            HID_MEDIA_IN_MAX_PKT_SIZE & 0x00FF,
+            (HID_MEDIA_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
+            10              // bInterval
 
 
 };
 
 #ifdef SUPPORT_LPM
 /*!<USB BOS Descriptor */
-const uint8_t gu8BosDescriptor[] = {
+const uint8_t gu8BosDescriptor[] =
+{
     LEN_BOS,                         /* bLength */
     DESC_BOS,                        /* bDescriptorType */
     ((LEN_BOS + LEN_DEVCAP) & 0xFF), /* wTotalLength */
@@ -490,21 +497,24 @@ const uint8_t gu8BosDescriptor[] = {
 
 
 /*!<USB Language String Descriptor */
-const uint8_t gu8StringLang[4] = {
+const uint8_t gu8StringLang[4] =
+{
     4,              /* bLength */
     DESC_STRING,    /* bDescriptorType */
     0x09, 0x04
 };
 
 /*!<USB Vendor String Descriptor */
-const uint8_t gu8VendorStringDesc[] = {
+const uint8_t gu8VendorStringDesc[] =
+{
     16,
     DESC_STRING,
     'N', 0, 'u', 0, 'v', 0, 'o', 0, 't', 0, 'o', 0, 'n', 0
 };
 
 /*!<USB Product String Descriptor */
-const uint8_t gu8ProductStringDesc[] = {
+const uint8_t gu8ProductStringDesc[] =
+{
     36,
     DESC_STRING,
     'U', 0, 'S', 0, 'B', 0, ' ', 0, 'A', 0, 'u', 0, 'd', 0, 'i', 0, 'o', 0,
@@ -512,20 +522,23 @@ const uint8_t gu8ProductStringDesc[] = {
     'H', 0, 'I', 0, 'D', 0
 };
 
-const uint8_t gu8StringSerial[26] = {
+const uint8_t gu8StringSerial[26] =
+{
     26,             // bLength
     DESC_STRING,    // bDescriptorType
     'A', 0, '0', 0, '2', 0, '0', 0, '1', 0, '4', 0, '1', 0, '0', 0, '0', 0, '2', 0, '0', 0, '1', 0
 };
 
-const uint8_t *gpu8UsbString[4] = {
+const uint8_t *gpu8UsbString[4] =
+{
     gu8StringLang,
     gu8VendorStringDesc,
     gu8ProductStringDesc,
     gu8StringSerial
 };
 
-const uint8_t *gpu8UsbHidReport[6] = {
+const uint8_t *gpu8UsbHidReport[6] =
+{
     NULL,
     NULL,
     NULL,
@@ -534,7 +547,8 @@ const uint8_t *gpu8UsbHidReport[6] = {
     gu8MediaKeyReportDesc
 };
 
-const uint32_t gu32UsbHidReportLen[6] = {
+const uint32_t gu32UsbHidReportLen[6] =
+{
     0,
     0,
     0,
@@ -543,7 +557,8 @@ const uint32_t gu32UsbHidReportLen[6] = {
     sizeof(gu8MediaKeyReportDesc)
 };
 
-const uint32_t gu32ConfigHidDescIdx[6] = {
+const uint32_t gu32ConfigHidDescIdx[6] =
+{
     0,
     0,
     0,
@@ -552,7 +567,8 @@ const uint32_t gu32ConfigHidDescIdx[6] = {
     (sizeof(gu8ConfigDescriptor) - LEN_ENDPOINT - LEN_HID)
 };
 
-const S_USBD_INFO_T gsInfo = {
+const S_USBD_INFO_T gsInfo =
+{
     gu8DeviceDescriptor,
     gu8ConfigDescriptor,
     gpu8UsbString,

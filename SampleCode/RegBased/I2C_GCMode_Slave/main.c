@@ -5,10 +5,10 @@
  *           Show a Slave how to receive data from Master in GC (General Call) mode.
  *           This sample code needs to work with I2C_GCMode_Master.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -24,7 +24,7 @@ volatile uint8_t g_u8SlvEndFlag = 0;
 
 typedef void (*I2C_FUNC)(uint32_t u32Status);
 
-static I2C_FUNC s_I2C0HandlerFn = NULL;
+static volatile I2C_FUNC s_I2C0HandlerFn = NULL;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  I2C0 IRQ Handler                                                                                       */
@@ -35,10 +35,13 @@ void I2C0_IRQHandler(void)
 
     u32Status = I2C0->STATUS;
 
-    if (I2C0->TOCTL & I2C_TOCTL_TOIF_Msk) {
+    if (I2C0->TOCTL & I2C_TOCTL_TOIF_Msk)
+    {
         /* Clear I2C0 Timeout Flag */
         I2C0->TOCTL |= I2C_TOCTL_TOIF_Msk;
-    } else {
+    }
+    else
+    {
         if (s_I2C0HandlerFn != NULL)
             s_I2C0HandlerFn(u32Status);
     }
@@ -54,37 +57,45 @@ void I2C_GCSlaveRx(uint32_t u32Status)
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x90)                 /* Previously addressed with General Call; Data has been received
+    }
+    else if (u32Status == 0x90)                 /* Previously addressed with General Call; Data has been received
                                                    ACK has been returned */
     {
         g_au8SlvRxData[g_u8SlvDataLen] = (unsigned char)(I2C0->DAT);
         g_u8SlvDataLen++;
 
-        if (g_u8SlvDataLen == 2) {
+        if (g_u8SlvDataLen == 2)
+        {
             slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
 
-        if (g_u8SlvDataLen == 3) {
+        if (g_u8SlvDataLen == 3)
+        {
             g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
             g_u8SlvDataLen = 0;
         }
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0x98)                 /* Previously addressed with General Call; Data byte has been
+    }
+    else if (u32Status == 0x98)                 /* Previously addressed with General Call; Data byte has been
                                                    received; NOT ACK has been returned */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
-    } else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still addressed
+    }
+    else if (u32Status == 0xA0)                 /* A STOP or repeated START has been received while still addressed
                                                    as SLV receiver */
     {
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
 
-        if (slave_buff_addr == 0xFF) {
+        if (slave_buff_addr == 0xFF)
+        {
             g_u8SlvEndFlag = 1;
         }
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -233,7 +244,8 @@ int32_t main(void)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
 
     /* Clear receive buffer */
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvData[i] = 0;
     }
 
@@ -248,12 +260,14 @@ int32_t main(void)
     while (g_u8SlvEndFlag == 0);
 
     /* Check receive data correct or not */
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8SlvTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
         g_au8SlvTxData[1] = (uint8_t)(i & 0x00FF);
         g_au8SlvTxData[2] = (uint8_t)(g_au8SlvTxData[1] + 3);
 
-        if (g_au8SlvData[i] != g_au8SlvTxData[2]) {
+        if (g_au8SlvData[i] != g_au8SlvTxData[2])
+        {
             printf("GC Mode Receive data fail.\n");
 
             while (1);

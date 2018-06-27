@@ -8,7 +8,7 @@
  ******************************************************************************/
 #include <stdio.h>
 #include <string.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /* Function prototype declaration */
 void SYS_Init(void);
@@ -50,8 +50,9 @@ int32_t main(void)
     printf("        This sample code will transmit a TX value 50000 times, and then change to the next TX value.\n");
     printf("        When TX value or the received value changes, the new TX value or the current TX value and the new received value will be printed.\n");
     printf("  Press any key to start ...");
-    getchar();
     printf("\n");
+    getchar();
+
 
     /* Master mode, 16-bit word width, stereo mode, I2S format. */
     SPI0->I2SCTL = I2S_MODE_MASTER | I2S_DATABIT_16 | I2S_STEREO | I2S_FORMAT_I2S;
@@ -77,20 +78,24 @@ int32_t main(void)
     SPI0->I2SCTL |= SPI_I2SCTL_RXEN_Msk;
     printf("Start I2S ...\nTX value: 0x%X\n", g_u32TxValue);
 
-    while (1) {
+    while (1)
+    {
         /* Check RX FIFO empty flag */
-        if ((SPI0->I2SSTS & SPI_I2SSTS_RXEMPTY_Msk) == 0) {
+        if ((SPI0->I2SSTS & SPI_I2SSTS_RXEMPTY_Msk) == 0)
+        {
             /* Read RX FIFO */
             u32RxValue2 = SPI0->RX;
 
-            if (u32RxValue1 != u32RxValue2) {
+            if (u32RxValue1 != u32RxValue2)
+            {
                 u32RxValue1 = u32RxValue2;
                 /* If received value changes, print the current TX value and the new received value. */
                 printf("TX value: 0x%X;  RX value: 0x%X\n", g_u32TxValue, u32RxValue1);
             }
         }
 
-        if (g_u32DataCount >= 50000) {
+        if (g_u32DataCount >= 50000)
+        {
             g_u32TxValue = 0x55005500 | ((g_u32TxValue + 0x00020002) & 0x00FF00FF); /* g_u32TxValue: 0x55005501, 0x55025503, ..., 0x55FE55FF */
             printf("TX value: 0x%X\n", g_u32TxValue);
             g_u32DataCount = 0;

@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -59,6 +59,9 @@ void SYS_Init(void)
     /*------------------------------------------------------------------------------------------------------*/
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
+
+    /* Set PD.2 to input mode */
+    PD->MODE &= ~(GPIO_MODE_MODE2_Msk);
 
     /* Set PD2 to ADC mode for ADC input channel 2 */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD2MFP_Msk);
@@ -147,11 +150,16 @@ void AdcResultMonitorTest()
     ADC_DISABLE_CMP0(ADC);
     ADC_DISABLE_CMP1(ADC);
 
-    if (g_u32AdcCmp0IntFlag == 1) {
+    if (g_u32AdcCmp0IntFlag == 1)
+    {
         printf("Comparator 0 interrupt occurs.\nThe conversion result of channel 2 is less than 0x800\n");
-    } else if (g_u32AdcCmp1IntFlag == 1) {
+    }
+    else if (g_u32AdcCmp1IntFlag == 1)
+    {
         printf("Comparator 1 interrupt occurs.\nThe conversion result of channel 2 is greater than or equal to 0x800\n");
-    } else {
+    }
+    else
+    {
         printf("Both Comparator 0 and 1 have no interrupt occurs.\n");
     }
 }
@@ -162,12 +170,14 @@ void AdcResultMonitorTest()
 /*----------------------------------------------------------------------------------------------------------*/
 void ADC_IRQHandler(void)
 {
-    if (ADC_GET_INT_FLAG(ADC, ADC_CMP0_INT) != 0) {
+    if (ADC_GET_INT_FLAG(ADC, ADC_CMP0_INT) != 0)
+    {
         g_u32AdcCmp0IntFlag = 1;
         ADC_CLR_INT_FLAG(ADC, ADC_CMP0_INT);     /* clear the A/D compare flag 0 */
     }
 
-    if (ADC_GET_INT_FLAG(ADC, ADC_CMP1_INT) != 0) {
+    if (ADC_GET_INT_FLAG(ADC, ADC_CMP1_INT) != 0)
+    {
         g_u32AdcCmp1IntFlag = 1;
         ADC_CLR_INT_FLAG(ADC, ADC_CMP1_INT);     /* clear the A/D compare flag 1 */
     }

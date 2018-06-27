@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -191,7 +191,8 @@ int32_t main(void)
     /* Start */
     BPWM0->CNTEN |= BPWM_CNTEN_CNTEN0_Msk;
 
-    while (1) {
+    while (1)
+    {
         printf("\nSelect new duty: \n");
         printf("[1] 100%% \n");
         printf("[2] 75%% \n");
@@ -201,15 +202,24 @@ int32_t main(void)
         u8Option = getchar();
         printf("Select : %d \n", u8Option - 48);
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             u32NewDutyCycle = 100;
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             u32NewDutyCycle = 75;
-        } else if (u8Option == '3') {
+        }
+        else if (u8Option == '3')
+        {
             u32NewDutyCycle = 25;
-        } else if (u8Option == '4') {
+        }
+        else if (u8Option == '4')
+        {
             u32NewDutyCycle = 0;
-        } else {
+        }
+        else
+        {
             printf("Exit\n");
             break;
         }

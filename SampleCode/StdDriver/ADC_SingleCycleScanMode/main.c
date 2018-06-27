@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -54,6 +54,8 @@ void SYS_Init(void)
     /*------------------------------------------------------------------------------------------------------*/
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
+    /* Set PD.0 ~ PD.3 to input mode */
+    PD->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk | GPIO_MODE_MODE2_Msk | GPIO_MODE_MODE3_Msk);
     /* Set PD0 ~ PD3 to ADC mode for ADC input channel 0 ~ 3 */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD0MFP_Msk | SYS_GPD_MFPL_PD1MFP_Msk | SYS_GPD_MFPL_PD2MFP_Msk | SYS_GPD_MFPL_PD3MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD0MFP_ADC_CH0 | SYS_GPD_MFPL_PD1MFP_ADC_CH1 | SYS_GPD_MFPL_PD2MFP_ADC_CH2 | SYS_GPD_MFPL_PD3MFP_ADC_CH3);
@@ -96,14 +98,16 @@ void AdcSingleCycleScanModeTest()
     printf("|                 ADC single cycle scan mode sample code               |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    while (1) {
+    while (1)
+    {
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (input channel pair 0 and 1)\n");
         printf("  Other keys: exit single cycle scan mode test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Set the ADC operation mode as single-cycle, input mode as single-end and
                  enable the analog input channel 0, 1, 2 and 3 */
             ADC_Open(ADC, ADC_ADCR_DIFFEN_SINGLE_END, ADC_ADCR_ADMD_SINGLE_CYCLE, 0xF);
@@ -120,11 +124,14 @@ void AdcSingleCycleScanModeTest()
             /* Wait conversion done */
             while (!ADC_GET_INT_FLAG(ADC, ADC_ADF_INT));
 
-            for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++) {
+            for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++)
+            {
                 i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, u32ChannelCount);
                 printf("Conversion result of channel %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Set the ADC operation mode as single-cycle, input mode as differential and
                enable analog input channel 0 and 2 */
             ADC_Open(ADC, ADC_ADCR_DIFFEN_DIFFERENTIAL, ADC_ADCR_ADMD_SINGLE_CYCLE, 0x5);
@@ -141,11 +148,13 @@ void AdcSingleCycleScanModeTest()
             /* Wait conversion done */
             while (!ADC_GET_INT_FLAG(ADC, ADC_ADF_INT));
 
-            for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++) {
+            for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++)
+            {
                 i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, u32ChannelCount * 2);
                 printf("Conversion result of differential input pair %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
-        } else
+        }
+        else
             return ;
     }
 }

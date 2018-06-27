@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define TEST_COUNT 16
 
@@ -46,7 +46,7 @@ int main(void)
 
     printf("\n\n");
     printf("+----------------------------------------------------------------------+\n");
-    printf("|           SPI Slave Mode Sample Code (M05xxDN/DE only)               |\n");
+    printf("|           SPI Slave Mode Sample Code (NUC121 DN/DE only)               |\n");
     printf("+----------------------------------------------------------------------+\n");
     printf("\n");
     printf("Configure SPI0 as a slave.\n");
@@ -58,7 +58,8 @@ int main(void)
     printf("In the meanwhile the SPI controller will receive %d data from the off-chip master device.\n", TEST_COUNT);
     printf("After the transfer is done, the %d received data will be printed out.\n", TEST_COUNT);
 
-    for (u32TxDataCount = 0; u32TxDataCount < TEST_COUNT; u32TxDataCount++) {
+    for (u32TxDataCount = 0; u32TxDataCount < TEST_COUNT; u32TxDataCount++)
+    {
         /* Write the initial value to source buffer */
         g_au32SourceData[u32TxDataCount] = 0x00AA0000 + u32TxDataCount;
         /* Clear destination buffer */
@@ -72,7 +73,8 @@ int main(void)
     printf("\n");
 
     /* Access TX and RX FIFO */
-    while (u32RxDataCount < TEST_COUNT) {
+    while (u32RxDataCount < TEST_COUNT)
+    {
         /* Check TX FULL flag and TX data count */
         if (((SPI0->STATUS & SPI_STATUS_TXFULL_Msk) == 0) && (u32TxDataCount < TEST_COUNT))
             SPI0->TX = g_au32SourceData[u32TxDataCount++]; /* Write to TX FIFO */
@@ -85,7 +87,8 @@ int main(void)
     /* Print the received data */
     printf("Received data:\n");
 
-    for (u32RxDataCount = 0; u32RxDataCount < TEST_COUNT; u32RxDataCount++) {
+    for (u32RxDataCount = 0; u32RxDataCount < TEST_COUNT; u32RxDataCount++)
+    {
         printf("%d:\t0x%X\n", u32RxDataCount, g_au32DestinationData[u32RxDataCount]);
     }
 

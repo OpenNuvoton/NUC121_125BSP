@@ -7,7 +7,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -33,7 +33,8 @@ void PWM0_IRQHandler(void)
     static uint32_t out;
 
     /* Channel 0 frequency is 5000Hz, every 1 second enter this IRQ handler 5000 times. */
-    if (++cnt == 5000) {
+    if (++cnt == 5000)
+    {
         if (out)
             PWM0->POEN |= (0xF);
         else

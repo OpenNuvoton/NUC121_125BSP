@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data in UART RS485 mode.
  *           This sample code needs to work with UART_RS485_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define MATCH_ADDRSS1       0xC0
 #define MATCH_ADDRSS2       0xA2
@@ -17,8 +17,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-extern char GetChar(void);
-int32_t main(void);
 void RS485_SendAddressByte(uint8_t u8data);
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 void RS485_9bitModeMaster(void);
@@ -45,7 +43,8 @@ void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
     UART0->LINE = (UART_WORD_LEN_8 | UART_PARITY_SPACE | UART_STOP_BIT_1);
 
     /* Send data */
-    for (u32Count = 0; u32Count != u32WriteBytes; u32Count++) {
+    for (u32Count = 0; u32Count != u32WriteBytes; u32Count++)
+    {
         while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
 
         UART0->DAT = pu8TxBuf[u32Count]; /* Send UART Data from buffer */
@@ -72,7 +71,7 @@ void RS485_9bitModeMaster()
     printf("| another board and wait its ready to receive.              |\n");
     printf("| Press any key to start...                                 |\n");
     printf("+-----------------------------------------------------------+\n\n");
-    GetChar();
+    getchar();
 
     /* Select UART RS485 function mode */
     UART0->FUNCSEL = UART_FUNCSEL_RS485;
@@ -89,7 +88,8 @@ void RS485_9bitModeMaster()
     UART0->TOUT = 0x2000;
 
     /* Prepare data to transmit*/
-    for (i32 = 0; i32 < 10; i32++) {
+    for (i32 = 0; i32 < 10; i32++)
+    {
         g_u8SendDataGroup1[i32] = i32;
         g_u8SendDataGroup2[i32] = i32 + 10;
         g_u8SendDataGroup3[i32] = i32 + 20;

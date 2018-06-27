@@ -4,11 +4,11 @@
  * @brief
  *           Change duty cycle and period of output waveform by BPWM Double Buffer function.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -33,7 +33,8 @@ void BPWM0_IRQHandler(void)
     static int toggle = 0;
 
     /* Update BPWM0 channel 0 period and duty */
-    if (toggle == 0) {
+    if (toggle == 0)
+    {
         BPWM_SET_CNR(BPWM0, 0, 199);
         BPWM_SET_CMR(BPWM0, 0, 40);
         BPWM_SET_CMR(BPWM0, 1, 40);
@@ -41,7 +42,9 @@ void BPWM0_IRQHandler(void)
         BPWM_SET_CMR(BPWM0, 3, 40);
         BPWM_SET_CMR(BPWM0, 4, 40);
         BPWM_SET_CMR(BPWM0, 5, 40);
-    } else {
+    }
+    else
+    {
         BPWM_SET_CNR(BPWM0, 0, 399);
         BPWM_SET_CMR(BPWM0, 0, 200);
         BPWM_SET_CMR(BPWM0, 1, 200);
@@ -87,7 +90,7 @@ void SYS_Init(void)
 
     /* BPWM clock frequency can be set equal or double to HCLK by choosing case 1 or case 2 */
     /* case 1.BPWM clock frequency is set equal to HCLK: select BPWM module clock source as PCLK */
-    CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL1_BPWM0SEL_PCLK0, NULL);
+    CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL1_BPWM0SEL_PCLK0, 0);
 
     /* case 2.BPWM clock frequency is set double to HCLK: select BPWM module clock source as PLL */
     //CLK_SetModuleClock(BPWM0_MODULE, CLK_CLKSEL1_BPWM0SEL_PLL, NULL);
@@ -187,7 +190,7 @@ int32_t main(void)
                                       |<-   CNR + 1  ->|  CNR + 1 = 199 + 1 CLKs
                                                |<-CMR->|  CMR = 160 CLKs
 
-                        ______________              ____ 
+                        ______________              ____
         |_____200______|     200      |_____160____| 40 |____ BPWM waveform
 
     */

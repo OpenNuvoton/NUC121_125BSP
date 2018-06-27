@@ -8,14 +8,15 @@
 *****************************************************************************/
 
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define  u32ClkDiv        1   /*u32ClkDiv is between 0 and 15*/
 
 void CLKDIRC_IRQHandler(void)
 {
 
-    if (((SYS->IRCTISTS & SYS_IRCTISTS_CLKERRIF_Msk) == SYS_IRCTISTS_CLKERRIF_Msk) || ((SYS->IRCTISTS & SYS_IRCTISTS_TFAILIF_Msk) == SYS_IRCTISTS_TFAILIF_Msk)) {
+    if (((SYS->IRCTISTS & SYS_IRCTISTS_CLKERRIF_Msk) == SYS_IRCTISTS_CLKERRIF_Msk) || ((SYS->IRCTISTS & SYS_IRCTISTS_TFAILIF_Msk) == SYS_IRCTISTS_TFAILIF_Msk))
+    {
         printf("Trim Fail, SYS->IRCTCTL[%8x], SYS->IRCTISTS[%8x]\n ", SYS->IRCTCTL, SYS->IRCTISTS) ;
         /* Clear IRCTRIM INT flag */
         SYS->IRCTISTS = SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk ;
@@ -58,14 +59,27 @@ void SYS_Init(void)
     /* Set GPB multi-function pins for UART0 RXD, TXD and CLKO */
     SYS->GPB_MFPL |= SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
     SYS->GPB_MFPH = (SYS->GPB_MFPH & ~SYS_GPB_MFPH_PB12MFP_Msk) | SYS_GPB_MFPH_PB12MFP_CLKO ;
+
+    /* Set XT1_OUT(PF.0) and XT1_IN(PF.1) to input mode */
+    PF->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk);
+
+    /* Disable Digital Input Path of PF.0 and PF.1 */
+    GPIO_DISABLE_DIGITAL_PATH(PF, BIT0 | BIT1);
+
+    /* Set PF multi-function pins for X32_OUT(PF.0) and X32_IN(PF.1) */
+    SYS->GPF_MFPL = (SYS->GPF_MFPL & (~SYS_GPF_MFPL_PF0MFP_Msk)) | SYS_GPF_MFPL_PF0MFP_XT_OUT;
+    SYS->GPF_MFPL = (SYS->GPF_MFPL & (~SYS_GPF_MFPL_PF1MFP_Msk)) | SYS_GPF_MFPL_PF1MFP_XT_IN;
+
 } // SYS_Init()
 
 void Trim_Init()
 {
     uint32_t tmpCtl ;
+    uint32_t u32IRCSTS ;
 
     //Clear status
-    SYS->IRCTISTS = SYS->IRCTISTS ;
+    u32IRCSTS = SYS->IRCTISTS ;
+    SYS->IRCTISTS = u32IRCSTS ;
 
     tmpCtl = (0 << SYS_IRCTCTL_REFCKSEL_Pos) |      // Ref clock is from LXT
              (1 << SYS_IRCTCTL_CESTOPEN_Pos) |      // Stop when clock inaccuracy

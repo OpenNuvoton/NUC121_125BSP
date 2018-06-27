@@ -8,7 +8,7 @@
 
 /*!<Includes */
 #include <string.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "hid_mousekeyboard.h"
 
 signed char mouse_table[] = { -16, -16, -16, 0, 16, 16, 16, 0};
@@ -25,17 +25,21 @@ void USBD_IRQHandler(void)
     uint32_t u32State = USBD_GET_BUS_STATE();
 
     //------------------------------------------------------------------
-    if (u32IntSts & USBD_INTSTS_FLDET) {
+    if (u32IntSts & USBD_INTSTS_FLDET)
+    {
         // Floating detect
         USBD_CLR_INT_FLAG(USBD_INTSTS_FLDET);
 
-        if (USBD_IS_ATTACHED()) {
+        if (USBD_IS_ATTACHED())
+        {
             /* USB Plug In */
             USBD_ENABLE_USB();
 
             /*Enable HIRC tirm*/
             SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
-        } else {
+        }
+        else
+        {
             /* USB Un-plug */
             USBD_DISABLE_USB();
 
@@ -45,11 +49,13 @@ void USBD_IRQHandler(void)
     }
 
     //------------------------------------------------------------------
-    if (u32IntSts & USBD_INTSTS_BUS) {
+    if (u32IntSts & USBD_INTSTS_BUS)
+    {
         /* Clear event flag */
         USBD_CLR_INT_FLAG(USBD_INTSTS_BUS);
 
-        if (u32State & USBD_STATE_USBRST) {
+        if (u32State & USBD_STATE_USBRST)
+        {
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
@@ -58,7 +64,8 @@ void USBD_IRQHandler(void)
             SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
-        if (u32State & USBD_STATE_SUSPEND) {
+        if (u32State & USBD_STATE_SUSPEND)
+        {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
 
@@ -66,7 +73,8 @@ void USBD_IRQHandler(void)
             SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
-        if (u32State & USBD_STATE_RESUME) {
+        if (u32State & USBD_STATE_RESUME)
+        {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
 
@@ -76,14 +84,16 @@ void USBD_IRQHandler(void)
 
 #ifdef SUPPORT_LPM
 
-        if (u32State & USBD_STATE_L1SUSPEND) {
+        if (u32State & USBD_STATE_L1SUSPEND)
+        {
             /*
                TODO: Implement LPM SUSPEND flag here.
                      Recommend implementing the power-saving function in main loop.
             */
         }
 
-        if (u32State & USBD_STATE_L1RESUME) {
+        if (u32State & USBD_STATE_L1RESUME)
+        {
             /*
                TODO: Implement LPM RESUME flag here.
             */
@@ -93,7 +103,8 @@ void USBD_IRQHandler(void)
 
     }
 
-    if (u32IntSts & USBD_INTSTS_NEVWKIF_Msk) {
+    if (u32IntSts & USBD_INTSTS_NEVWKIF_Msk)
+    {
         /*Clear no-event wake up interrupt */
         USBD_CLR_INT_FLAG(USBD_INTSTS_NEVWKIF_Msk);
         /*
@@ -102,9 +113,11 @@ void USBD_IRQHandler(void)
     }
 
     //------------------------------------------------------------------
-    if (u32IntSts & USBD_INTSTS_USB) {
+    if (u32IntSts & USBD_INTSTS_USB)
+    {
         // USB event
-        if (u32IntSts & USBD_INTSTS_SETUP) {
+        if (u32IntSts & USBD_INTSTS_SETUP)
+        {
             // Setup packet
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_SETUP);
@@ -117,14 +130,16 @@ void USBD_IRQHandler(void)
         }
 
         // EP events
-        if (u32IntSts & USBD_INTSTS_EP0) {
+        if (u32IntSts & USBD_INTSTS_EP0)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP0);
             // control IN
             USBD_CtrlIn();
         }
 
-        if (u32IntSts & USBD_INTSTS_EP1) {
+        if (u32IntSts & USBD_INTSTS_EP1)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP1);
 
@@ -132,36 +147,42 @@ void USBD_IRQHandler(void)
             USBD_CtrlOut();
         }
 
-        if (u32IntSts & USBD_INTSTS_EP2) {
+        if (u32IntSts & USBD_INTSTS_EP2)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP2);
             // Interrupt IN
             EP2_Handler();
         }
 
-        if (u32IntSts & USBD_INTSTS_EP3) {
+        if (u32IntSts & USBD_INTSTS_EP3)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP3);
             // Interrupt IN
             EP3_Handler();
         }
 
-        if (u32IntSts & USBD_INTSTS_EP4) {
+        if (u32IntSts & USBD_INTSTS_EP4)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP4);
         }
 
-        if (u32IntSts & USBD_INTSTS_EP5) {
+        if (u32IntSts & USBD_INTSTS_EP5)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP5);
         }
 
-        if (u32IntSts & USBD_INTSTS_EP6) {
+        if (u32IntSts & USBD_INTSTS_EP6)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP6);
         }
 
-        if (u32IntSts & USBD_INTSTS_EP7) {
+        if (u32IntSts & USBD_INTSTS_EP7)
+        {
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP7);
         }
@@ -227,27 +248,37 @@ void HID_ClassRequest(void)
 
     USBD_GetSetupPacket(buf);
 
-    if (buf[0] & 0x80) { /* request data transfer direction */
+    if (buf[0] & 0x80)   /* request data transfer direction */
+    {
         // Device to host
-        switch (buf[1]) {
+        switch (buf[1])
+        {
         case GET_REPORT:
         case GET_IDLE:
         case GET_PROTOCOL:
-        default: {
+        default:
+        {
             /* Setup error, stall the device */
             USBD_SetStall(0);
             break;
         }
         }
-    } else {
+    }
+    else
+    {
         // Host to device
-        switch (buf[1]) {
-        case SET_REPORT: {
-            if (buf[3] == 3) {
+        switch (buf[1])
+        {
+        case SET_REPORT:
+        {
+            if (buf[3] == 3)
+            {
                 /* Request Type = Feature */
                 USBD_SET_DATA1(EP1);
                 USBD_SET_PAYLOAD_LEN(EP1, 0);
-            } else if (buf[3] == 2) {
+            }
+            else if (buf[3] == 2)
+            {
                 /* Request Type = Output */
                 USBD_SET_DATA1(EP1);
                 USBD_SET_PAYLOAD_LEN(EP1, buf[6]);
@@ -259,20 +290,23 @@ void HID_ClassRequest(void)
             break;
         }
 
-        case SET_IDLE: {
+        case SET_IDLE:
+        {
             /* Status stage */
             USBD_SET_DATA1(EP0);
             USBD_SET_PAYLOAD_LEN(EP0, 0);
             break;
         }
 
-        case SET_PROTOCOL: {
+        case SET_PROTOCOL:
+        {
             USBD_SET_DATA1(EP0);
             USBD_SET_PAYLOAD_LEN(EP0, 0);
             break;
         }
 
-        default: {
+        default:
+        {
             // Stall
             /* Setup error, stall the device */
             USBD_SetStall(0);
@@ -286,12 +320,15 @@ void HID_UpdateMouseData(void)
 {
     uint8_t *buf;
 
-    if (g_u8EP2Ready) {
+    if (g_u8EP2Ready)
+    {
         buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
         mouse_mode ^= 1;
 
-        if (mouse_mode) {
-            if (move_len > 14) {
+        if (mouse_mode)
+        {
+            if (move_len > 14)
+            {
                 /* Update new report data */
                 buf[0] = 0x00;
                 buf[1] = mouse_table[mouse_idx & 0x07];
@@ -300,7 +337,9 @@ void HID_UpdateMouseData(void)
                 mouse_idx++;
                 move_len = 0;
             }
-        } else {
+        }
+        else
+        {
             buf[0] = buf[1] = buf[2] = buf[3] = 0;
         }
 
@@ -318,22 +357,28 @@ void HID_UpdateKbData(void)
     uint32_t key = 0xF;
     static uint32_t preKey;
 
-    if (g_u8EP3Ready) {
+    if (g_u8EP3Ready)
+    {
         buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
 
         /* If PB.15 = 0, just report it is key 'a' */
         key = (PB->PIN & (1 << 15)) ? 0 : 1;
 
-        if (key == 0) {
-            for (i = 0; i < 8; i++) {
+        if (key == 0)
+        {
+            for (i = 0; i < 8; i++)
+            {
                 buf[i] = 0;
             }
 
-            if (key != preKey) {
+            if (key != preKey)
+            {
                 /* Trigger to note key release */
                 USBD_SET_PAYLOAD_LEN(EP3, 8);
             }
-        } else {
+        }
+        else
+        {
             preKey = key;
             buf[2] = 0x04; /* Key 'a' */
             USBD_SET_PAYLOAD_LEN(EP3, 8);

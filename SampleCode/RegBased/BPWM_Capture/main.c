@@ -7,7 +7,7 @@
  *
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Macro, type and constant definitions                                                                    */
@@ -48,7 +48,8 @@ void CalPeriodTime()
 
     u32i = 0;
 
-    while (u32i < 4) {
+    while (u32i < 4)
+    {
         /* Wait for Capture Falling Indicator */
         while ((BPWM1->CAPIF & BPWM_CAPIF_CFLIF2_Msk) == 0);
 
@@ -213,7 +214,8 @@ int32_t main(void)
     printf("    BPWM1 channel 2(PF.1) <--> BPWM0 channel 0(PB.7)\n\n");
     printf("Use BPWM1 Channel 2(PF.1) to capture the BPWM0 Channel 0(PB.7) Waveform\n");
 
-    while (1) {
+    while (1)
+    {
         printf("\n\nPress any key to start BPWM Capture Test\n");
         getchar();
 

@@ -5,10 +5,10 @@
  *           Show how to wake up MCU from Power-down.
  *           This sample code needs to work with I2C_Wakeup_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -32,10 +32,13 @@ void I2C0_IRQHandler(void)
 
     u32Status = I2C0->STATUS;
 
-    if (I2C0->TOCTL & I2C_TOCTL_TOIF_Msk) {
+    if (I2C0->TOCTL & I2C_TOCTL_TOIF_Msk)
+    {
         /* Clear I2C0 Timeout Flag */
         I2C0->TOCTL |= I2C_TOCTL_TOIF_Msk;
-    } else {
+    }
+    else
+    {
         if (s_I2C0HandlerFn != NULL)
             s_I2C0HandlerFn(u32Status);
     }
@@ -46,16 +49,23 @@ void I2C0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterTxWakeup(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                    /* START has been transmitted */
+    if (u32Status == 0x08)                      /* START has been transmitted */
+    {
         I2C0->DAT = g_u8DeviceAddr << 1;     /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {             /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
         g_u8MstEndFlag = 1;
-    } else if (u32Status == 0x20) {             /* SLA+W has been transmitted and NOT ACK has been received */
+    }
+    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NOT ACK has been received */
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
         g_u8MstEndFlag = 1;
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -65,32 +75,50 @@ void I2C_MasterTxWakeup(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterRx(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                    /* START has been transmitted and prepare SLA+W */
+    if (u32Status == 0x08)                      /* START has been transmitted and prepare SLA+W */
+    {
         I2C0->DAT = g_u8DeviceAddr << 1;     /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {             /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C0->DAT = g_au8MstTxData[g_u8MstDataLen++];
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x20) {             /* SLA+W has been transmitted and NACK has been received */
+    }
+    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NACK has been received */
+    {
         I2C_STOP(I2C0);
         I2C_START(I2C0);
-    } else if (u32Status == 0x28) {             /* DATA has been transmitted and ACK has been received */
-        if (g_u8MstDataLen != 2) {
+    }
+    else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
+    {
+        if (g_u8MstDataLen != 2)
+        {
             I2C0->DAT = g_au8MstTxData[g_u8MstDataLen++];
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-        } else {
+        }
+        else
+        {
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA_SI);
         }
-    } else if (u32Status == 0x10) {             /* Repeat START has been transmitted and prepare SLA+R */
+    }
+    else if (u32Status == 0x10)                 /* Repeat START has been transmitted and prepare SLA+R */
+    {
         I2C0->DAT = ((g_u8DeviceAddr << 1) | 0x01);   /* Write SLA+R to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x40) {             /* SLA+R has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x40)                 /* SLA+R has been transmitted and ACK has been received */
+    {
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x58) {             /* DATA has been received and NACK has been returned */
+    }
+    else if (u32Status == 0x58)                 /* DATA has been received and NACK has been returned */
+    {
         g_u8MstRxData = I2C0->DAT;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
         g_u8MstEndFlag = 1;
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -101,24 +129,36 @@ void I2C_MasterRx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_MasterTx(uint32_t u32Status)
 {
-    if (u32Status == 0x08) {                    /* START has been transmitted */
+    if (u32Status == 0x08)                      /* START has been transmitted */
+    {
         I2C0->DAT = g_u8DeviceAddr << 1;     /* Write SLA+W to Register I2CDAT */
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x18) {             /* SLA+W has been transmitted and ACK has been received */
+    }
+    else if (u32Status == 0x18)                 /* SLA+W has been transmitted and ACK has been received */
+    {
         I2C0->DAT = g_au8MstTxData[g_u8MstDataLen++];
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-    } else if (u32Status == 0x20) {             /* SLA+W has been transmitted and NACK has been received */
+    }
+    else if (u32Status == 0x20)                 /* SLA+W has been transmitted and NACK has been received */
+    {
         I2C_STOP(I2C0);
         I2C_START(I2C0);
-    } else if (u32Status == 0x28) {             /* DATA has been transmitted and ACK has been received */
-        if (g_u8MstDataLen != 3) {
+    }
+    else if (u32Status == 0x28)                 /* DATA has been transmitted and ACK has been received */
+    {
+        if (g_u8MstDataLen != 3)
+        {
             I2C0->DAT = g_au8MstTxData[g_u8MstDataLen++];
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
-        } else {
+        }
+        else
+        {
             I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STO_SI);
             g_u8MstEndFlag = 1;
         }
-    } else {
+    }
+    else
+    {
         /* TO DO */
         printf("Status 0x%x is NOT processed\n", u32Status);
     }
@@ -228,7 +268,8 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
 
     g_u8DeviceAddr = slvaddr;
 
-    for (i = 0; i < 0x100; i++) {
+    for (i = 0; i < 0x100; i++)
+    {
         g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
         g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
@@ -259,7 +300,8 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         while (g_u8MstEndFlag == 0);
 
         /* Compare data */
-        if (g_u8MstRxData != g_au8MstTxData[2]) {
+        if (g_u8MstRxData != g_au8MstTxData[2])
+        {
             printf("I2C Byte Write/Read Failed, Data 0x%x\n", g_u8MstRxData);
             return -1;
         }

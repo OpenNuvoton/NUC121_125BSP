@@ -7,7 +7,7 @@
 /*                                                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 static void SendChar_ToUART(int ch)
 {
@@ -16,7 +16,8 @@ static void SendChar_ToUART(int ch)
 
     DEBUG_PORT->DAT = ch;
 
-    if (ch == '\n') {
+    if (ch == '\n')
+    {
         while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
 
         DEBUG_PORT->DAT = '\r';
@@ -33,7 +34,8 @@ void Sprom_function(void)
     ptr = (char *)&StringBuf[0];
 
     /* send message by uart to check that excution code in SPROM works normally */
-    while (*ptr != '\n') {
+    while (*ptr != '\n')
+    {
         SendChar_ToUART(*ptr++);
     }
 

@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "hid_mouse.h"
 
 
@@ -120,7 +120,8 @@ int32_t main(void)
     GPIO_SetMode(PB, BIT4, GPIO_MODE_OUTPUT);
     PB4 = 0; // LED to show system is on line
 
-    while (1) {
+    while (1)
+    {
         HID_UpdateMouseData();
     }
 }

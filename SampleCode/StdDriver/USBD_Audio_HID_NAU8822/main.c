@@ -8,7 +8,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 #include "usbd_audio.h"
 
 extern uint8_t volatile g_u32EP4Ready;
@@ -205,7 +205,8 @@ int32_t main(void)
     g_u32EP4Ready = 1;
 
 
-    while (SYS->PDID) {
+    while (SYS->PDID)
+    {
         uint8_t ch;
         uint32_t u32Reg, u32Data;
         extern int32_t kbhit(void);
@@ -217,7 +218,8 @@ int32_t main(void)
         VolumnControl();
 
         /* User can change audio codec settings by I2C at run-time if necessary */
-        if (!kbhit()) {
+        if (!kbhit())
+        {
             printf("\nEnter codec setting:\n");
             // Get Register number
             ch = getchar();
@@ -256,7 +258,8 @@ void HID_UpdateKbData(void)
 
     n = 8;
 
-    if (g_u32EP4Ready) {
+    if (g_u32EP4Ready)
+    {
         buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP4));
 
         // PC5, play/pause
@@ -267,18 +270,23 @@ void HID_UpdateKbData(void)
 
         key = (!PC5) | (!PF2 << 1) | (!PD8 << 1) | (!PC8 << 1) | (!PD11 << 1);
 
-        if (key == 0) {
-            for (i = 0; i < n; i++) {
+        if (key == 0)
+        {
+            for (i = 0; i < n; i++)
+            {
                 buf[i] = 0;
             }
 
-            if (key != preKey) {
+            if (key != preKey)
+            {
                 preKey = key;
                 g_u32EP4Ready = 0;
                 /* Trigger to note key release */
                 USBD_SET_PAYLOAD_LEN(EP4, n);
             }
-        } else {
+        }
+        else
+        {
 
 #if(HID_FUNCTION == HID_KEYBOARD)
             preKey = key;
@@ -294,7 +302,8 @@ void HID_UpdateKbData(void)
 #elif(HID_FUNCTION == HID_CONSUMER)
 
             // Don't repeat key when it is media key
-            if (preKey != key) {
+            if (preKey != key)
+            {
                 preKey = key;
                 buf[0] = 0;
                 buf[1] = 0;

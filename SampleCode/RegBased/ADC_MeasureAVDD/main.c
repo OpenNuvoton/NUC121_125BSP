@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define VBG_VOLTAGE      1210   /* 1.21V = 1210 mV (Typical band-gap voltage) */
 #define ADC_SAMPLE_COUNT 128    /* The last line of GetAVDDCodeByADC() need revise when ADC_SAMPLE_COUNT is changed. */
@@ -153,7 +153,8 @@ uint32_t GetAVDDCodeByADC(void)
     u32Sum = 0;
 
     /* sample times are according to ADC_SAMPLE_COUNT definition */
-    for (u32Count = 0; u32Count < ADC_SAMPLE_COUNT; u32Count++) {
+    for (u32Count = 0; u32Count < ADC_SAMPLE_COUNT; u32Count++)
+    {
         /* Delay for band-gap voltage stability */
         CLK_SysTickDelay(100);
 

@@ -4,10 +4,10 @@
  * @brief    Transmit and receive data with auto flow control.
  *           This sample code needs to work with USCI_UART_Autoflow_Slave.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
-#include "NUC121.h"
+#include "NuMicro.h"
 
 #define RXBUFSIZE 1024
 
@@ -134,12 +134,15 @@ void USCI_IRQHandler(void)
     volatile uint32_t u32ProtSts = UUART_GET_PROT_STATUS(UUART0);
     volatile uint32_t u32BufSts = UUART_GET_BUF_STATUS(UUART0);
 
-    if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk) {   /* Receive end interrupt */
+    if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)     /* Receive end interrupt */
+    {
         /* Handle received data */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
         g_u8RecData[g_i32pointer] = UUART_READ(UUART0);
         g_i32pointer++;
-    } else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk) { /* Receive buffer over-run error interrupt */
+    }
+    else if (u32BufSts & UUART_BUFSTS_RXOVIF_Msk)     /* Receive buffer over-run error interrupt */
+    {
         UUART_CLR_BUF_INT_FLAG(UUART0, UUART_BUFSTS_RXOVIF_Msk);
         printf("\nRx buffer is over-run.");
     }
@@ -190,8 +193,10 @@ void USCI_AutoFlow_FunctionRxTest()
     while (g_i32pointer < RXBUFSIZE);
 
     /* Compare Data */
-    for (u32i = 0; u32i < RXBUFSIZE; u32i++) {
-        if (g_u8RecData[u32i] != (u32i & 0xFF)) {
+    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
+    {
+        if (g_u8RecData[u32i] != (u32i & 0xFF))
+        {
             printf("Compare Data Failed\n");
 
             while (1);

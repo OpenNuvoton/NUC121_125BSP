@@ -9,7 +9,7 @@
 *****************************************************************************/
 
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /* check CBS and flash lock before runing this sample code,
    BS should be APROM or APROM with IAP, flash lock should be disabled,
@@ -71,7 +71,8 @@ void SPROM_Dump(void)
     volatile uint32_t  addr;
     printf("Dump SPROM from 0x200000 to 0x2001FF\n");
 
-    for (addr = FMC_SPROM_BASE; addr <= 0x2001FF; addr += 4) {
+    for (addr = FMC_SPROM_BASE; addr <= 0x2001FF; addr += 4)
+    {
         if ((addr % 16) == 0)
             printf("\n0x%08x: ", addr);
 
@@ -103,7 +104,8 @@ int main(void)
 
     printf("\n\n");
 
-    if (FMC_Read(FMC_SPROM_BASE + 0x1FC) == 0xFFFFFFFF) {
+    if (FMC_Read(FMC_SPROM_BASE + 0x1FC) == 0xFFFFFFFF)
+    {
         printf("======= SPROM is in non-security mode ========\n");
         printf("User should see valid data on SPROM with non-security mode\n");
         SPROM_Dump();

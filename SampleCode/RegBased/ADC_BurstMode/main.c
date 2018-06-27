@@ -6,7 +6,7 @@
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
-#include "NUC121.h"
+#include "NuMicro.h"
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* Define Function Prototypes                                                                               */
@@ -109,14 +109,16 @@ void AdcBurstModeTest()
     printf("|                      ADC burst mode sample code                     |\n");
     printf("+----------------------------------------------------------------------+\n");
 
-    while (1) {
+    while (1)
+    {
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
         printf("  Other keys: exit single mode test\n");
         u8Option = getchar();
 
-        if (u8Option == '1') {
+        if (u8Option == '1')
+        {
             /* Set the ADC operation mode as burst, input mode as single-end and enable the analog input channel 2 */
             ADC->ADCR = (ADC->ADCR & (~(ADC_ADCR_DIFFEN_Msk | ADC_ADCR_ADMD_Msk))) |
                         ADC_ADCR_DIFFEN_SINGLE_END |
@@ -144,7 +146,8 @@ void AdcBurstModeTest()
             while (g_u32AdcIntFlag == 0);
 
             /* Always read conversion data from channel "0" in burst mode. */
-            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++) {
+            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++)
+            {
                 i32ConversionData = (ADC->ADDR[0] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
                 printf("Conversion result of channel 2 count %d: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
@@ -160,7 +163,9 @@ void AdcBurstModeTest()
             SYS->IPRST1 |= SYS_IPRST1_ADCRST_Msk;
             SYS->IPRST1 &= ~SYS_IPRST1_ADCRST_Msk;
 
-        } else if (u8Option == '2') {
+        }
+        else if (u8Option == '2')
+        {
             /* Set the ADC operation mode as burst, input mode as differential and
                enable analog input channel 2 for differential input channel pair 1 */
             ADC->ADCR = (ADC->ADCR & (~(ADC_ADCR_DIFFEN_Msk | ADC_ADCR_ADMD_Msk))) |
@@ -190,7 +195,8 @@ void AdcBurstModeTest()
             while (g_u32AdcIntFlag == 0);
 
             /* Always read conversion data from channel "0" in burst mode. */
-            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++) {
+            for (u32ConversionCount = 0; u32ConversionCount < 32; u32ConversionCount++)
+            {
                 i32ConversionData = (ADC->ADDR[0] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
                 printf("Conversion result of channel pair 1 count %d: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
@@ -205,7 +211,8 @@ void AdcBurstModeTest()
             /* Close and reset ADC engine */
             SYS->IPRST1 |= SYS_IPRST1_ADCRST_Msk;
             SYS->IPRST1 &= ~SYS_IPRST1_ADCRST_Msk;
-        } else
+        }
+        else
             return ;
     }
 }
