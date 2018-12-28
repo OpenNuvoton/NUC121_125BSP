@@ -262,16 +262,16 @@ void I2C0_Close(void)
     CLK->APBCLK0 &= ~CLK_APBCLK0_I2C0CKEN_Msk;
 }
 
-int32_t Read_Write_SLAVE(uint8_t slvaddr)
+int32_t I2C_ReadWriteSlave(uint8_t u8SlvAddr)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
-    g_u8DeviceAddr = slvaddr;
+    g_u8DeviceAddr = u8SlvAddr;
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8MstTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8MstTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
 
         g_u8MstDataLen = 0;
@@ -292,7 +292,7 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         s_I2C0HandlerFn = (I2C_FUNC)I2C_MasterRx;
 
         g_u8MstDataLen = 0;
-        g_u8DeviceAddr = slvaddr;
+        g_u8DeviceAddr = u8SlvAddr;
 
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
@@ -307,7 +307,7 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         }
     }
 
-    printf("Master Access Slave (0x%X) Test OK\n", slvaddr);
+    printf("Master Access Slave (0x%X) Test OK\n", u8SlvAddr);
     return 0;
 }
 /*---------------------------------------------------------------------------------------------------------*/
@@ -363,19 +363,19 @@ int32_t main(void)
     /*Access to the corresponding address Slave*/
     printf("\n\n");
     printf("Slave address no mask test.\n");
-    Read_Write_SLAVE(0x15);
-    Read_Write_SLAVE(0x35);
-    Read_Write_SLAVE(0x55);
-    Read_Write_SLAVE(0x75);
+    I2C_ReadWriteSlave(0x15);
+    I2C_ReadWriteSlave(0x35);
+    I2C_ReadWriteSlave(0x55);
+    I2C_ReadWriteSlave(0x75);
 
 
     /* Access Slave with address mask */
     printf("\n\n");
     printf("Slave address mask test.\n");
-    Read_Write_SLAVE(0x15 & ~0x01);
-    Read_Write_SLAVE(0x35 & ~0x04);
-    Read_Write_SLAVE(0x55 & ~0x01);
-    Read_Write_SLAVE(0x75 & ~0x04);
+    I2C_ReadWriteSlave(0x15 & ~0x01);
+    I2C_ReadWriteSlave(0x35 & ~0x04);
+    I2C_ReadWriteSlave(0x55 & ~0x01);
+    I2C_ReadWriteSlave(0x75 & ~0x04);
 
     s_I2C0HandlerFn = NULL;
 

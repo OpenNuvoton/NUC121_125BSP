@@ -222,7 +222,7 @@ void I2C0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -254,10 +254,10 @@ int32_t main(void)
 
     g_u8DeviceAddr = 0x50;
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8TxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8TxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8TxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8TxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8TxData[2] = (uint8_t)(g_au8TxData[1] + 3);
 
         g_u8DataLen = 0;

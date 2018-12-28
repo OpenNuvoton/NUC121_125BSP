@@ -129,7 +129,7 @@ int main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void AutoFlow_FunctionTxTest()
 {
-    uint32_t u32i;
+    uint32_t u32Idx;
 
     printf("\n");
     printf("+-----------------------------------------------------------+\n");
@@ -160,10 +160,10 @@ void AutoFlow_FunctionTxTest()
     UART_EnableFlowCtrl(UART0);
 
     /* Send 1k bytes data */
-    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
+    for (u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
     {
         /* Send 1 byte data */
-        UART_WRITE(UART0, u32i & 0xFF);
+        UART_WRITE(UART0, u32Idx & 0xFF);
 
         /* Wait if Tx FIFO is full */
         while (UART_IS_TX_FULL(UART0));

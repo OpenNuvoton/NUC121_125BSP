@@ -92,7 +92,7 @@ void SYS_Init(void)
     while ((CLK->STATUS & (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk))
             != (CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk));
 
-#else /*NUC121 tibny board is default to use LXT.*/
+#else /*NUC121 tiny board is default to use LXT.*/
     CLK->PWRCTL |= (CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_LXTEN);
 
     /* Wait for HIRC, LXT clock ready */

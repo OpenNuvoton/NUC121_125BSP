@@ -8,20 +8,6 @@
 #ifndef __USBD_CDC_H__
 #define __USBD_CDC_H__
 
-/* HIRC trim setting:
- *    HIRC trim reference clock is USB signal.
- *    HIRC trim operation is keep going if clock is inaccuracy.
- *    HIRC Trim retry count limitation is 512 loops.
- *    Trim value calculation is based on average difference in 4 clocks of reference clock.
- *    Enable HIRC auto trim function and trim HIRC to 48 MHz.
- */
-#define DEFAULT_HIRC_TRIM_SETTING    ((0x1ul<<SYS_IRCTCTL_REFCKSEL_Pos)| \
-                                      (0x0ul<<SYS_IRCTCTL_CESTOPEN_Pos)| \
-                                      (0x3ul<<SYS_IRCTCTL_RETRYCNT_Pos)| \
-                                      (0x0ul<<SYS_IRCTCTL_LOOPSEL_Pos) | \
-                                      (0x2ul<<SYS_IRCTCTL_FREQSEL_Pos))
-
-
 /* Define the vendor id and product id */
 #define USBD_VID        0x0416
 #define USBD_PID        0xB002
@@ -80,18 +66,18 @@ typedef struct
 } STR_VCOM_LINE_CODING;
 
 /*-------------------------------------------------------------*/
-extern volatile int8_t gi8BulkOutReady;
-extern STR_VCOM_LINE_CODING gLineCoding;
-extern uint16_t gCtrlSignal;
-extern volatile uint16_t comRbytes;
-extern volatile uint16_t comRhead;
-extern volatile uint16_t comRtail;
-extern volatile uint16_t comTbytes;
-extern volatile uint16_t comThead;
-extern volatile uint16_t comTtail;
-extern volatile uint8_t *gpu8RxBuf;
-extern volatile uint32_t gu32RxSize;
-extern volatile uint32_t gu32TxSize;
+extern volatile int8_t g_i8BulkOutReady;
+extern STR_VCOM_LINE_CODING g_sLineCoding;
+extern uint16_t g_u16CtrlSignal;
+extern volatile uint16_t g_u16ComRbytes;
+extern volatile uint16_t g_u16ComRhead;
+extern volatile uint16_t g_u16ComRtail;
+extern volatile uint16_t g_u16ComTbytes;
+extern volatile uint16_t g_u16ComThead;
+extern volatile uint16_t g_u16ComTtail;
+extern volatile uint8_t *g_pu8RxBuf;
+extern volatile uint32_t g_u32RxSize;
+extern volatile uint32_t g_u32TxSize;
 
 /*-------------------------------------------------------------*/
 void VCOM_Init(void);

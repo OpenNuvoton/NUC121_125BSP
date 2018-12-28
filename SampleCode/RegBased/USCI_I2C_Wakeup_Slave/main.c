@@ -13,7 +13,7 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 volatile uint8_t g_au8SlvData[256];
-volatile uint32_t slave_buff_addr = 0;
+volatile uint32_t g_u32SlaveBuffAddr = 0;
 volatile uint8_t g_au8RxData[4];
 volatile uint16_t g_u16RecvAddr = 0;
 volatile uint8_t g_u8DataLenS = 0;
@@ -57,7 +57,7 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  UI2C0 toggle wake-up                                                                                   */
 /*---------------------------------------------------------------------------------------------------------*/
-void UI2C_SLV_Toggle_Wakeup(uint32_t u32Status)
+void UI2C_SlaveToggleWakeup(uint32_t u32Status)
 {
     if ((UI2C0->WKSTS & UI2C_WKSTS_WKF_Msk) == UI2C_WKSTS_WKF_Msk)
     {
@@ -94,8 +94,8 @@ void UI2C_SLV_Toggle_Wakeup(uint32_t u32Status)
             {
                 /* Own SLA+R has been receive; ACK has been return */
                 s_Event = SLAVE_SEND_DATA;
-                UI2C_SET_DATA(UI2C0, g_au8SlvData[slave_buff_addr]);
-                slave_buff_addr++;
+                UI2C_SET_DATA(UI2C0, g_au8SlvData[g_u32SlaveBuffAddr]);
+                g_u32SlaveBuffAddr++;
             }
             else
             {
@@ -112,12 +112,12 @@ void UI2C_SLV_Toggle_Wakeup(uint32_t u32Status)
             if (g_u8DataLenS == 2)
             {
                 /* Address has been received; ACK has been returned*/
-                slave_buff_addr = (g_au8RxData[0] << 8) + g_au8RxData[1];
+                g_u32SlaveBuffAddr = (g_au8RxData[0] << 8) + g_au8RxData[1];
             }
 
             if (g_u8DataLenS == 3)
             {
-                g_au8SlvData[slave_buff_addr] = g_au8RxData[2];
+                g_au8SlvData[g_u32SlaveBuffAddr] = g_au8RxData[2];
                 g_u8DataLenS = 0;
             }
         }
@@ -150,7 +150,7 @@ void UI2C_SLV_Toggle_Wakeup(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  UI2C0 address match wake-up                                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-void UI2C_SLV_Address_Wakeup(uint32_t u32Status)
+void UI2C_SlaveAddressWakeup(uint32_t u32Status)
 {
     if ((UI2C0->WKSTS & UI2C_WKSTS_WKF_Msk) == UI2C_WKSTS_WKF_Msk)
     {
@@ -194,8 +194,8 @@ void UI2C_SLV_Address_Wakeup(uint32_t u32Status)
             {
                 /* Own SLA+R has been receive; ACK has been return */
                 s_Event = SLAVE_SEND_DATA;
-                UI2C_SET_DATA(UI2C0, g_au8SlvData[slave_buff_addr]);
-                slave_buff_addr++;
+                UI2C_SET_DATA(UI2C0, g_au8SlvData[g_u32SlaveBuffAddr]);
+                g_u32SlaveBuffAddr++;
             }
             else
             {
@@ -212,12 +212,12 @@ void UI2C_SLV_Address_Wakeup(uint32_t u32Status)
             if (g_u8DataLenS == 2)
             {
                 /* Address has been received; ACK has been returned*/
-                slave_buff_addr = (g_au8RxData[0] << 8) + g_au8RxData[1];
+                g_u32SlaveBuffAddr = (g_au8RxData[0] << 8) + g_au8RxData[1];
             }
 
             if (g_u8DataLenS == 3)
             {
-                g_au8SlvData[slave_buff_addr] = g_au8RxData[2];
+                g_au8SlvData[g_u32SlaveBuffAddr] = g_au8RxData[2];
                 g_u8DataLenS = 0;
             }
         }
@@ -339,8 +339,8 @@ void UART_Init(void)
 
 int main()
 {
-    uint32_t i;
-    uint8_t  ch;
+    uint32_t u32Index;
+    uint8_t  u8Char;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -374,9 +374,9 @@ int main()
     printf("[T] I/O Toggle Wake-up Mode\n");
     printf("[A] Address Match Wake-up Mode\n");
     printf("Select: ");
-    ch =  getchar();
+    u8Char =  getchar();
 
-    if ((ch == 'T') || (ch == 't'))
+    if ((u8Char == 'T') || (u8Char == 't'))
     {
         printf("(T)oggle\n");
 
@@ -386,7 +386,7 @@ int main()
         s_Event = SLAVE_ADDRESS_ACK;
 
         /* I2C function to Slave receive/transmit data */
-        s_UI2C0HandlerFn = UI2C_SLV_Toggle_Wakeup;
+        s_UI2C0HandlerFn = UI2C_SlaveToggleWakeup;
     }
     else
     {
@@ -399,14 +399,14 @@ int main()
         s_Event = SLAVE_GET_DATA;
 
         /* UI2C0 function to Slave receive/transmit data */
-        s_UI2C0HandlerFn = UI2C_SLV_Address_Wakeup;
+        s_UI2C0HandlerFn = UI2C_SlaveAddressWakeup;
     }
 
     UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8SlvData[i] = 0;
+        g_au8SlvData[u32Index] = 0;
     }
 
     /* Enable power wake-up interrupt */

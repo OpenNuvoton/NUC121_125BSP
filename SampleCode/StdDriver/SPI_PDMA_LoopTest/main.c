@@ -21,7 +21,7 @@
 void SYS_Init(void);
 void UART0_Init(void);
 void SPI_Init(void);
-void SpiLoopTest_WithPDMA(void);
+void SPI_LoopTestWithPDMA(void);
 
 /* Global variable declaration */
 uint32_t g_au32MasterToSlaveTestPattern[TEST_COUNT];
@@ -60,7 +60,7 @@ int main(void)
     getchar();
 
 
-    SpiLoopTest_WithPDMA();
+    SPI_LoopTestWithPDMA();
 
     printf("\n\nExit SPI driver sample code.\n");
 
@@ -155,7 +155,7 @@ void SPI_Init(void)
     SPI_EnableAutoSS(SPI0, SPI_SS, SPI_SS_ACTIVE_LOW);
 }
 
-void SpiLoopTest_WithPDMA(void)
+void SPI_LoopTestWithPDMA(void)
 {
     uint32_t u32DataCount, u32TestCycle;
     uint32_t u32RegValue, u32Abort;

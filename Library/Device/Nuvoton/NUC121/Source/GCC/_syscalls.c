@@ -46,8 +46,7 @@ __initialize_args(int *p_argc, char ***p_argv)
     // argv[0][0] shall be the null character if the program name is not
     // available from the host environment. argv[argc] shall be a null pointer.
     // (static, no const)
-    static char *argv[2] =
-    { name, NULL };
+    static char *argv[2] = { name, NULL };
 
     *p_argc = 1;
     *p_argv = &argv[0];
@@ -86,8 +85,7 @@ kill(pid_t pid __attribute__((unused)), int sig __attribute__((unused)))
 
 #if __STDC_HOSTED__ == 1
 
-char *__env[1] =
-{ 0 };
+char *__env[1] = { 0 };
 char **environ = __env;
 
 #if !defined(OS_USE_SEMIHOSTING)
@@ -574,13 +572,13 @@ newslot(void);
 register char *stack_ptr asm("sp");
 
 /* following is copied from libc/stdio/local.h to check std streams */
-extern void _EXFUN(__sinit, (struct _reent *));
+extern void __sinit(struct _reent *);
 #define CHECK_INIT(ptr) \
     do                                            \
-    {                                           \
+    {                                             \
         if ((ptr) && !(ptr)->__sdidinit)          \
-            __sinit (ptr);                          \
-    }                                           \
+            __sinit (ptr);                        \
+    }                                             \
     while (0)
 
 static int monitor_stdin;

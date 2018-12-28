@@ -12,6 +12,7 @@
 #include "NuMicro.h"
 #include "hid_mousekeyboard.h"
 
+#define CRYSTAL_LESS    1
 
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
@@ -27,8 +28,25 @@ void SYS_Init(void)
     /* Waiting for Internal RC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
 
-    /* Switch HCLK clock source to Internal RC and HCLK source divide 1 */
+#if (CRYSTAL_LESS)
+    /* Switch HCLK clock source to Internal HIRC and HCLK source divide 1 */
     CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC, CLK_CLKDIV0_HCLK(1));
+
+    /* Select module clock source */
+    CLK_SetModuleClock(USBD_MODULE, CLK_CLKSEL3_USBDSEL_HIRC, CLK_CLKDIV0_USB(1));
+#else
+    /* Enable External XTAL (4~24 MHz) */
+    CLK_EnableXtalRC(CLK_PWRCTL_HXTEN);
+
+    /* Waiting for 12MHz clock ready */
+    CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+
+    /* Set core clock as PLL_CLOCK from PLL */
+    CLK_SetCoreClock(FREQ_48MHZ);
+
+    /* Select module clock source */
+    CLK_SetModuleClock(USBD_MODULE, CLK_CLKSEL3_USBDSEL_PLL, CLK_CLKDIV0_USB(2));
+#endif
 
     /* Update System Core Clock */
     SystemCoreClockUpdate();
@@ -39,8 +57,6 @@ void SYS_Init(void)
 
     /* Select module clock source */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_HIRC_DIV2, CLK_CLKDIV0_UART(1));
-    CLK_SetModuleClock(USBD_MODULE, CLK_CLKSEL3_USBDSEL_HIRC, CLK_CLKDIV0_USB(1));
-
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -97,10 +113,39 @@ int32_t main(void)
     /* Endpoint configuration */
     HID_Init();
     USBD_Start();
+
+#if CRYSTAL_LESS
+    /* Waiting for USB bus stable */
+    USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+    while ((USBD_GET_INT_FLAG() & USBD_INTSTS_SOFIF_Msk) == 0);
+
+    /* Enable USB crystal-less - Set reference clock from USB SOF packet & Enable HIRC auto trim function */
+    SYS->IRCTCTL |= (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);
+#endif
+
     NVIC_EnableIRQ(USBD_IRQn);
 
     while (1)
     {
+#if CRYSTAL_LESS
+
+        /* Re-start auto trim when any error found */
+        if (SYS->IRCTISTS & (SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk))
+        {
+            SYS->IRCTISTS = SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk;
+
+            /* Waiting for USB signal before auto trim */
+            USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+            while ((USBD->INTSTS & USBD_INTSTS_SOFIF_Msk) == 0);
+
+            /* Re-enable crystal-less - Set reference clock from USB SOF packet & Enable HIRC auto trim function */
+            SYS->IRCTCTL |= (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);
+            //printf("USB trim fail. Just retry. SYS->HIRCTRIMSTS = 0x%x, SYS->HIRCTRIMCTL = 0x%x\n", SYS->HIRCTRIMSTS, SYS->HIRCTRIMCTL);
+        }
+
+#endif
         HID_UpdateMouseData();
         HID_UpdateKbData();
     }

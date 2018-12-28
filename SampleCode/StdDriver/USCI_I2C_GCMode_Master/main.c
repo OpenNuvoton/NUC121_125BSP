@@ -38,7 +38,7 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Rx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_MasterRx(uint32_t u32Status)
+void UI2C_MasterRx(uint32_t u32Status)
 {
     if (UI2C_GET_TIMEOUT_FLAG(UI2C0))
     {
@@ -116,7 +116,7 @@ void USCI_I2C_MasterRx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Tx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_MasterTx(uint32_t u32Status)
+void UI2C_MasterTx(uint32_t u32Status)
 {
     if (UI2C_GET_TIMEOUT_FLAG(UI2C0))
     {
@@ -240,23 +240,23 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 
 }
 
-int32_t Write_SLAVE(uint8_t slvaddr)
+int32_t UI2C_WriteSlave(uint8_t u8SlvAddr)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
-    g_u8DeviceAddr = slvaddr;
+    g_u8DeviceAddr = u8SlvAddr;
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8MstTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8MstTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
 
         g_u8MstDataLen = 0;
         g_u8MstEndFlag = 0;
 
         /* USCI_I2C function to write data to slave */
-        s_UI2C0HandlerFn = (UI2C_FUNC)USCI_I2C_MasterTx;
+        s_UI2C0HandlerFn = (UI2C_FUNC)UI2C_MasterTx;
 
         /* USCI_I2C as master sends START signal */
         m_Event = MASTER_SEND_START;
@@ -266,7 +266,7 @@ int32_t Write_SLAVE(uint8_t slvaddr)
         while (g_u8MstEndFlag == 0);
     }
 
-    printf("Master Access Slave (0x%X) Test OK\n", slvaddr);
+    printf("Master Access Slave (0x%X) Test OK\n", u8SlvAddr);
     return 0;
 }
 
@@ -309,7 +309,7 @@ int main()
     /* Access Slave with GC Mode */
     printf("\n");
     printf(" == GC Mode ==\n");
-    Write_SLAVE(0x00);
+    UI2C_WriteSlave(0x00);
     printf("Master Access Slave(0x%X) at GC Mode Test OK\n", g_u8DeviceAddr);
 
 

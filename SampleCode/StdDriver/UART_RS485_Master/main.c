@@ -17,7 +17,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-void RS485_SendAddressByte(uint8_t u8data);
+void RS485_SendAddressByte(uint8_t u8Data);
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 void RS485_9bitModeMaster(void);
 void RS485_FunctionTest(void);
@@ -26,13 +26,13 @@ void RS485_FunctionTest(void);
 /*---------------------------------------------------------------------------------------------------------*/
 /*  RS485 Transmit Control  (Address Byte: Parity Bit =1 , Data Byte:Parity Bit =0)                        */
 /*---------------------------------------------------------------------------------------------------------*/
-void RS485_SendAddressByte(uint8_t u8data)
+void RS485_SendAddressByte(uint8_t u8Data)
 {
     /* Set UART parity as MARK and skip baud rate setting */
     UART_SetLine_Config(UART0, 0, UART_WORD_LEN_8, UART_PARITY_MARK, UART_STOP_BIT_1);
 
     /* Send data */
-    UART_WRITE(UART0, u8data);
+    UART_WRITE(UART0, u8Data);
 }
 
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
@@ -49,11 +49,11 @@ void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
 /*---------------------------------------------------------------------------------------------------------*/
 void RS485_9bitModeMaster()
 {
-    volatile int32_t i32;
-    uint8_t g_u8SendDataGroup1[10] = {0};
-    uint8_t g_u8SendDataGroup2[10] = {0};
-    uint8_t g_u8SendDataGroup3[10] = {0};
-    uint8_t g_u8SendDataGroup4[10] = {0};
+    volatile int32_t i32Idxi;
+    uint8_t au8SendDataGroup1[10] = {0};
+    uint8_t au8SendDataGroup2[10] = {0};
+    uint8_t au8SendDataGroup3[10] = {0};
+    uint8_t au8SendDataGroup4[10] = {0};
 
     printf("\n");
     printf("+-----------------------------------------------------------+\n");
@@ -79,30 +79,30 @@ void RS485_9bitModeMaster()
     UART0->TOUT = 0x2000;
 
     /* Prepare Data to transmit*/
-    for (i32 = 0; i32 < 10; i32++)
+    for (i32Idxi = 0; i32Idxi < 10; i32Idxi++)
     {
-        g_u8SendDataGroup1[i32] = i32;
-        g_u8SendDataGroup2[i32] = i32 + 10;
-        g_u8SendDataGroup3[i32] = i32 + 20;
-        g_u8SendDataGroup4[i32] = i32 + 30;
+        au8SendDataGroup1[i32Idxi] = i32Idxi;
+        au8SendDataGroup2[i32Idxi] = i32Idxi + 10;
+        au8SendDataGroup3[i32Idxi] = i32Idxi + 20;
+        au8SendDataGroup4[i32Idxi] = i32Idxi + 30;
     }
 
     /* Send different address and data for test */
     printf("Send Address %x and data 0~9\n", MATCH_ADDRSS1);
     RS485_SendAddressByte(MATCH_ADDRSS1);
-    RS485_SendDataByte(g_u8SendDataGroup1, 10);
+    RS485_SendDataByte(au8SendDataGroup1, 10);
 
     printf("Send Address %x and data 10~19\n", UNMATCH_ADDRSS1);
     RS485_SendAddressByte(UNMATCH_ADDRSS1);
-    RS485_SendDataByte(g_u8SendDataGroup2, 10);
+    RS485_SendDataByte(au8SendDataGroup2, 10);
 
     printf("Send Address %x and data 20~29\n", MATCH_ADDRSS2);
     RS485_SendAddressByte(MATCH_ADDRSS2);
-    RS485_SendDataByte(g_u8SendDataGroup3, 10);
+    RS485_SendDataByte(au8SendDataGroup3, 10);
 
     printf("Send Address %x and data 30~39\n", UNMATCH_ADDRSS2);
     RS485_SendAddressByte(UNMATCH_ADDRSS2);
-    RS485_SendDataByte(g_u8SendDataGroup4, 10);
+    RS485_SendDataByte(au8SendDataGroup4, 10);
 
     printf("Transfer Done\n");
 }

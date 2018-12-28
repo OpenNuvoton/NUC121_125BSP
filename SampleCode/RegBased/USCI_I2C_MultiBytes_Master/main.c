@@ -14,12 +14,12 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 volatile uint8_t g_u8DeviceAddr;
-uint8_t txbuf[256] = {0}, rDataBuf[256] = {0};
+uint8_t au8TxBuf[256] = {0}, au8rDataBuf[256] = {0};
 
 /*-------------------------------------------------------------------------------------------*/
 /* Write multi byte                                                                          */
 /*-----------------------------------==------------------------------------------------------*/
-uint32_t UI2C_WriteMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t *data, uint32_t u32wLen)
+uint32_t UI2C_WriteMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t *pu8Data, uint32_t u32wLen)
 {
     uint8_t u8Xfering = 1, u8Err = 0, u8Ctrl = 0;
     uint32_t u32txLen = 0;
@@ -56,7 +56,7 @@ uint32_t UI2C_WriteMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t
             else
             {
                 if (u32txLen < u32wLen)
-                    UI2C_SET_DATA(ui2c, data[u32txLen++]);                  /* Write data to UI2C_TXDAT */
+                    UI2C_SET_DATA(ui2c, pu8Data[u32txLen++]);                  /* Write data to UI2C_TXDAT */
                 else
                 {
                     u8Ctrl = (UI2C_CTL_PTRG | UI2C_CTL_STO);                /* Clear SI and send STOP */
@@ -88,7 +88,7 @@ uint32_t UI2C_WriteMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t
 /*-------------------------------------------------------------------------------------------*/
 /* Read multi byte                                                                           */
 /*-----------------------------------==------------------------------------------------------*/
-uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *rdata, uint32_t u32rLen)
+uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *pu8rData, uint32_t u32rLen)
 {
     uint8_t u8Xfering = 1, u8Err = 0, u8Ctrl = 0;
     uint32_t u32rxLen = 0;
@@ -144,7 +144,7 @@ uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t 
             }
             else
             {
-                rdata[u32rxLen++] = (uint8_t) UI2C_GET_DATA(ui2c);      /* Receive Data */
+                pu8rData[u32rxLen++] = (uint8_t) UI2C_GET_DATA(ui2c);      /* Receive Data */
 
                 if (u32rxLen < u32rLen - 1)
                     u8Ctrl = (UI2C_CTL_PTRG | UI2C_CTL_AA);
@@ -164,7 +164,7 @@ uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t 
             }
             else
             {
-                rdata[u32rxLen++] = (uint8_t) UI2C_GET_DATA(ui2c);                  /* Receive Data */
+                pu8rData[u32rxLen++] = (uint8_t) UI2C_GET_DATA(ui2c);                  /* Receive Data */
                 u8Ctrl = (UI2C_CTL_PTRG | UI2C_CTL_STO);
                 u8Xfering = 0;
             }
@@ -280,7 +280,7 @@ void UART_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -320,15 +320,15 @@ int32_t main(void)
     g_u8DeviceAddr = 0x15;
 
     /* Prepare data for transmission */
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        txbuf[i] = (uint8_t) i + 3;
+        au8TxBuf[u32Index] = (uint8_t) u32Index + 3;
     }
 
-    for (i = 0; i < 256; i += 32)
+    for (u32Index = 0; u32Index < 256; u32Index += 32)
     {
         /* Write 32 bytes data to Slave */
-        while (UI2C_WriteMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, i, &txbuf[i], 32) < 32);
+        while (UI2C_WriteMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, u32Index, &au8TxBuf[u32Index], 32) < 32);
     }
 
     printf("Multi bytes Write access Pass.....\n");
@@ -336,13 +336,13 @@ int32_t main(void)
     printf("\n");
 
     /* Use Multi Bytes Read from Slave (Two Registers) */
-    while (UI2C_ReadMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, 0x0000, rDataBuf, 256) < 256);
+    while (UI2C_ReadMultiBytesTwoRegs(UI2C0, g_u8DeviceAddr, 0x0000, au8rDataBuf, 256) < 256);
 
     /* Compare TX data and RX data */
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        if (txbuf[i] != rDataBuf[i])
-            printf("Data compare fail... R[%d] Data: 0x%X\n", i, rDataBuf[i]);
+        if (au8TxBuf[u32Index] != au8rDataBuf[u32Index])
+            printf("Data compare fail... R[%d] Data: 0x%X\n", u32Index, au8rDataBuf[u32Index]);
     }
 
     printf("Multi bytes Read access Pass.....\n");

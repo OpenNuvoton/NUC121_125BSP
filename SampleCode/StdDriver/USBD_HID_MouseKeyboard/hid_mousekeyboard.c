@@ -11,9 +11,9 @@
 #include "NuMicro.h"
 #include "hid_mousekeyboard.h"
 
-signed char mouse_table[] = { -16, -16, -16, 0, 16, 16, 16, 0};
-uint8_t mouse_idx = 0;
-uint8_t move_len, mouse_mode = 1;
+signed char g_ascMouse_table[] = { -16, -16, -16, 0, 16, 16, 16, 0};
+uint8_t g_u8Mouse_idx = 0;
+uint8_t g_u8Move_len, g_u8Mouse_mode = 1;
 
 uint8_t volatile g_u8EP2Ready = 0;
 uint8_t volatile g_u8EP3Ready = 0;
@@ -34,17 +34,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -59,27 +53,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -318,32 +303,32 @@ void HID_ClassRequest(void)
 
 void HID_UpdateMouseData(void)
 {
-    uint8_t *buf;
+    uint8_t *pu8Buf;
 
     if (g_u8EP2Ready)
     {
-        buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
-        mouse_mode ^= 1;
+        pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
+        g_u8Mouse_mode ^= 1;
 
-        if (mouse_mode)
+        if (g_u8Mouse_mode)
         {
-            if (move_len > 14)
+            if (g_u8Move_len > 14)
             {
                 /* Update new report data */
-                buf[0] = 0x00;
-                buf[1] = mouse_table[mouse_idx & 0x07];
-                buf[2] = mouse_table[(mouse_idx + 2) & 0x07];
-                buf[3] = 0x00;
-                mouse_idx++;
-                move_len = 0;
+                pu8Buf[0] = 0x00;
+                pu8Buf[1] = g_ascMouse_table[g_u8Mouse_idx & 0x07];
+                pu8Buf[2] = g_ascMouse_table[(g_u8Mouse_idx + 2) & 0x07];
+                pu8Buf[3] = 0x00;
+                g_u8Mouse_idx++;
+                g_u8Move_len = 0;
             }
         }
         else
         {
-            buf[0] = buf[1] = buf[2] = buf[3] = 0;
+            pu8Buf[0] = pu8Buf[1] = pu8Buf[2] = pu8Buf[3] = 0;
         }
 
-        move_len++;
+        g_u8Move_len++;
         g_u8EP2Ready = 0;
         /* Set transfer length and trigger IN transfer */
         USBD_SET_PAYLOAD_LEN(EP2, 4);

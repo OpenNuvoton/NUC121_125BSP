@@ -14,6 +14,7 @@
 
 
 
+
 void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
@@ -29,17 +30,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -54,27 +49,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -221,14 +207,14 @@ void HID_Init(void)
 
 void HID_ClassRequest(void)
 {
-    uint8_t buf[8];
+    uint8_t au8Buf[8];
 
-    USBD_GetSetupPacket(buf);
+    USBD_GetSetupPacket(au8Buf);
 
-    if (buf[0] & 0x80)   /* request data transfer direction */
+    if (au8Buf[0] & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch (buf[1])
+        switch (au8Buf[1])
         {
         case GET_REPORT:
 
@@ -257,15 +243,15 @@ void HID_ClassRequest(void)
     else
     {
         // Host to device
-        switch (buf[1])
+        switch (au8Buf[1])
         {
         case SET_REPORT:
         {
-            if (buf[3] == 2)
+            if (au8Buf[3] == 2)
             {
                 /* Request Type = Output */
                 USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, buf[6]);
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
 
                 /* Status stage */
                 USBD_PrepareCtrlIn(0, 0);

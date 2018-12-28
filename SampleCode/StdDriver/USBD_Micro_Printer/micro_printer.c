@@ -26,17 +26,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -51,27 +45,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -227,14 +212,14 @@ void PTR_Init(void)
 
 void PTR_ClassRequest(void)
 {
-    uint8_t buf[8];
+    uint8_t au8Buf[8];
 
-    USBD_GetSetupPacket(buf);
+    USBD_GetSetupPacket(au8Buf);
 
-    if (buf[0] & 0x80)   /* request data transfer direction */
+    if (au8Buf[0] & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch (buf[1])
+        switch (au8Buf[1])
         {
         case GET_PORT_STATUS:
         {

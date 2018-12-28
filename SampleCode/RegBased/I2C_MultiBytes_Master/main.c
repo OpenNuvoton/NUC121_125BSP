@@ -19,7 +19,7 @@ volatile uint8_t g_u8MstRxData;
 volatile uint8_t g_u8MstDataLen;
 volatile uint8_t g_u8MstEndFlag = 0;
 
-uint8_t txbuf[256] = {0}, rDataBuf[256] = {0};
+uint8_t au8TxBuf[256] = {0}, au8rDataBuf[256] = {0};
 /*---------------------------------------------------------------------------------------------------------*/
 /* Init System                                                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -117,7 +117,7 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /* Write Multi Bytes                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t I2C_WriteMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t *data, uint32_t u32wLen)
+uint32_t I2C_WriteMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t *pu8Data, uint32_t u32wLen)
 {
     uint8_t u8Xfering = 1, u8Err = 0, u8Addr = 1, u8Ctrl = 0;
     uint32_t u32txLen = 0;
@@ -152,7 +152,7 @@ uint32_t I2C_WriteMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u1
                 u8Addr = 0;
             }
             else if ((u32txLen < u32wLen) && (u8Addr == 0))
-                I2C_SET_DATA(i2c, data[u32txLen++]);                           /* Write data to Register I2CDAT*/
+                I2C_SET_DATA(i2c, pu8Data[u32txLen++]);                           /* Write data to Register I2CDAT*/
             else
             {
                 u8Ctrl = I2C_CTL_STO_SI;                              /* Clear SI and send STOP */
@@ -177,7 +177,7 @@ uint32_t I2C_WriteMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u1
 /*---------------------------------------------------------------------------------------------------------*/
 /* Read Multi Bytes                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *rdata, uint32_t u32rLen)
+uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *pu8rData, uint32_t u32rLen)
 {
     uint8_t u8Xfering = 1, u8Err = 0, u8Addr = 1, u8Ctrl = 0;
     uint32_t u32rxLen = 0;
@@ -231,7 +231,7 @@ uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16
             break;
 
         case 0x50:
-            rdata[u32rxLen++] = (unsigned char) I2C_GET_DATA(i2c);      /* Receive Data */
+            pu8rData[u32rxLen++] = (unsigned char) I2C_GET_DATA(i2c);      /* Receive Data */
 
             if (u32rxLen < (u32rLen - 1))
                 u8Ctrl = I2C_CTL_SI_AA;                               /* Clear SI and set ACK */
@@ -241,7 +241,7 @@ uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16
             break;
 
         case 0x58:
-            rdata[u32rxLen++] = (unsigned char) I2C_GET_DATA(i2c);      /* Receive Data */
+            pu8rData[u32rxLen++] = (unsigned char) I2C_GET_DATA(i2c);      /* Receive Data */
             u8Ctrl = I2C_CTL_STO_SI;                                  /* Clear SI and send STOP */
             u8Xfering = 0;
             break;
@@ -264,8 +264,8 @@ uint32_t I2C_ReadMultiBytesTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
-    uint8_t err;
+    uint32_t u32Index;
+    uint8_t u8Err;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -302,18 +302,18 @@ int32_t main(void)
     /* Slave address */
     g_u8DeviceAddr = 0x15;
 
-    err = 0;
+    u8Err = 0;
 
     /* Prepare data for transmission */
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        txbuf[i] = (uint8_t) i + 3;
+        au8TxBuf[u32Index] = (uint8_t) u32Index + 3;
     }
 
-    for (i = 0; i < 256; i += 32)
+    for (u32Index = 0; u32Index < 256; u32Index += 32)
     {
         /* Write 32 bytes data to Slave */
-        while (I2C_WriteMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, i, &txbuf[i], 32) < 32);
+        while (I2C_WriteMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, u32Index, &au8TxBuf[u32Index], 32) < 32);
     }
 
     printf("Multi bytes Write access Pass.....\n");
@@ -321,19 +321,19 @@ int32_t main(void)
     printf("\n");
 
     /* Use Multi Bytes Read from Slave (Two Registers) */
-    while (I2C_ReadMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, 0x0000, rDataBuf, 256) < 256);
+    while (I2C_ReadMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, 0x0000, au8rDataBuf, 256) < 256);
 
     /* Compare TX data and RX data */
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        if (txbuf[i] != rDataBuf[i])
+        if (au8TxBuf[u32Index] != au8rDataBuf[u32Index])
         {
-            err = 1;
-            printf("Data compare fail... R[%d] Data: 0x%X\n", i, rDataBuf[i]);
+            u8Err = 1;
+            printf("Data compare fail... R[%d] Data: 0x%X\n", u32Index, au8rDataBuf[u32Index]);
         }
     }
 
-    if (err)
+    if (u8Err)
         printf("Multi bytes Read access Fail.....\n");
     else
         printf("Multi bytes Read access Pass.....\n");

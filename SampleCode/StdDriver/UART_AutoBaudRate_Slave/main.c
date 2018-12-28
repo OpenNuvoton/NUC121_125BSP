@@ -12,7 +12,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t GetUartBaudrate(UART_T *uart);
+uint32_t GetUartBaudrate(UART_T *psUART);
 void AutoBaudRate_RxTest(void);
 
 
@@ -121,11 +121,11 @@ int main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Get UART Baud Rate Function                                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t GetUartBaudrate(UART_T *uart)
+uint32_t GetUartBaudrate(UART_T *psUART)
 {
     uint8_t u8UartClkSrcSel, u8UartClkDivNum;
-    uint32_t u32ClkTbl[4] = {__HXT, 0, __LXT, __HIRC_DIV2};
-    uint32_t u32Baud_Div;
+    uint32_t au32ClkTbl[4] = {__HXT, 0, __LXT, __HIRC_DIV2};
+    uint32_t u32BaudDiv;
 
     /* Get UART clock source selection */
     u8UartClkSrcSel = (CLK->CLKSEL1 & CLK_CLKSEL1_UARTSEL_Msk) >> CLK_CLKSEL1_UARTSEL_Pos;
@@ -135,22 +135,22 @@ uint32_t GetUartBaudrate(UART_T *uart)
 
     /* Get PLL clock frequency if UART clock source selection is PLL */
     if (u8UartClkSrcSel == 1)
-        u32ClkTbl[u8UartClkSrcSel] = CLK_GetPLLClockFreq();
+        au32ClkTbl[u8UartClkSrcSel] = CLK_GetPLLClockFreq();
 
     /* Get UART baud rate divider */
-    u32Baud_Div = (uart->BAUD & UART_BAUD_BRD_Msk) >> UART_BAUD_BRD_Pos;
+    u32BaudDiv = (psUART->BAUD & UART_BAUD_BRD_Msk) >> UART_BAUD_BRD_Pos;
 
     /* Calculate UART baud rate if baud rate is set in MODE 0 */
-    if ((uart->BAUD & (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == UART_BAUD_MODE0)
-        return ((u32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1) / (u32Baud_Div + 2)) >> 4;
+    if ((psUART->BAUD & (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == UART_BAUD_MODE0)
+        return ((au32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1) / (u32BaudDiv + 2)) >> 4;
 
     /* Calculate UART baud rate if baud rate is set in MODE 2 */
-    else if ((uart->BAUD & (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == UART_BAUD_MODE2)
-        return ((u32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1) / (u32Baud_Div + 2));
+    else if ((psUART->BAUD & (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == UART_BAUD_MODE2)
+        return ((au32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1) / (u32BaudDiv + 2));
 
     /* Calculate UART baud rate if baud rate is set in MODE 1 */
-    else if ((uart->BAUD & (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == UART_BAUD_BAUDM1_Msk)
-        return ((u32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1) / (u32Baud_Div + 2)) / (((uart->BAUD & UART_BAUD_EDIVM1_Msk) >> UART_BAUD_EDIVM1_Pos) + 1);
+    else if ((psUART->BAUD & (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk)) == UART_BAUD_BAUDM1_Msk)
+        return ((au32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1) / (u32BaudDiv + 2)) / (((psUART->BAUD & UART_BAUD_EDIVM1_Msk) >> UART_BAUD_EDIVM1_Pos) + 1);
 
     /* Unsupported baud rate setting */
     else

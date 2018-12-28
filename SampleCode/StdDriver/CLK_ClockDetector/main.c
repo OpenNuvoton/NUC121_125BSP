@@ -92,7 +92,7 @@ void SYS_Init(void)
     /* Wait for HIRC and HXT clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk | CLK_STATUS_HXTSTB_Msk);
 
-#else /*NUC121 tibny board is default to use LXT.*/
+#else /*NUC121 tiny board is default to use LXT.*/
     /* Enable HIRC and LXT clock */
     CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_LXTEN);
 

@@ -126,7 +126,7 @@ const uint8_t gu8ProductStringDesc[22] =
     'U', 0, 'S', 0, 'B', 0, ' ', 0, 'D', 0, 'e', 0, 'v', 0, 'i', 0, 'c', 0, 'e', 0
 };
 
-uint8_t gu8StringSerial[26] =
+const uint8_t gu8StringSerial[26] =
 {
     26,             // bLength
     DESC_STRING,    // bDescriptorType

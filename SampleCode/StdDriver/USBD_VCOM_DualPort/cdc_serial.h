@@ -8,19 +8,6 @@
 #ifndef __USBD_CDC_H__
 #define __USBD_CDC_H__
 
-/* HIRC trim setting:
- *    HIRC trim reference clock is USB signal.
- *    HIRC trim operation is keep going if clock is inaccuracy.
- *    HIRC Trim retry count limitation is 512 loops.
- *    Trim value calculation is based on average difference in 4 clocks of reference clock.
- *    Enable HIRC auto trim function and trim HIRC to 48 MHz.
- */
-#define DEFAULT_HIRC_TRIM_SETTING    ((0x1ul<<SYS_IRCTCTL_REFCKSEL_Pos)| \
-                                      (0x0ul<<SYS_IRCTCTL_CESTOPEN_Pos)| \
-                                      (0x3ul<<SYS_IRCTCTL_RETRYCNT_Pos)| \
-                                      (0x0ul<<SYS_IRCTCTL_LOOPSEL_Pos) | \
-                                      (0x2ul<<SYS_IRCTCTL_FREQSEL_Pos))
-
 /* Define the vendor id and product id */
 #define USBD_VID        0x0416
 #define USBD_PID        0x50A1
@@ -91,31 +78,31 @@ typedef struct
 } STR_VCOM_LINE_CODING;
 
 /*-------------------------------------------------------------*/
-extern volatile int8_t gi8BulkOutReady0;
-extern STR_VCOM_LINE_CODING gLineCoding0;
-extern uint16_t gCtrlSignal0;
-extern volatile uint16_t comRbytes0;
-extern volatile uint16_t comRhead0;
-extern volatile uint16_t comRtail0;
-extern volatile uint16_t comTbytes0;
-extern volatile uint16_t comThead0;
-extern volatile uint16_t comTtail0;
-extern volatile uint8_t *gpu8RxBuf0;
-extern volatile uint32_t gu32RxSize0;
-extern volatile uint32_t gu32TxSize0;
+extern volatile int8_t g_i8BulkOutReady0;
+extern STR_VCOM_LINE_CODING g_sLineCoding0;
+extern uint16_t g_u16CtrlSignal0;
+extern volatile uint16_t g_u16ComRbytes0;
+extern volatile uint16_t g_u16ComRhead0;
+extern volatile uint16_t g_u16ComRtail0;
+extern volatile uint16_t g_u16ComTbytes0;
+extern volatile uint16_t g_u16ComThead0;
+extern volatile uint16_t g_u16ComTtail0;
+extern volatile uint8_t *g_pu8RxBuf0;
+extern volatile uint32_t g_u32RxSize0;
+extern volatile uint32_t g_u32TxSize0;
 
-extern volatile int8_t gi8BulkOutReady1;
-extern STR_VCOM_LINE_CODING gLineCoding1;
-extern uint16_t gCtrlSignal1;
-extern volatile uint16_t comRbytes1;
-extern volatile uint16_t comRhead1;
-extern volatile uint16_t comRtail1;
-extern volatile uint16_t comTbytes1;
-extern volatile uint16_t comThead1;
-extern volatile uint16_t comTtail1;
-extern volatile uint8_t *gpu8RxBuf1;
-extern volatile uint32_t gu32RxSize1;
-extern volatile uint32_t gu32TxSize1;
+extern volatile int8_t g_i8BulkOutReady1;
+extern STR_VCOM_LINE_CODING g_sLineCoding1;
+extern uint16_t g_u16CtrlSignal1;
+extern volatile uint16_t g_u16ComRbytes1;
+extern volatile uint16_t g_u16ComRhead1;
+extern volatile uint16_t g_u16ComRtail1;
+extern volatile uint16_t g_u16ComTbytes1;
+extern volatile uint16_t g_u16ComThead1;
+extern volatile uint16_t g_u16ComTtail1;
+extern volatile uint8_t *g_pu8RxBuf1;
+extern volatile uint32_t g_u32RxSize1;
+extern volatile uint32_t g_u32TxSize1;
 /*-------------------------------------------------------------*/
 void VCOM_Init(void);
 void VCOM_ClassRequest(void);

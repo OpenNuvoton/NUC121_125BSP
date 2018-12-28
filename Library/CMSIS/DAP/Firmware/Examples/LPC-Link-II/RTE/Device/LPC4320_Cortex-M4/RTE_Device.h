@@ -17,7 +17,8 @@
  *
  * 3. This notice may not be removed or altered from any source distribution.
  *
- * $Date: 16/07/18 2:23p $Revision:    V2.1.1
+ * $Date:        5. March 2015
+ * $Revision:    V2.1.1
  *
  * Project:      RTE Device Configuration for NXP LPC43xx
  * -------------------------------------------------------------------------- */

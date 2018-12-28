@@ -64,7 +64,7 @@ void SYS_Init(void)
     GPIO_DISABLE_DIGITAL_PATH(PD, BIT0 | BIT1 | BIT2 | BIT3);
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -89,19 +89,19 @@ void UART0_Init()
 /*   The conversion rate depends on the clock source of ADC clock.                                         */
 /*   It only needs 21 ADC clocks to complete an A/D conversion.                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-static __INLINE uint32_t ADC_GetConversionRate()
+static __INLINE uint32_t ADC_GetConversionRate(void)
 {
     uint32_t u32AdcClkSrcSel;
-    uint32_t u32ClkTbl[4] = {__HXT, 0, 0, __HIRC};
+    uint32_t au32ClkTbl[4] = {__HXT, 0, 0, __HIRC};
 
     /* Set the PLL clock frequency */
-    u32ClkTbl[1] = PllClock;
+    au32ClkTbl[1] = PllClock;
     /* Set the system core clock frequency */
-    u32ClkTbl[2] = SystemCoreClock;
+    au32ClkTbl[2] = SystemCoreClock;
     /* Get the clock source setting */
     u32AdcClkSrcSel = ((CLK->CLKSEL1 & CLK_CLKSEL1_ADCSEL_Msk) >> CLK_CLKSEL1_ADCSEL_Pos);
     /* Return the ADC conversion rate */
-    return ((u32ClkTbl[u32AdcClkSrcSel]) / (((CLK->CLKDIV0 & CLK_CLKDIV0_ADCDIV_Msk) >> CLK_CLKDIV0_ADCDIV_Pos) + 1) / 21);
+    return ((au32ClkTbl[u32AdcClkSrcSel]) / (((CLK->CLKDIV0 & CLK_CLKDIV0_ADCDIV_Msk) >> CLK_CLKDIV0_ADCDIV_Pos) + 1) / 21);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -116,7 +116,7 @@ static __INLINE uint32_t ADC_GetConversionRate()
 /* Description:                                                                                            */
 /*   ADC continuous scan mode test.                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-void AdcContScanModeTest()
+void AdcContScanModeTest(void)
 {
     uint8_t  u8Option;
     uint32_t u32ChannelCount;

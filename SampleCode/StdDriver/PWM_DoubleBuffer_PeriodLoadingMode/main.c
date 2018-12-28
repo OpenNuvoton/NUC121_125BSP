@@ -30,10 +30,10 @@
  */
 void PWM0_IRQHandler(void)
 {
-    static int toggle = 0;
+    static int i8Toggle = 0;
 
     /* Update PWM0 channel 0 period and duty */
-    if (toggle == 0)
+    if (i8Toggle == 0)
     {
         PWM_SET_CNR(PWM0, 0, 99);
         PWM_SET_CMR(PWM0, 0, 40);
@@ -46,7 +46,7 @@ void PWM0_IRQHandler(void)
         PWM_SET_CMR(PWM0, 1, 200);
     }
 
-    toggle ^= 1;
+    i8Toggle ^= 1;
     /* Clear channel 0 period interrupt flag */
     PWM_ClearPeriodIntFlag(PWM0, 0);
 }

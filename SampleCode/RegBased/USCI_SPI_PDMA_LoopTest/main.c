@@ -18,7 +18,7 @@
 /*----------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void);
 void USCI_SPI_Init(void);
-void USCI_SPI_LoopTest_WithPDMA(void);
+void USCI_SPI_LoopTestWithPDMA(void);
 void UART0_Init(void);
 
 /*----------------------------------------------------------------------------------------------------------*/
@@ -69,7 +69,7 @@ int main(void)
     printf("\n");
     getchar();
 
-    USCI_SPI_LoopTest_WithPDMA();
+    USCI_SPI_LoopTestWithPDMA();
 
     printf("\n\nExit SPI driver sample code.\n");
 
@@ -190,7 +190,7 @@ void USCI_SPI_Init(void)
     USPI0->PROTCTL |= USPI_PROTCTL_AUTOSS_Msk;
 }
 
-void USCI_SPI_LoopTest_WithPDMA(void)
+void USCI_SPI_LoopTestWithPDMA(void)
 {
     uint32_t u32DataCount, u32TestCycle;
     uint32_t u32RegValue, u32Abort;

@@ -17,7 +17,8 @@
  *
  * 3. This notice may not be removed or altered from any source distribution.
  *
- * $Date: 16/07/18 2:23p $Revision:    V5.00
+ * $Date:        27. October 2014
+ * $Revision:    V5.00
  *
  * Project:      NXP LPC43xx System initialization
  * -------------------------------------------------------------------------- */

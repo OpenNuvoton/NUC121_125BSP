@@ -98,7 +98,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC burst mode test.                                                                                  */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcBurstModeTest()
+void AdcBurstModeTest(void)
 {
     uint8_t  u8Option;
     uint32_t u32ConversionCount;

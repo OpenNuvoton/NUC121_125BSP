@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-
-
 #define TEST_COUNT 16
 
 uint32_t g_au32SourceData[TEST_COUNT];

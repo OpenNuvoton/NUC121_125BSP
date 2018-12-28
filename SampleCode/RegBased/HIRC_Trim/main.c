@@ -74,21 +74,21 @@ void SYS_Init(void)
 
 void Trim_Init()
 {
-    uint32_t tmpCtl ;
+    uint32_t u32TmpCtl ;
     uint32_t u32IRCSTS ;
 
     //Clear status
     u32IRCSTS = SYS->IRCTISTS ;
     SYS->IRCTISTS = u32IRCSTS ;
 
-    tmpCtl = (0 << SYS_IRCTCTL_REFCKSEL_Pos) |      // Ref clock is from LXT
-             (1 << SYS_IRCTCTL_CESTOPEN_Pos) |      // Stop when clock inaccuracy
-             (3 << SYS_IRCTCTL_RETRYCNT_Pos) |      // Retry 512 times
-             (3 << SYS_IRCTCTL_LOOPSEL_Pos) |       // Every 32 clock updates trim value.
-             (2 << SYS_IRCTCTL_FREQSEL_Pos) ;       // Enable trim
+    u32TmpCtl = (0 << SYS_IRCTCTL_REFCKSEL_Pos) |      // Ref clock is from LXT
+                (1 << SYS_IRCTCTL_CESTOPEN_Pos) |      // Stop when clock inaccuracy
+                (3 << SYS_IRCTCTL_RETRYCNT_Pos) |      // Retry 512 times
+                (3 << SYS_IRCTCTL_LOOPSEL_Pos) |       // Every 32 clock updates trim value.
+                (2 << SYS_IRCTCTL_FREQSEL_Pos) ;       // Enable trim
 
     /* Setting HIRCTrim control register */
-    SYS->IRCTCTL = tmpCtl ;
+    SYS->IRCTCTL = u32TmpCtl ;
 
     /* Enable interrupt */
     SYS->IRCTIEN = SYS_IRCTIEN_CLKEIEN_Msk | SYS_IRCTIEN_TFAILIEN_Msk ;

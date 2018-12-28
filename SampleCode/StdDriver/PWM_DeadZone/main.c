@@ -29,19 +29,19 @@
  */
 void PWM0_IRQHandler(void)
 {
-    static uint32_t cnt;
-    static uint32_t out;
+    static uint32_t u32Cnt;
+    static uint32_t u32Out;
 
     /* Channel 0 frequency is 6000Hz, every 1 second enter this IRQ handler 6000 times. */
-    if (++cnt == 6000)
+    if (++u32Cnt == 6000)
     {
-        if (out)
+        if (u32Out)
             PWM_EnableOutput(PWM0, PWM_CH_0_MASK | PWM_CH_1_MASK | PWM_CH_2_MASK | PWM_CH_3_MASK);
         else
             PWM_DisableOutput(PWM0, PWM_CH_0_MASK | PWM_CH_1_MASK | PWM_CH_2_MASK | PWM_CH_3_MASK);
 
-        out ^= 1;
-        cnt = 0;
+        u32Out ^= 1;
+        u32Cnt = 0;
     }
 
     /* Clear channel 0 period interrupt flag */

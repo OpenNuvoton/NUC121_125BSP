@@ -81,7 +81,7 @@ void SYS_Init(void)
     SYS->GPC_MFPH = (SYS->GPC_MFPH & (~SYS_GPC_MFPH_PC10MFP_Msk)) | SYS_GPC_MFPH_PC10MFP_PWM0_CH0;
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -107,7 +107,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC hardware trigger test.                                                                             */
 /*----------------------------------------------------------------------------------------------------------*/
-void ADC_PWMTrigTest_SingleOpMode()
+void ADC_PWMTrigTest_SingleOpMode(void)
 {
     printf("\n<<< PWM trigger test (Single mode) >>>\n");
 

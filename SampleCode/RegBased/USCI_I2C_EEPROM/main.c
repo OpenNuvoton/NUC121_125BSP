@@ -38,7 +38,7 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Tx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_EEPROM_MasterTx(uint32_t u32Status)
+void UI2C_EEPROM_MasterTx(uint32_t u32Status)
 {
     if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk)
     {
@@ -97,7 +97,7 @@ void USCI_I2C_EEPROM_MasterTx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Rx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_EEPROM_MasterRx(uint32_t u32Status)
+void UI2C_EEPROM_MasterRx(uint32_t u32Status)
 {
     if ((u32Status & UI2C_PROTSTS_STARIF_Msk) == UI2C_PROTSTS_STARIF_Msk)
     {
@@ -257,7 +257,7 @@ void UART_Init(void)
 
 int main()
 {
-    uint32_t i;
+    uint32_t u32Index;
     uint8_t u8Tmp;
 
     /* Unlock protected registers */
@@ -291,17 +291,17 @@ int main()
 
     g_u8DeviceAddr = 0x50;
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8TxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8TxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8TxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8TxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8TxData[2] = (uint8_t)(g_au8TxData[1] + 3);
 
         g_u8DataLenM = 0;
         g_u8EndFlagM = 0;
 
         /* USCI_I2C function to write data to slave */
-        s_UI2C0HandlerFn = (UI2C_FUNC)USCI_I2C_EEPROM_MasterTx;
+        s_UI2C0HandlerFn = (UI2C_FUNC)UI2C_EEPROM_MasterTx;
 
         /* USCI_I2C as master sends START signal */
         m_Event = MASTER_SEND_START;
@@ -313,7 +313,7 @@ int main()
         g_u8EndFlagM = 0;
 
         /* USCI_I2C function to read data from slave */
-        s_UI2C0HandlerFn = (UI2C_FUNC)USCI_I2C_EEPROM_MasterRx;
+        s_UI2C0HandlerFn = (UI2C_FUNC)UI2C_EEPROM_MasterRx;
 
         g_u8DataLenM = 0;
         g_u8DeviceAddr = 0x50;

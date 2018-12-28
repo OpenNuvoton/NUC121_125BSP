@@ -30,17 +30,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -55,27 +49,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -271,7 +256,7 @@ void HID_ClassRequest(void)
         {
             if (buf[4] == 0)   /* VCOM-1 */
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&gLineCoding, 7);
+                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding, 7);
             }
 
             /* Data stage */
@@ -302,8 +287,8 @@ void HID_ClassRequest(void)
         {
             if (buf[4] == 0)   /* VCOM-1 */
             {
-                gCtrlSignal = buf[3];
-                gCtrlSignal = (gCtrlSignal << 8) | buf[2];
+                g_u16CtrlSignal = buf[3];
+                g_u16CtrlSignal = (g_u16CtrlSignal << 8) | buf[2];
                 //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
             }
 
@@ -317,7 +302,7 @@ void HID_ClassRequest(void)
         {
             //g_usbd_UsbConfig = 0100;
             if (buf[4] == 0) /* VCOM-1 */
-                USBD_PrepareCtrlOut((uint8_t *)&gLineCoding, 7);
+                USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding, 7);
 
             /* Status stage */
             USBD_SET_DATA1(EP0);
@@ -376,53 +361,46 @@ void HID_ClassRequest(void)
 
 void VCOM_LineCoding(uint8_t port)
 {
-    uint32_t u32Reg, u32Tmp, u32Baudrate, u32SysTmp;
-    uint32_t u32Div = 0;
+    uint32_t u32Reg;
+    uint32_t u32Baud_Div = 0;
 
     if (port == 0)
     {
-        u32Baudrate = gLineCoding.u32DTERate;
-        u32Tmp = 65 * u32Baudrate;
-        u32SysTmp = PllClock / 1000;
+        NVIC_DisableIRQ(UART0_IRQn);
 
-        /* Check we need to divide PLL clock. Note:
-           It may not work when baudrate is very small,e.g. 110 bps */
-        if (u32SysTmp > u32Tmp)
-            u32Div = u32SysTmp / u32Tmp;
+        // Reset software FIFO
+        g_u16ComRbytes = 0;
+        g_u16ComRhead = 0;
+        g_u16ComRtail = 0;
 
+        g_u16ComTbytes = 0;
+        g_u16ComThead = 0;
+        g_u16ComTtail = 0;
 
-        /* Update UART peripheral clock frequency. */
-        u32SysTmp = PllClock / (u32Div + 1);
+        // Reset hardware FIFO
+        UART0->FIFO = UART_FIFO_TXRST_Msk | UART_FIFO_RXRST_Msk;;
 
-        // Reset software fifo
-        comRbytes = 0;
-        comRhead = 0;
-        comRtail = 0;
+        // Set baudrate
+        u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, g_sLineCoding.u32DTERate);
 
-        comTbytes = 0;
-        comThead = 0;
-        comTtail = 0;
-#if 0
-        // Reset hardware fifo
-        UART0->FIFO = UART_FIFO_TXRST_Msk | UART_FIFO_RXRST_Msk;
+        if (u32Baud_Div > 0xFFFF)
+            UART0->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC_DIV2, g_sLineCoding.u32DTERate));
+        else
+            UART0->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
 
-        // Set baudrate, clock source and clock divider
-        UART0->BAUD = 0x30000000 + ((u32SysTmp + gLineCoding.u32DTERate / 2) / gLineCoding.u32DTERate - 2);
-        CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_PLL, CLK_CLKDIV0_UART(u32Div + 1));
-#endif
 
         // Set parity
-        if (gLineCoding.u8ParityType == 0)
+        if (g_sLineCoding.u8ParityType == 0)
             u32Reg = 0; // none parity
-        else if (gLineCoding.u8ParityType == 1)
+        else if (g_sLineCoding.u8ParityType == 1)
             u32Reg = 0x08; // odd parity
-        else if (gLineCoding.u8ParityType == 2)
+        else if (g_sLineCoding.u8ParityType == 2)
             u32Reg = 0x18; // even parity
         else
             u32Reg = 0;
 
         /* bit width */
-        switch (gLineCoding.u8DataBits)
+        switch (g_sLineCoding.u8DataBits)
         {
         case 5:
             u32Reg |= 0;
@@ -445,35 +423,38 @@ void VCOM_LineCoding(uint8_t port)
         }
 
         /* stop bit */
-        if (gLineCoding.u8CharFormat > 0)
+        if (g_sLineCoding.u8CharFormat > 0)
             u32Reg |= 0x4; // 2 or 1.5 bits
 
         UART0->LINE = u32Reg;
+
+        // Re-enable UART interrupt
+        NVIC_EnableIRQ(UART0_IRQn);
     }
 }
 
 void HID_UpdateKbData(void)
 {
     int32_t i;
-    uint8_t *buf;
-    uint32_t key = 0xF;
-    static uint32_t preKey;
+    uint8_t *pu8Buf;
+    uint32_t u32Key = 0xF;
+    static uint32_t s_u32PreKey;
 
     if (g_u8EP5Ready)
     {
-        buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5));
+        pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5));
 
         /* If PB.15 = 0, just report it is key 'a' */
-        key = (PB->PIN & (1 << 15)) ? 0 : 1;
+        u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;
 
-        if (key == 0)
+        if (u32Key == 0)
         {
             for (i = 0; i < 8; i++)
             {
-                buf[i] = 0;
+                pu8Buf[i] = 0;
             }
 
-            if (key != preKey)
+            if (u32Key != s_u32PreKey)
             {
                 /* Trigger to note key release */
                 USBD_SET_PAYLOAD_LEN(EP5, 8);
@@ -481,8 +462,8 @@ void HID_UpdateKbData(void)
         }
         else
         {
-            preKey = key;
-            buf[2] = 0x04; /* Key 'a' */
+            s_u32PreKey = u32Key;
+            pu8Buf[2] = 0x04; /* Key 'a' */
             USBD_SET_PAYLOAD_LEN(EP5, 8);
         }
     }

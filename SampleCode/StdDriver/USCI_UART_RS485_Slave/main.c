@@ -15,11 +15,11 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variable                                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t u32AddrBuffer[ADDR_NUM];
-uint32_t u32DataBuffer[ADDR_NUM][DATA_NUM];
-volatile uint8_t u8AddrIndex = 0;
-volatile uint8_t u8DataIndex = 0;
-volatile uint8_t u8ReceiveDone = 0;
+uint32_t g_au32AddrBuffer[ADDR_NUM];
+uint32_t g_au32DataBuffer[ADDR_NUM][DATA_NUM];
+volatile uint8_t g_u8AddrIndex = 0;
+volatile uint8_t g_u8DataIndex = 0;
+volatile uint8_t g_u8ReceiveDone = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -53,20 +53,20 @@ void RS485_HANDLE()
         u32Data = UUART_READ(UUART0);
 
         if (u32Data & 0x100)
-            u32AddrBuffer[u8AddrIndex++] = u32Data;
+            g_au32AddrBuffer[g_u8AddrIndex++] = u32Data;
         else
         {
-            u32DataBuffer[u8AddrIndex - 1][u8DataIndex++] = u32Data;
+            g_au32DataBuffer[g_u8AddrIndex - 1][g_u8DataIndex++] = u32Data;
 
-            if (u8DataIndex == DATA_NUM)
+            if (g_u8DataIndex == DATA_NUM)
             {
-                if (u8AddrIndex == ADDR_NUM)
+                if (g_u8AddrIndex == ADDR_NUM)
                 {
-                    u8ReceiveDone = 1;
+                    g_u8ReceiveDone = 1;
                     return;
                 }
                 else
-                    u8DataIndex = 0;
+                    g_u8DataIndex = 0;
             }
         }
     }
@@ -104,14 +104,14 @@ void RS485_9bitModeSlave()
     printf("Ready to receive data...\n");
 
     /* Wait receive complete */
-    while (u8ReceiveDone == 0);
+    while (g_u8ReceiveDone == 0);
 
-    for (u8AddrIndex = 0; u8AddrIndex < ADDR_NUM; u8AddrIndex++)
+    for (g_u8AddrIndex = 0; g_u8AddrIndex < ADDR_NUM; g_u8AddrIndex++)
     {
-        printf("\nAddr=0x%x,Get:", (u32AddrBuffer[u8AddrIndex] & 0xFF));
+        printf("\nAddr=0x%x,Get:", (g_au32AddrBuffer[g_u8AddrIndex] & 0xFF));
 
-        for (u8DataIndex = 0; u8DataIndex < DATA_NUM; u8DataIndex++)
-            printf("%d,", (u32DataBuffer[u8AddrIndex][u8DataIndex] & 0xFF));
+        for (g_u8DataIndex = 0; g_u8DataIndex < DATA_NUM; g_u8DataIndex++)
+            printf("%d,", (g_au32DataBuffer[g_u8AddrIndex][g_u8DataIndex] & 0xFF));
     }
 
     /* Disable USCI interrupt */

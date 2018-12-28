@@ -34,7 +34,7 @@ void PDMA_IRQHandler(void)
 
     if (u32Status & PDMA_INTSTS_TDIF_Msk)
     {
-        if (u32TDStatus & PDMA_TDSTS_TDIF0_Msk)   /* CH0 */
+        if (u32TDStatus & PDMA_TDSTS_TDIF0_Msk)              /* CH0 */
         {
             g_u32PdmaTDoneInt = 1;
             PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF0_Msk);
@@ -138,7 +138,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   Configure PDMA channel for ADC continuous scan mode test.                                              */
 /*----------------------------------------------------------------------------------------------------------*/
-void PDMA_Init()
+void PDMA_Init(void)
 {
     /* Enable PDMA module clock */
     CLK->AHBCLK |= CLK_AHBCLK_PDMACKEN_Msk;
@@ -185,7 +185,7 @@ void PDMA_Init()
 /* Description:                                                                                             */
 /*   Reload transfer count and operation mode of PDMA channel for ADC continuous scan mode test.            */
 /*----------------------------------------------------------------------------------------------------------*/
-void PDMA_ConfigReload()
+void PDMA_ConfigReload(void)
 {
     /* Transfer configuration of Channel 2 */
     PDMA->DSCT[PDMA_CH].CTL |= \
@@ -206,7 +206,7 @@ void PDMA_ConfigReload()
 /* Description:                                                                                             */
 /*   ADC single cycle scan mode with PDMA test.                                                             */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcSingleCycleScanModePDMATest()
+void AdcSingleCycleScanModePDMATest(void)
 {
     uint8_t  u8Option;
     uint32_t u32DataCount;

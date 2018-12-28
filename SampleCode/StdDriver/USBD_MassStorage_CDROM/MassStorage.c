@@ -38,8 +38,8 @@ uint32_t g_u32BulkBuf0, g_u32BulkBuf1;
 struct CBW g_sCBW;
 struct CSW g_sCSW;
 
-uint32_t MassBlock[MASS_BUFFER_SIZE / 4];
-uint32_t Storage_Block[STORAGE_BUFFER_SIZE / 4];
+uint32_t g_au32MassBlock[MASS_BUFFER_SIZE / 4];
+uint32_t g_au32Storage_Block[STORAGE_BUFFER_SIZE / 4];
 
 /*--------------------------------------------------------------------------*/
 uint8_t g_au8InquiryID[36] =
@@ -234,17 +234,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -260,27 +254,18 @@ void USBD_IRQHandler(void)
             USBD_ENABLE_USB();
             USBD_SwReset();
             g_u8Remove = 0;
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -1396,7 +1381,7 @@ void MSC_ProcessCmd(void)
                 }
                 else
                 {
-                    memset((uint32_t *)Storage_Block, 0, i);
+                    memset((uint32_t *)g_au32Storage_Block, 0, i);
                     g_u32Address = STORAGE_DATA_BUF;
                 }
 
@@ -1522,10 +1507,10 @@ void MSC_ProcessCmd(void)
                     // LBA
                     g_u32Address = get_be32(&g_sCBW.au8Data[0]);
                     g_u32Length = g_sCBW.dCBWDataTransferLength;
-                    MSC_GetConfiguration(g_u32Length, (uint8_t *)MassBlock);
+                    MSC_GetConfiguration(g_u32Length, (uint8_t *)g_au32MassBlock);
                 }
 
-                g_u32Address = (uint32_t)MassBlock;
+                g_u32Address = (uint32_t)g_au32MassBlock;
                 g_u8BulkState = BULK_IN;
 
                 if (g_u32Length > 0)

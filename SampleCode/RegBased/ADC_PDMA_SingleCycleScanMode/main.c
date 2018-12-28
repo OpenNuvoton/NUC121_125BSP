@@ -116,7 +116,7 @@ void SYS_Init(void)
     PD->DINOFF |= 0x000F0000;
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -142,7 +142,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   Configure PDMA channel for ADC continuous scan mode test.                                              */
 /*----------------------------------------------------------------------------------------------------------*/
-void PDMA_Init()
+void PDMA_Init(void)
 {
     /* Enable PDMA module clock */
     CLK->AHBCLK |= CLK_AHBCLK_PDMACKEN_Msk;
@@ -211,7 +211,7 @@ void PDMA_ConfigReload()
 /* Description:                                                                                             */
 /*   ADC single cycle scan mode with PDMA test.                                                             */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcSingleCycleScanModePDMATest()
+void AdcSingleCycleScanModePDMATest(void)
 {
     uint8_t  u8Option;
     uint32_t u32DataCount;

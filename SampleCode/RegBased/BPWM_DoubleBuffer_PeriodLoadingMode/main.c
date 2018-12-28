@@ -30,10 +30,10 @@
  */
 void BPWM0_IRQHandler(void)
 {
-    static int toggle = 0;
+    static int i8Toggle = 0;
 
     /* Update BPWM0 period and duty */
-    if (toggle == 0)
+    if (i8Toggle == 0)
     {
         BPWM_SET_CNR(BPWM0, 0, 99);
         BPWM_SET_CMR(BPWM0, 0, 40);
@@ -54,7 +54,7 @@ void BPWM0_IRQHandler(void)
         BPWM_SET_CMR(BPWM0, 5, 200);
     }
 
-    toggle ^= 1;
+    i8Toggle ^= 1;
     /* Clear channel 0 period interrupt flag */
     BPWM0->INTSTS0 = BPWM_INTSTS0_PIF0_Msk;
 }

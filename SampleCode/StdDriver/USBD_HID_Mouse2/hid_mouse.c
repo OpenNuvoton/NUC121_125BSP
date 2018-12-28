@@ -35,18 +35,12 @@ void USBD_IRQHandler(void)
             /* USB Plug In */
             USBD_ENABLE_USB();
             g_u8Suspend = 0;
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
             g_u8Suspend = 1;
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -62,10 +56,6 @@ void USBD_IRQHandler(void)
             USBD_ENABLE_USB();
             USBD_SwReset();
             g_u8Suspend = 0;
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
-
         }
 
         if (u32State & USBD_ATTR_SUSPEND_Msk)
@@ -73,9 +63,6 @@ void USBD_IRQHandler(void)
 
             /* Enter power down to wait USB attached */
             g_u8Suspend = 1;
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
 
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
@@ -89,9 +76,6 @@ void USBD_IRQHandler(void)
             USBD_ENABLE_USB();
 
             g_u8Suspend = 0;
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -325,12 +309,8 @@ void PowerDown()
     /* Wakeup Enable */
     USBD->INTEN |= USBD_INTEN_WKEN_Msk;
 
-    /* Deep sleep */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    CLK->PWRCTL |= CLK_PWRCTL_PDEN_Msk;
-
     PB4 = 1; // LED off to show we are in suspend.
-    __WFI();
+    CLK_PowerDown();
     PB4 = 0; // LED on to show we are working.
 
     /* Clear PWR_DOWN_EN if it is not clear by itself */
@@ -338,7 +318,7 @@ void PowerDown()
         CLK->PWRCTL ^= CLK_PWRCTL_PDEN_Msk;
 
     /* Note HOST to resume USB tree if it is suspended and remote wakeup enabled */
-    if (g_usbd_RemoteWakeupEn)
+    if (g_USBD_u8RemoteWakeupEn)
     {
         /* Enable PHY before sending Resume('K') state */
         USBD->ATTR |= USBD_ATTR_PHYEN_Msk;
@@ -355,9 +335,9 @@ void PowerDown()
 
 void HID_UpdateMouseData(void)
 {
-    uint8_t *buf;
+    uint8_t *pu8Buf;
     uint32_t u32Reg;
-    static int32_t x = 0, y = 0;
+    static int32_t i32x = 0, i32y = 0;
     uint32_t u32MouseKey;
 
     /*
@@ -383,31 +363,31 @@ void HID_UpdateMouseData(void)
 
     if (g_u8EP2Ready)
     {
-        buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
+        pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
 
         /* To control Y axis */
         if ((u32Reg & 1) == 0)
-            y += 1;
+            i32y += 1;
         else if ((u32Reg & 4) == 0)
-            y += -1;
+            i32y += -1;
         else
-            y = 0;
+            i32y = 0;
 
-        if (y > 48) y = 48;
+        if (i32y > 48) i32y = 48;
 
-        if (y < -48) y = -48;
+        if (i32y < -48) i32y = -48;
 
         /* To control X axis */
         if ((u32Reg & 2) == 0)
-            x += 1;
+            i32x += 1;
         else if ((u32Reg & 0x10) == 0)
-            x += -1;
+            i32x += -1;
         else
-            x = 0;
+            i32x = 0;
 
-        if (x > 48) x = 48;
+        if (i32x > 48) i32x = 48;
 
-        if (x < -48) x = -48;
+        if (i32x < -48) i32x = -48;
 
         /* Mouse key */
         u32MouseKey = 0;
@@ -419,10 +399,10 @@ void HID_UpdateMouseData(void)
             u32MouseKey |= 2; /* Right key */
 
         /* Update new report data */
-        buf[0] = u32MouseKey;
-        buf[1] = x >> 2;
-        buf[2] = y >> 2;
-        buf[3] = 0x00;
+        pu8Buf[0] = u32MouseKey;
+        pu8Buf[1] = i32x >> 2;
+        pu8Buf[2] = i32y >> 2;
+        pu8Buf[3] = 0x00;
 
         g_u8EP2Ready = 0;
         /* Set transfer length and trigger IN transfer */

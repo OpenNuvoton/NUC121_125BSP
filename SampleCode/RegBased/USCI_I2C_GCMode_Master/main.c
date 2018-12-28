@@ -39,7 +39,7 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Tx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_MasterTx(uint32_t u32Status)
+void UI2C_MasterTx(uint32_t u32Status)
 {
     if (UI2C_GET_TIMEOUT_FLAG(UI2C0))
     {
@@ -204,7 +204,7 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -246,17 +246,17 @@ int32_t main(void)
     printf("Press any key to continue.\n");
     getchar();
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8MstTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8MstTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
 
         g_u8MstDataLen = 0;
         g_u8MstEndFlag = 0;
 
         /* UI2C function to write data to slave */
-        s_UI2C0HandlerFn = (UI2C_FUNC)USCI_I2C_MasterTx;
+        s_UI2C0HandlerFn = (UI2C_FUNC)UI2C_MasterTx;
 
         /* UI2C as master sends START signal */
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);

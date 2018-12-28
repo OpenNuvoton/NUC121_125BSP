@@ -11,7 +11,7 @@
 #include "NuMicro.h"
 
 #define I2S_TX_DMA_CH 1
-#define I2S_RXData_DMA_CH 2
+#define I2S_RX_DMA_CH 2
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -34,15 +34,15 @@ void SYS_Init(void);
 void UART_Init(void);
 
 /* Global variable declaration */
-volatile uint8_t u8TxIdx = 0;
-uint32_t PcmRxDataBuff[1][CHECK_BUFF_LEN] = {0};
-uint32_t PcmTxBuff[2][BUFF_LEN] = {0};
+volatile uint8_t g_u8TxIdx = 0;
+uint32_t g_au32PcmRxBuff[1][CHECK_BUFF_LEN] = {0};
+uint32_t g_au32PcmTxBuff[2][BUFF_LEN] = {0};
 
 /* Once PDMA has transferred, software need to reset Scatter-Gather table */
-void PDMA_ResetTxSGTable(uint8_t id)
+void PDMA_ResetTxSGTable(uint8_t u8Id)
 {
-    g_asDescTable_TX[id].CTL |= PDMA_OP_SCATTER;
-    g_asDescTable_TX[id].CTL |= ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos);
+    g_asDescTable_TX[u8Id].CTL |= PDMA_OP_SCATTER;
+    g_asDescTable_TX[u8Id].CTL |= ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -98,24 +98,24 @@ int32_t main(void)
 
     for (u32DataCount = 0; u32DataCount < BUFF_LEN; u32DataCount++)
     {
-        PcmTxBuff[0][u32DataCount] = u32InitValue;
-        PcmTxBuff[1][u32DataCount] = u32InitValue + 0x50005000;
+        g_au32PcmTxBuff[0][u32DataCount] = u32InitValue;
+        g_au32PcmTxBuff[1][u32DataCount] = u32InitValue + 0x50005000;
         u32InitValue += 0x00010001;
     }
 
     /* Enable PDMA channels */
     PDMA->DSCT[1].CTL = 0;
     PDMA->DSCT[2].CTL = 0;
-    PDMA->CHCTL |= (1 << I2S_TX_DMA_CH) | (1 << I2S_RXData_DMA_CH);
+    PDMA->CHCTL |= (1 << I2S_TX_DMA_CH) | (1 << I2S_RX_DMA_CH);
 
     /* Tx(Play) description */
     g_asDescTable_TX[0].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
-    g_asDescTable_TX[0].SA = (uint32_t)&PcmTxBuff[0];
+    g_asDescTable_TX[0].SA = (uint32_t)&g_au32PcmTxBuff[0];
     g_asDescTable_TX[0].DA = (uint32_t)&SPI0->TX;
     g_asDescTable_TX[0].FIRST = (uint32_t)&g_asDescTable_TX[1] - (PDMA->SCATBA);
 
     g_asDescTable_TX[1].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
-    g_asDescTable_TX[1].SA = (uint32_t)&PcmTxBuff[1];
+    g_asDescTable_TX[1].SA = (uint32_t)&g_au32PcmTxBuff[1];
     g_asDescTable_TX[1].DA = (uint32_t)&SPI0->TX;
     g_asDescTable_TX[1].FIRST = (uint32_t)&g_asDescTable_TX[0] - (PDMA->SCATBA);   //link to first description
 
@@ -125,7 +125,7 @@ int32_t main(void)
     /* Rx description */
     PDMA->DSCT[2].CTL = ((CHECK_BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_BASIC;
     PDMA->DSCT[2].SA = (uint32_t)&SPI0->RX;
-    PDMA->DSCT[2].DA = (uint32_t)&PcmRxDataBuff[0];
+    PDMA->DSCT[2].DA = (uint32_t)&g_au32PcmRxBuff[0];
 
     /* Configure PDMA transfer mode */
     PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~(0x3Ful << 8)) | (PDMA_SPI0_TX << 8);
@@ -147,7 +147,7 @@ int32_t main(void)
     /* Print the received data */
     for (u32DataCount = 0; u32DataCount < CHECK_BUFF_LEN; u32DataCount++)
     {
-        printf("%d:\t0x%X\n", u32DataCount, PcmRxDataBuff[0][u32DataCount]);
+        printf("%d:\t0x%X\n", u32DataCount, g_au32PcmRxBuff[0][u32DataCount]);
     }
 
     printf("\n\nExit I2S sample code.\n");
@@ -229,8 +229,8 @@ void PDMA_IRQHandler(void)
         if (PDMA_GET_TD_STS() & 0x2)            /* channel 1 done */
         {
             /* Reset PDMA Scater-Gatter table */
-            PDMA_ResetTxSGTable(u8TxIdx);
-            u8TxIdx ^= 1;
+            PDMA_ResetTxSGTable(g_u8TxIdx);
+            g_u8TxIdx ^= 1;
         }
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);

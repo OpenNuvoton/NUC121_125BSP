@@ -19,7 +19,7 @@
 
 /*--------------------------------------------------------------------------*/
 /* Global variables for Control Pipe */
-int32_t g_TotalSectors = 0;
+int32_t g_i32TotalSectors = 0;
 
 uint8_t volatile g_u8EP2Ready = 0;
 uint8_t volatile g_u8EP3Ready = 0;
@@ -107,17 +107,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -133,9 +127,6 @@ void USBD_IRQHandler(void)
             USBD_ENABLE_USB();
             USBD_SwReset();
             DBG_PRINTF("Bus reset\n");
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
@@ -143,9 +134,6 @@ void USBD_IRQHandler(void)
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
             DBG_PRINTF("Suspend\n");
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
@@ -153,9 +141,6 @@ void USBD_IRQHandler(void)
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
             DBG_PRINTF("Resume\n");
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -321,7 +306,7 @@ void MSC_Init(void)
     g_u32BulkBuf1 = EP2_BUF_BASE;
 
     g_sCSW.dCSWSignature = CSW_SIGNATURE;
-    g_TotalSectors = DATA_FLASH_STORAGE_SIZE / UDC_SECTOR_SIZE;
+    g_i32TotalSectors = DATA_FLASH_STORAGE_SIZE / UDC_SECTOR_SIZE;
 
     /*
        Generate Mass-Storage Device serial number
@@ -470,10 +455,10 @@ void MSC_ReadFormatCapacity(void)
 
     /*---------- Current/Maximum Capacity Descriptor ----------*/
     // Number of blocks (MSB first)
-    pu8Desc[4] = _GET_BYTE3(g_TotalSectors);
-    pu8Desc[5] = _GET_BYTE2(g_TotalSectors);
-    pu8Desc[6] = _GET_BYTE1(g_TotalSectors);
-    pu8Desc[7] = _GET_BYTE0(g_TotalSectors);
+    pu8Desc[4] = _GET_BYTE3(g_i32TotalSectors);
+    pu8Desc[5] = _GET_BYTE2(g_i32TotalSectors);
+    pu8Desc[6] = _GET_BYTE1(g_i32TotalSectors);
+    pu8Desc[7] = _GET_BYTE0(g_i32TotalSectors);
 
     // Descriptor Code:
     // 01b = Unformatted Media - Maximum formattable capacity for this cartridge
@@ -489,10 +474,10 @@ void MSC_ReadFormatCapacity(void)
 
     /*---------- Formattable Capacity Descriptor ----------*/
     // Number of Blocks
-    pu8Desc[12] = _GET_BYTE3(g_TotalSectors);
-    pu8Desc[13] = _GET_BYTE2(g_TotalSectors);
-    pu8Desc[14] = _GET_BYTE1(g_TotalSectors);
-    pu8Desc[15] = _GET_BYTE0(g_TotalSectors);
+    pu8Desc[12] = _GET_BYTE3(g_i32TotalSectors);
+    pu8Desc[13] = _GET_BYTE2(g_i32TotalSectors);
+    pu8Desc[14] = _GET_BYTE1(g_i32TotalSectors);
+    pu8Desc[15] = _GET_BYTE0(g_i32TotalSectors);
 
     // Block Length. Fixed to be 512 (MSB first)
     pu8Desc[17] = _GET_BYTE2(512);
@@ -632,7 +617,7 @@ void MSC_ReadCapacity(void)
 
     memset((uint8_t *)MassCMD_BUF, 0, 36);
 
-    tmp = g_TotalSectors - 1;
+    tmp = g_i32TotalSectors - 1;
     *((uint8_t *)(MassCMD_BUF + 0)) = *((uint8_t *)&tmp + 3);
     *((uint8_t *)(MassCMD_BUF + 1)) = *((uint8_t *)&tmp + 2);
     *((uint8_t *)(MassCMD_BUF + 2)) = *((uint8_t *)&tmp + 1);
@@ -646,7 +631,7 @@ void MSC_ReadCapacity16(void)
 
     memset((uint8_t *)MassCMD_BUF, 0, 36);
 
-    tmp = g_TotalSectors - 1;
+    tmp = g_i32TotalSectors - 1;
     *((uint8_t *)(MassCMD_BUF + 0)) = 0;
     *((uint8_t *)(MassCMD_BUF + 1)) = 0;
     *((uint8_t *)(MassCMD_BUF + 2)) = 0;
@@ -687,7 +672,7 @@ void MSC_ModeSense10(void)
 
         NumHead = 2;
         NumSector = 64;
-        NumCyl = g_TotalSectors / 128;
+        NumCyl = g_i32TotalSectors / 128;
 
         *((uint8_t *)(MassCMD_BUF + 12)) = NumHead;
         *((uint8_t *)(MassCMD_BUF + 13)) = NumSector;
@@ -731,7 +716,7 @@ void MSC_ModeSense10(void)
 
         NumHead = 2;
         NumSector = 64;
-        NumCyl = g_TotalSectors / 128;
+        NumCyl = g_i32TotalSectors / 128;
 
         *((uint8_t *)(MassCMD_BUF + 24)) = NumHead;
         *((uint8_t *)(MassCMD_BUF + 25)) = NumSector;

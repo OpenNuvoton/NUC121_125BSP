@@ -73,7 +73,7 @@ void SYS_Init(void)
     PD->DINOFF |= 0x00040000;
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -99,7 +99,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC result monitor function test.                                                                      */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcResultMonitorTest()
+void AdcResultMonitorTest(void)
 {
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");

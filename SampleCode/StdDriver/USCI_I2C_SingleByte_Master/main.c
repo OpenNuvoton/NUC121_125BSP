@@ -99,8 +99,8 @@ void UI2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
-    uint8_t u8data, u8tmp, err;
+    uint32_t u32Index;
+    uint8_t u8Data, u8Tmp, u8Err;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -141,28 +141,28 @@ int32_t main(void)
     /* Slave Address */
     g_u8DeviceAddr = 0x15;
 
-    err = 0;
+    u8Err = 0;
 
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        u8tmp = (uint8_t)i + 3;
+        u8Tmp = (uint8_t)u32Index + 3;
 
         /* Single Byte Write (Two Registers) */
-        while (UI2C_WriteByteTwoRegs(UI2C0, g_u8DeviceAddr, i, u8tmp));
+        while (UI2C_WriteByteTwoRegs(UI2C0, g_u8DeviceAddr, u32Index, u8Tmp));
 
         /* Single Byte Read (Two Registers) */
-        u8data = UI2C_ReadByteTwoRegs(UI2C0, g_u8DeviceAddr, i);
+        u8Data = UI2C_ReadByteTwoRegs(UI2C0, g_u8DeviceAddr, u32Index);
 
-        if (u8data != u8tmp)
+        if (u8Data != u8Tmp)
         {
-            err = 1;
-            printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", i, u8tmp, u8data);
+            u8Err = 1;
+            printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", u32Index, u8Tmp, u8Data);
         }
     }
 
     printf("\n");
 
-    if (err)
+    if (u8Err)
         printf("Single byte Read/Write access Fail.....\n");
     else
         printf("Single byte Read/Write access Pass.....\n");

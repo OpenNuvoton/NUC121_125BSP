@@ -31,7 +31,7 @@ enum UI2C_Monitor_State
 volatile uint8_t    g_au8MstTxData[I2C_DATA_MAX];
 volatile uint8_t    g_au8SlvRxData[I2C_DATA_MAX];
 volatile uint8_t    g_u8DeviceAddr;
-volatile uint32_t slave_buff_addr;
+volatile uint32_t g_u32SlaveBuffAddr;
 volatile uint8_t    g_u8MstDataLen;
 volatile uint8_t    g_u8SlvDataLen;
 volatile uint32_t g_u32ProtOn;
@@ -278,12 +278,12 @@ void I2C_SlaveTRx_7bit(uint32_t u32Status)
 
         if (g_u8SlvDataLen == 2)
         {
-            slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            g_u32SlaveBuffAddr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
 
         if (g_u8SlvDataLen == I2C_DATA_MAX - 2)
         {
-            g_u8SlvData[slave_buff_addr] = g_au8SlvRxData[I2C_DATA_MAX - 2];
+            g_u8SlvData[g_u32SlaveBuffAddr] = g_au8SlvRxData[I2C_DATA_MAX - 2];
             g_u8SlvDataLen = 0;
         }
 
@@ -291,8 +291,8 @@ void I2C_SlaveTRx_7bit(uint32_t u32Status)
     }
     else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
     {
-        I2C_SET_DATA(I2C1, g_u8SlvData[slave_buff_addr]);
-        slave_buff_addr++;
+        I2C_SET_DATA(I2C1, g_u8SlvData[g_u32SlaveBuffAddr]);
+        g_u32SlaveBuffAddr++;
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
     }
     else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
@@ -408,18 +408,18 @@ void I2C_MasterRx(uint32_t u32Status)
 }
 
 
-int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
+int32_t I2C_ReadWriteSlave_Mon(uint8_t u8SlvAddr)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
-    g_u8DeviceAddr = slvaddr;
+    g_u8DeviceAddr = u8SlvAddr;
 
     printf("Dump transmitted data:\n");
 
-    for (i = 0; i < I2C_DATA_MAX; i++)
+    for (u32Index = 0; u32Index < I2C_DATA_MAX; u32Index++)
     {
-        g_au8MstTxData[i] = 5 + i;
-        printf("[0x%X]\t", g_au8MstTxData[i]);
+        g_au8MstTxData[u32Index] = 5 + u32Index;
+        printf("[0x%X]\t", g_au8MstTxData[u32Index]);
     }
 
     g_u8MonDataCnt = 0;
@@ -441,7 +441,7 @@ int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
     s_I2C0HandlerFn = (I2C_FUNC)I2C_MasterRx;
 
     g_u8MstDataLen = 0;
-    g_u8DeviceAddr = slvaddr;
+    g_u8DeviceAddr = u8SlvAddr;
 
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_STA);
 
@@ -456,14 +456,14 @@ int32_t Read_Write_SLAVE_Mon(uint8_t slvaddr)
 
 int32_t UI2C_Monitor()
 {
-    int32_t err = 0;
-    uint32_t i;
+    int32_t i32Err = 0;
+    uint32_t u32Index;
 
     UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_AA);
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_u8SlvData[i] = 0;
+        g_u8SlvData[u32Index] = 0;
     }
 
     g_u32ProtOn = 0;
@@ -476,9 +476,9 @@ int32_t UI2C_Monitor()
     /* I2C1 enter no address SLV mode */
     I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_u8SlvData[i] = 0;
+        g_u8SlvData[u32Index] = 0;
     }
 
     /* I2C function to Slave receive/transmit data */
@@ -487,24 +487,24 @@ int32_t UI2C_Monitor()
     /* I2C IP as Master */
     I2C0_Init();
 
-    err = Read_Write_SLAVE_Mon(MONITOR_ADDR);
+    i32Err = I2C_ReadWriteSlave_Mon(MONITOR_ADDR);
 
     printf("\nDump Monitor data: \n");
 
-    for (i = 0; i < (I2C_DATA_MAX + 1); i++)
+    for (u32Index = 0; u32Index < (I2C_DATA_MAX + 1); u32Index++)
     {
-        if (i == 0)
-            printf("Monitor address: [0x%X]\n", g_u8MonRxData[i] >> 1);
+        if (u32Index == 0)
+            printf("Monitor address: [0x%X]\n", g_u8MonRxData[u32Index] >> 1);
         else
-            printf("[0x%X]\t", g_u8MonRxData[i]);
+            printf("[0x%X]\t", g_u8MonRxData[u32Index]);
     }
 
     printf("\n\n");
 
-    for (i = 0; i < I2C_DATA_MAX; i++)
-        g_u8MonRxData[i] = 0;
+    for (u32Index = 0; u32Index < I2C_DATA_MAX; u32Index++)
+        g_u8MonRxData[u32Index] = 0;
 
-    return err;
+    return i32Err;
 }
 
 void SYS_Init(void)

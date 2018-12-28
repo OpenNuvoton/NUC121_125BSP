@@ -20,7 +20,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 
 
-uint32_t g_sectorBuf[FLASH_PAGE_SIZE / 4];
+uint32_t g_au32SectorBuf[FLASH_PAGE_SIZE / 4];
 
 uint32_t FMC_ReadPage(uint32_t u32StartAddr, uint32_t *u32Buf)
 {
@@ -110,7 +110,7 @@ void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer)
             if (offset || (size < FLASH_PAGE_SIZE))
             {
                 /* Non 4k alignment. Note: It needs to avoid add MASS_STORAGE_OFFSET twice. */
-                DataFlashRead(alignAddr - MASS_STORAGE_OFFSET, FLASH_PAGE_SIZE, (uint32_t)&g_sectorBuf[0]);
+                DataFlashRead(alignAddr - MASS_STORAGE_OFFSET, FLASH_PAGE_SIZE, (uint32_t)&g_au32SectorBuf[0]);
 
             }
 
@@ -123,14 +123,14 @@ void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer)
 
             for (i = 0; i < len / 4; i++)
             {
-                g_sectorBuf[offset / 4 + i] = pu32[i];
+                g_au32SectorBuf[offset / 4 + i] = pu32[i];
             }
 
             FMC_Erase(alignAddr);
 
             for (i = 0; i < 16; i++)
             {
-                FMC_ProgramPage(alignAddr + (i << 8), (uint32_t *) g_sectorBuf + (i << 8));
+                FMC_ProgramPage(alignAddr + (i << 8), (uint32_t *) g_au32SectorBuf + (i << 8));
             }
 
             size -= len;

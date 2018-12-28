@@ -106,8 +106,8 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
-    uint8_t txbuf[256] = {0}, rDataBuf[256] = {0}, err;
+    uint32_t u32Index;
+    uint8_t au8TxBuf[256] = {0}, au8rDataBuf[256] = {0}, u8Err;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -144,18 +144,18 @@ int32_t main(void)
     /* Slave address */
     g_u8DeviceAddr = 0x15;
 
-    err = 0;
+    u8Err = 0;
 
     /* Prepare data for transmission */
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        txbuf[i] = (uint8_t) i + 3;
+        au8TxBuf[u32Index] = (uint8_t) u32Index + 3;
     }
 
-    for (i = 0; i < 256; i += 32)
+    for (u32Index = 0; u32Index < 256; u32Index += 32)
     {
         /* Write 32 bytes data to Slave */
-        while (I2C_WriteMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, i, &txbuf[i], 32) < 32);
+        while (I2C_WriteMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, u32Index, &au8TxBuf[u32Index], 32) < 32);
     }
 
     printf("Multi bytes Write access Pass.....\n");
@@ -163,19 +163,19 @@ int32_t main(void)
     printf("\n");
 
     /* Use Multi Bytes Read from Slave (Two Registers) */
-    while (I2C_ReadMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, 0x0000, rDataBuf, 256) < 256);
+    while (I2C_ReadMultiBytesTwoRegs(I2C0, g_u8DeviceAddr, 0x0000, au8rDataBuf, 256) < 256);
 
     /* Compare TX data and RX data */
-    for (i = 0; i < 256; i++)
+    for (u32Index = 0; u32Index < 256; u32Index++)
     {
-        if (txbuf[i] != rDataBuf[i])
+        if (au8TxBuf[u32Index] != au8rDataBuf[u32Index])
         {
-            err = 1;
-            printf("Data compare fail... R[%d] Data: 0x%X\n", i, rDataBuf[i]);
+            u8Err = 1;
+            printf("Data compare fail... R[%d] Data: 0x%X\n", u32Index, au8rDataBuf[u32Index]);
         }
     }
 
-    if (err)
+    if (u8Err)
         printf("Multi bytes Read access Fail.....\n");
     else
         printf("Multi bytes Read access Pass.....\n");

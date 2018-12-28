@@ -21,7 +21,7 @@
 void SYS_Init(void);
 void UART_Init(void);
 void SPI_Init(void);
-void SpiLoopTest_WithPDMA(void);
+void SPI_LoopTestWithPDMA(void);
 
 /* Global variable declaration */
 uint32_t g_au32MasterToSlaveTestPattern[TEST_COUNT];
@@ -61,7 +61,7 @@ int main(void)
     getchar();
 
 
-    SpiLoopTest_WithPDMA();
+    SPI_LoopTestWithPDMA();
 
     printf("\n\nExit SPI driver sample code.\n");
 
@@ -134,7 +134,7 @@ void SYS_Init(void)
     SYS->GPC_MFPL |= (1 << SYS_GPC_MFPL_PC3MFP_Pos);
 }
 
-void UART_Init()
+void UART_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -163,7 +163,7 @@ void SPI_Init(void)
     SPI0->CLKDIV = (SPI0->CLKDIV & (~SPI_CLKDIV_DIVIDER_Msk)) | (9 << SPI_CLKDIV_DIVIDER_Pos);
 }
 
-void SpiLoopTest_WithPDMA(void)
+void SPI_LoopTestWithPDMA(void)
 {
     uint32_t u32DataCount, u32TestCycle;
     uint32_t u32RegValue, u32Abort;

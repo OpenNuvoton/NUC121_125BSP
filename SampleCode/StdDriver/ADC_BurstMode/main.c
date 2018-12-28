@@ -70,7 +70,7 @@ void SYS_Init(void)
     GPIO_DISABLE_DIGITAL_PATH(PD, BIT2 | BIT3);
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -94,7 +94,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC burst mode test.                                                                                  */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcBurstModeTest()
+void AdcBurstModeTest(void)
 {
     uint8_t  u8Option;
     uint32_t u32ConversionCount;

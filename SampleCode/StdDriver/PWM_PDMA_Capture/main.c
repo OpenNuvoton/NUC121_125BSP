@@ -17,7 +17,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint16_t g_u32Count[4];
+uint16_t g_u16Count[4];
 volatile uint32_t g_u32IsTestOver = 0;
 
 
@@ -32,16 +32,16 @@ volatile uint32_t g_u32IsTestOver = 0;
  */
 void PDMA_IRQHandler(void)
 {
-    uint32_t status = PDMA_GET_INT_STATUS();
+    uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (status & 0x1)   /* abort */
+    if (u32Status & 0x1)   /* abort */
     {
         if (PDMA_GET_ABORT_STS() & 0x1)
             g_u32IsTestOver = 2;
 
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF0_Msk);
     }
-    else if (status & 0x2)     /* done */
+    else if (u32Status & 0x2)     /* done */
     {
         if (PDMA_GET_TD_STS() & 0x1)
             g_u32IsTestOver = 1;
@@ -54,7 +54,7 @@ void PDMA_IRQHandler(void)
 
 /*--------------------------------------------------------------------------------------*/
 /* Capture function to calculate the input waveform information                         */
-/* g_u32Count[4] : Keep the internal counter value when input signal rising / falling   */
+/* g_u16Count[4] : Keep the internal counter value when input signal rising / falling   */
 /*               happens                                                                */
 /*                                                                                      */
 /* time    A    B     C     D                                                           */
@@ -74,15 +74,15 @@ void CalPeriodTime(PWM_T *PWM, uint32_t u32Ch)
     /* Wait PDMA interrupt (g_u32IsTestOver will be set at IRQ_Handler function) */
     while (g_u32IsTestOver == 0);
 
-    u16RisingTime = g_u32Count[1];
+    u16RisingTime = g_u16Count[1];
 
-    u16FallingTime = g_u32Count[0];
+    u16FallingTime = g_u16Count[0];
 
-    u16HighPeriod = g_u32Count[1] - g_u32Count[2];
+    u16HighPeriod = g_u16Count[1] - g_u16Count[2];
 
-    u16LowPeriod = 0x10000 - g_u32Count[1];
+    u16LowPeriod = 0x10000 - g_u16Count[1];
 
-    u16TotalPeriod = 0x10000 - g_u32Count[2];
+    u16TotalPeriod = 0x10000 - g_u16Count[2];
 
     printf("\nPWM generate: \nHigh Period=14999 ~ 15001, Low Period=34999 ~ 35001, Total Period=49999 ~ 50001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",
@@ -251,8 +251,8 @@ int32_t main(void)
         /* Transfer width is half word(16 bit) and transfer count is 4 */
         PDMA_SetTransferCnt(0, PDMA_WIDTH_16, 4);
 
-        /* Set source address as PWM capture channel PDMA register(no increment) and destination address as g_u32Count array(increment) */
-        PDMA_SetTransferAddr(0, (uint32_t)&PWM1->PDMACAP2_3, PDMA_SAR_FIX, (uint32_t)&g_u32Count[0], PDMA_DAR_INC);
+        /* Set source address as PWM capture channel PDMA register(no increment) and destination address as g_u16Count array(increment) */
+        PDMA_SetTransferAddr(0, (uint32_t)&PWM1->PDMACAP2_3, PDMA_SAR_FIX, (uint32_t)&g_u16Count[0], PDMA_DAR_INC);
 
         /* Select PDMA request source as PWM RX(PWM1 channel 2 should be PWM1 pair 2) */
         PDMA_SetTransferMode(0, PDMA_PWM1_P1_RX, FALSE, 0);

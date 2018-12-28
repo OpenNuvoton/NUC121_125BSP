@@ -1,75 +1,64 @@
-/* ----------------------------------------------------------------------    
-* Copyright (C) 2010-2014 ARM Limited. All rights reserved.    
-*    
-* $Date: 16/07/18 2:33p $Revision: 	V.1.4.5
-*    
-* Project: 	    CMSIS DSP Library    
-* Title:	    arm_fir_decimate_q15.c    
-*    
-* Description:	Q15 FIR Decimator.    
-*    
-* Target Processor: Cortex-M4/Cortex-M3/Cortex-M0
-*  
-* Redistribution and use in source and binary forms, with or without 
-* modification, are permitted provided that the following conditions
-* are met:
-*   - Redistributions of source code must retain the above copyright
-*     notice, this list of conditions and the following disclaimer.
-*   - Redistributions in binary form must reproduce the above copyright
-*     notice, this list of conditions and the following disclaimer in
-*     the documentation and/or other materials provided with the 
-*     distribution.
-*   - Neither the name of ARM LIMITED nor the names of its contributors
-*     may be used to endorse or promote products derived from this
-*     software without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-* COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-* BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-* LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-* ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-* POSSIBILITY OF SUCH DAMAGE. 
-* -------------------------------------------------------------------- */
+/* ----------------------------------------------------------------------
+ * Project:      CMSIS DSP Library
+ * Title:        arm_fir_decimate_q15.c
+ * Description:  Q15 FIR Decimator
+ *
+ * $Date:        27. January 2017
+ * $Revision:    V.1.5.1
+ *
+ * Target Processor: Cortex-M cores
+ * -------------------------------------------------------------------- */
+/*
+ * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the License); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "arm_math.h"
 
-/**    
- * @ingroup groupFilters    
+/**
+ * @ingroup groupFilters
  */
 
-/**    
- * @addtogroup FIR_decimate    
- * @{    
+/**
+ * @addtogroup FIR_decimate
+ * @{
  */
 
-/**    
- * @brief Processing function for the Q15 FIR decimator.    
- * @param[in] *S points to an instance of the Q15 FIR decimator structure.    
- * @param[in] *pSrc points to the block of input data.    
- * @param[out] *pDst points to the location where the output result is written.    
- * @param[in] blockSize number of input samples to process per call.    
- * @return none.    
- *    
- * <b>Scaling and Overflow Behavior:</b>    
- * \par    
- * The function is implemented using a 64-bit internal accumulator.    
- * Both coefficients and state variables are represented in 1.15 format and multiplications yield a 2.30 result.    
- * The 2.30 intermediate results are accumulated in a 64-bit accumulator in 34.30 format.    
- * There is no risk of internal overflow with this approach and the full precision of intermediate multiplications is preserved.    
- * After all additions have been performed, the accumulator is truncated to 34.15 format by discarding low 15 bits.    
- * Lastly, the accumulator is saturated to yield a result in 1.15 format.    
- *    
- * \par    
- * Refer to the function <code>arm_fir_decimate_fast_q15()</code> for a faster but less precise implementation of this function for Cortex-M3 and Cortex-M4.    
+/**
+ * @brief Processing function for the Q15 FIR decimator.
+ * @param[in] *S points to an instance of the Q15 FIR decimator structure.
+ * @param[in] *pSrc points to the block of input data.
+ * @param[out] *pDst points to the location where the output result is written.
+ * @param[in] blockSize number of input samples to process per call.
+ * @return none.
+ *
+ * <b>Scaling and Overflow Behavior:</b>
+ * \par
+ * The function is implemented using a 64-bit internal accumulator.
+ * Both coefficients and state variables are represented in 1.15 format and multiplications yield a 2.30 result.
+ * The 2.30 intermediate results are accumulated in a 64-bit accumulator in 34.30 format.
+ * There is no risk of internal overflow with this approach and the full precision of intermediate multiplications is preserved.
+ * After all additions have been performed, the accumulator is truncated to 34.15 format by discarding low 15 bits.
+ * Lastly, the accumulator is saturated to yield a result in 1.15 format.
+ *
+ * \par
+ * Refer to the function <code>arm_fir_decimate_fast_q15()</code> for a faster but less precise implementation of this function for Cortex-M3 and Cortex-M4.
  */
 
-#ifndef ARM_MATH_CM0_FAMILY
+#if defined (ARM_MATH_DSP)
 
 #ifndef UNALIGNED_SUPPORT_DISABLE
 
@@ -103,7 +92,7 @@ void arm_fir_decimate_q15(
   blkCntN3 = outBlockSize - (2 * blkCnt);
 
 
-  while(blkCnt > 0u)
+  while (blkCnt > 0u)
   {
     /* Copy decimation factor number of new input samples into the state buffer */
     i = 2 * S->M;
@@ -112,7 +101,7 @@ void arm_fir_decimate_q15(
     {
       *pStateCurnt++ = *pSrc++;
 
-    } while(--i);
+    } while (--i);
 
     /* Set accumulator to zero */
     acc0 = 0;
@@ -130,9 +119,9 @@ void arm_fir_decimate_q15(
     /* Loop unrolling.  Process 4 taps at a time. */
     tapCnt = numTaps >> 2;
 
-    /* Loop over the number of taps.  Unroll by a factor of 4.       
+    /* Loop over the number of taps.  Unroll by a factor of 4.
      ** Repeat until we've computed numTaps-4 coefficients. */
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read the Read b[numTaps-1] and b[numTaps-2]  coefficients */
       c0 = *__SIMD32(pb)++;
@@ -167,7 +156,7 @@ void arm_fir_decimate_q15(
     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
     tapCnt = numTaps % 0x4u;
 
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read coefficients */
       c0 = *pb++;
@@ -185,7 +174,7 @@ void arm_fir_decimate_q15(
       tapCnt--;
     }
 
-    /* Advance the state pointer by the decimation factor       
+    /* Advance the state pointer by the decimation factor
      * to process the next group of decimation factor number samples */
     pState = pState + S->M * 2;
 
@@ -200,7 +189,7 @@ void arm_fir_decimate_q15(
 
 
 
-  while(blkCntN3 > 0u)
+  while (blkCntN3 > 0u)
   {
     /* Copy decimation factor number of new input samples into the state buffer */
     i = S->M;
@@ -209,7 +198,7 @@ void arm_fir_decimate_q15(
     {
       *pStateCurnt++ = *pSrc++;
 
-    } while(--i);
+    } while (--i);
 
     /*Set sum to zero */
     sum0 = 0;
@@ -223,9 +212,9 @@ void arm_fir_decimate_q15(
     /* Loop unrolling.  Process 4 taps at a time. */
     tapCnt = numTaps >> 2;
 
-    /* Loop over the number of taps.  Unroll by a factor of 4.       
+    /* Loop over the number of taps.  Unroll by a factor of 4.
      ** Repeat until we've computed numTaps-4 coefficients. */
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read the Read b[numTaps-1] and b[numTaps-2]  coefficients */
       c0 = *__SIMD32(pb)++;
@@ -252,7 +241,7 @@ void arm_fir_decimate_q15(
     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
     tapCnt = numTaps % 0x4u;
 
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read coefficients */
       c0 = *pb++;
@@ -267,7 +256,7 @@ void arm_fir_decimate_q15(
       tapCnt--;
     }
 
-    /* Advance the state pointer by the decimation factor       
+    /* Advance the state pointer by the decimation factor
      * to process the next group of decimation factor number samples */
     pState = pState + S->M;
 
@@ -279,8 +268,8 @@ void arm_fir_decimate_q15(
     blkCntN3--;
   }
 
-  /* Processing is complete.       
-   ** Now copy the last numTaps - 1 samples to the satrt of the state buffer.       
+  /* Processing is complete.
+   ** Now copy the last numTaps - 1 samples to the satrt of the state buffer.
    ** This prepares the state buffer for the next function call. */
 
   /* Points to the start of the state buffer */
@@ -289,7 +278,7 @@ void arm_fir_decimate_q15(
   i = (numTaps - 1u) >> 2u;
 
   /* copy data */
-  while(i > 0u)
+  while (i > 0u)
   {
     *__SIMD32(pStateCurnt)++ = *__SIMD32(pState)++;
     *__SIMD32(pStateCurnt)++ = *__SIMD32(pState)++;
@@ -301,7 +290,7 @@ void arm_fir_decimate_q15(
   i = (numTaps - 1u) % 0x04u;
 
   /* copy data */
-  while(i > 0u)
+  while (i > 0u)
   {
     *pStateCurnt++ = *pState++;
 
@@ -342,7 +331,7 @@ void arm_fir_decimate_q15(
   blkCnt = outBlockSize / 2;
   blkCntN3 = outBlockSize - (2 * blkCnt);
 
-  while(blkCnt > 0u)
+  while (blkCnt > 0u)
   {
     /* Copy decimation factor number of new input samples into the state buffer */
     i = 2 * S->M;
@@ -351,7 +340,7 @@ void arm_fir_decimate_q15(
     {
       *pStateCurnt++ = *pSrc++;
 
-    } while(--i);
+    } while (--i);
 
     /* Set accumulator to zero */
     acc0 = 0;
@@ -369,9 +358,9 @@ void arm_fir_decimate_q15(
     /* Loop unrolling.  Process 4 taps at a time. */
     tapCnt = numTaps >> 2;
 
-    /* Loop over the number of taps.  Unroll by a factor of 4.       
+    /* Loop over the number of taps.  Unroll by a factor of 4.
      ** Repeat until we've computed numTaps-4 coefficients. */
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read the Read b[numTaps-1] coefficients */
       c0 = *pb++;
@@ -424,7 +413,7 @@ void arm_fir_decimate_q15(
     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
     tapCnt = numTaps % 0x4u;
 
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read coefficients */
       c0 = *pb++;
@@ -441,7 +430,7 @@ void arm_fir_decimate_q15(
       tapCnt--;
     }
 
-    /* Advance the state pointer by the decimation factor       
+    /* Advance the state pointer by the decimation factor
      * to process the next group of decimation factor number samples */
     pState = pState + S->M * 2;
 
@@ -455,7 +444,7 @@ void arm_fir_decimate_q15(
     blkCnt--;
   }
 
-  while(blkCntN3 > 0u)
+  while (blkCntN3 > 0u)
   {
     /* Copy decimation factor number of new input samples into the state buffer */
     i = S->M;
@@ -464,7 +453,7 @@ void arm_fir_decimate_q15(
     {
       *pStateCurnt++ = *pSrc++;
 
-    } while(--i);
+    } while (--i);
 
     /*Set sum to zero */
     sum0 = 0;
@@ -478,9 +467,9 @@ void arm_fir_decimate_q15(
     /* Loop unrolling.  Process 4 taps at a time. */
     tapCnt = numTaps >> 2;
 
-    /* Loop over the number of taps.  Unroll by a factor of 4.       
+    /* Loop over the number of taps.  Unroll by a factor of 4.
      ** Repeat until we've computed numTaps-4 coefficients. */
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read the Read b[numTaps-1] coefficients */
       c0 = *pb++;
@@ -525,7 +514,7 @@ void arm_fir_decimate_q15(
     /* If the filter length is not a multiple of 4, compute the remaining filter taps */
     tapCnt = numTaps % 0x4u;
 
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read coefficients */
       c0 = *pb++;
@@ -540,7 +529,7 @@ void arm_fir_decimate_q15(
       tapCnt--;
     }
 
-    /* Advance the state pointer by the decimation factor       
+    /* Advance the state pointer by the decimation factor
      * to process the next group of decimation factor number samples */
     pState = pState + S->M;
 
@@ -552,8 +541,8 @@ void arm_fir_decimate_q15(
     blkCntN3--;
   }
 
-  /* Processing is complete.       
-   ** Now copy the last numTaps - 1 samples to the satrt of the state buffer.       
+  /* Processing is complete.
+   ** Now copy the last numTaps - 1 samples to the satrt of the state buffer.
    ** This prepares the state buffer for the next function call. */
 
   /* Points to the start of the state buffer */
@@ -562,7 +551,7 @@ void arm_fir_decimate_q15(
   i = (numTaps - 1u) >> 2u;
 
   /* copy data */
-  while(i > 0u)
+  while (i > 0u)
   {
     *pStateCurnt++ = *pState++;
     *pStateCurnt++ = *pState++;
@@ -576,7 +565,7 @@ void arm_fir_decimate_q15(
   i = (numTaps - 1u) % 0x04u;
 
   /* copy data */
-  while(i > 0u)
+  while (i > 0u)
   {
     *pStateCurnt++ = *pState++;
 
@@ -618,7 +607,7 @@ void arm_fir_decimate_q15(
   /* Total number of output samples to be computed */
   blkCnt = outBlockSize;
 
-  while(blkCnt > 0u)
+  while (blkCnt > 0u)
   {
     /* Copy decimation factor number of new input samples into the state buffer */
     i = S->M;
@@ -627,7 +616,7 @@ void arm_fir_decimate_q15(
     {
       *pStateCurnt++ = *pSrc++;
 
-    } while(--i);
+    } while (--i);
 
     /*Set sum to zero */
     sum0 = 0;
@@ -640,7 +629,7 @@ void arm_fir_decimate_q15(
 
     tapCnt = numTaps;
 
-    while(tapCnt > 0u)
+    while (tapCnt > 0u)
     {
       /* Read coefficients */
       c0 = *pb++;
@@ -655,7 +644,7 @@ void arm_fir_decimate_q15(
       tapCnt--;
     }
 
-    /* Advance the state pointer by the decimation factor           
+    /* Advance the state pointer by the decimation factor
      * to process the next group of decimation factor number samples */
     pState = pState + S->M;
 
@@ -667,8 +656,8 @@ void arm_fir_decimate_q15(
     blkCnt--;
   }
 
-  /* Processing is complete.         
-   ** Now copy the last numTaps - 1 samples to the start of the state buffer.       
+  /* Processing is complete.
+   ** Now copy the last numTaps - 1 samples to the start of the state buffer.
    ** This prepares the state buffer for the next function call. */
 
   /* Points to the start of the state buffer */
@@ -677,7 +666,7 @@ void arm_fir_decimate_q15(
   i = numTaps - 1u;
 
   /* copy data */
-  while(i > 0u)
+  while (i > 0u)
   {
     *pStateCurnt++ = *pState++;
 
@@ -687,9 +676,9 @@ void arm_fir_decimate_q15(
 
 
 }
-#endif /*   #ifndef ARM_MATH_CM0_FAMILY */
+#endif /*   #if defined (ARM_MATH_DSP) */
 
 
-/**    
- * @} end of FIR_decimate group    
+/**
+ * @} end of FIR_decimate group
  */

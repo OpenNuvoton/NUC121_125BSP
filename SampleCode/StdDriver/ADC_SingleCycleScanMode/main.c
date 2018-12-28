@@ -87,7 +87,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC single cycle scan mode test.                                                                       */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcSingleCycleScanModeTest()
+void AdcSingleCycleScanModeTest(void)
 {
     uint8_t  u8Option;
     uint32_t u32ChannelCount;

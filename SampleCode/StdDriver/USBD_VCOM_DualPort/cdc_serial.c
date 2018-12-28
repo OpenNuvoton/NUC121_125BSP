@@ -27,17 +27,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -52,27 +46,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -193,33 +178,33 @@ void USBD_IRQHandler(void)
 
 void EP2_Handler(void)
 {
-    gu32TxSize0 = 0;
+    g_u32TxSize0 = 0;
 }
 
 
 void EP3_Handler(void)
 {
     /* Bulk OUT */
-    gu32RxSize0 = USBD_GET_PAYLOAD_LEN(EP3);
-    gpu8RxBuf0 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
+    g_u32RxSize0 = USBD_GET_PAYLOAD_LEN(EP3);
+    g_pu8RxBuf0 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
 
     /* Set a flag to indicate bulk out ready */
-    gi8BulkOutReady0 = 1;
+    g_i8BulkOutReady0 = 1;
 }
 
 void EP6_Handler(void)
 {
     /* Bulk OUT */
-    gu32RxSize1 = USBD_GET_PAYLOAD_LEN(EP6);
-    gpu8RxBuf1 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP6));
+    g_u32RxSize1 = USBD_GET_PAYLOAD_LEN(EP6);
+    g_pu8RxBuf1 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP6));
 
     /* Set a flag to indicate bulk out ready */
-    gi8BulkOutReady1 = 1;
+    g_i8BulkOutReady1 = 1;
 }
 
 void EP7_Handler(void)
 {
-    gu32TxSize1 = 0;
+    g_u32TxSize1 = 0;
 }
 
 
@@ -287,25 +272,25 @@ void VCOM_Init(void)
 
 void VCOM_ClassRequest(void)
 {
-    uint8_t buf[8];
+    uint8_t au8Buf[8];
 
-    USBD_GetSetupPacket(buf);
+    USBD_GetSetupPacket(au8Buf);
 
-    if (buf[0] & 0x80)   /* request data transfer direction */
+    if (au8Buf[0] & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch (buf[1])
+        switch (au8Buf[1])
         {
         case GET_LINE_CODE:
         {
-            if (buf[4] == 0)   /* VCOM-1 */
+            if (au8Buf[4] == 0)   /* VCOM-1 */
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&gLineCoding0, 7);
+                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding0, 7);
             }
 
-            if (buf[4] == 2)   /* VCOM-2 */
+            if (au8Buf[4] == 2)   /* VCOM-2 */
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&gLineCoding1, 7);
+                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding1, 7);
             }
 
             /* Data stage */
@@ -328,22 +313,22 @@ void VCOM_ClassRequest(void)
     else
     {
         // Host to device
-        switch (buf[1])
+        switch (au8Buf[1])
         {
         case SET_CONTROL_LINE_STATE:
         {
-            if (buf[4] == 0)   /* VCOM-1 */
+            if (au8Buf[4] == 0)   /* VCOM-1 */
             {
-                gCtrlSignal0 = buf[3];
-                gCtrlSignal0 = (gCtrlSignal0 << 8) | buf[2];
-                //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
+                g_u16CtrlSignal0 = au8Buf[3];
+                g_u16CtrlSignal0 = (g_u16CtrlSignal0 << 8) | au8Buf[2];
+                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
             }
 
-            if (buf[4] == 2)   /* VCOM-2 */
+            if (au8Buf[4] == 2)   /* VCOM-2 */
             {
-                gCtrlSignal1 = buf[3];
-                gCtrlSignal1 = (gCtrlSignal1 << 8) | buf[2];
-                //printf("RTS=%d  DTR=%d\n", (gCtrlSignal0 >> 1) & 1, gCtrlSignal0 & 1);
+                g_u16CtrlSignal1 = au8Buf[3];
+                g_u16CtrlSignal1 = (g_u16CtrlSignal1 << 8) | au8Buf[2];
+                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
             }
 
             /* Status stage */
@@ -354,21 +339,21 @@ void VCOM_ClassRequest(void)
 
         case SET_LINE_CODE:
         {
-            if (buf[4] == 0) /* VCOM-1 */
-                USBD_PrepareCtrlOut((uint8_t *)&gLineCoding0, 7);
+            if (au8Buf[4] == 0) /* VCOM-1 */
+                USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding0, 7);
 
-            if (buf[4] == 2) /* VCOM-2 */
-                USBD_PrepareCtrlOut((uint8_t *)&gLineCoding1, 7);
+            if (au8Buf[4] == 2) /* VCOM-2 */
+                USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding1, 7);
 
             /* Status stage */
             USBD_SET_DATA1(EP0);
             USBD_SET_PAYLOAD_LEN(EP0, 0);
 
             /* UART setting */
-            if (buf[4] == 0) /* VCOM-1 */
+            if (au8Buf[4] == 0) /* VCOM-1 */
                 VCOM_LineCoding(0);
 
-            if (buf[4] == 2) /* VCOM-2 */
+            if (au8Buf[4] == 2) /* VCOM-2 */
                 VCOM_LineCoding(1);
 
             break;
@@ -388,56 +373,47 @@ void VCOM_ClassRequest(void)
 
 void VCOM_LineCoding(uint8_t port)
 {
-    uint32_t u32Reg, u32Tmp, u32Baudrate, u32SysTmp;
-    uint32_t u32Div = 0;
+    uint32_t u32Reg;
+    uint32_t u32Baud_Div = 0;
     //uint32_t u32Reg, u32Baud_Div;;
 
     if (port == 0)
     {
         NVIC_DisableIRQ(UART0_IRQn);
 
-        u32Baudrate = gLineCoding0.u32DTERate;
-        u32Tmp = 65 * u32Baudrate;
-        u32SysTmp = PllClock / 1000;
+        // Reset software FIFO
+        g_u16ComRbytes0 = 0;
+        g_u16ComRhead0 = 0;
+        g_u16ComRtail0 = 0;
 
-        /* Check we need to divide PLL clock. Note:
-           It may not work when baudrate is very small,e.g. 110 bps */
-        if (u32SysTmp > u32Tmp)
-            u32Div = u32SysTmp / u32Tmp;
+        g_u16ComTbytes0 = 0;
+        g_u16ComThead0 = 0;
+        g_u16ComTtail0 = 0;
 
-        /* Update UART peripheral clock frequency. */
-        u32SysTmp = PllClock / (u32Div + 1);
-
-        // Reset software fifo
-        comRbytes0 = 0;
-        comRhead0 = 0;
-        comRtail0 = 0;
-
-        comTbytes0 = 0;
-        comThead0 = 0;
-        comTtail0 = 0;
-
-#if 0
-        // Reset hardware fifo
+        // Reset hardware FIFO
         UART0->FIFO = UART_FIFO_TXRST_Msk | UART_FIFO_RXRST_Msk;
 
-        // Set baudrate, clock source and clock divider
-        UART0->BAUD = 0x30000000 + ((u32SysTmp + gLineCoding0.u32DTERate / 2) / gLineCoding0.u32DTERate - 2);
-        CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_PLL, CLK_CLKDIV0_UART(u32Div + 1));
-#endif
+        // Set baudrate
+        u32Baud_Div = UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, g_sLineCoding0.u32DTERate);
+
+        if (u32Baud_Div > 0xFFFF)
+            UART0->BAUD = (UART_BAUD_MODE0 | UART_BAUD_MODE0_DIVIDER(__HIRC_DIV2, g_sLineCoding0.u32DTERate));
+        else
+            UART0->BAUD = (UART_BAUD_MODE2 | u32Baud_Div);
+
 
         // Set parity
-        if (gLineCoding0.u8ParityType == 0)
+        if (g_sLineCoding0.u8ParityType == 0)
             u32Reg = 0; // none parity
-        else if (gLineCoding0.u8ParityType == 1)
+        else if (g_sLineCoding0.u8ParityType == 1)
             u32Reg = 0x08; // odd parity
-        else if (gLineCoding0.u8ParityType == 2)
+        else if (g_sLineCoding0.u8ParityType == 2)
             u32Reg = 0x18; // even parity
         else
             u32Reg = 0;
 
         // bit width
-        switch (gLineCoding0.u8DataBits)
+        switch (g_sLineCoding0.u8DataBits)
         {
         case 5:
             u32Reg |= 0;
@@ -460,7 +436,7 @@ void VCOM_LineCoding(uint8_t port)
         }
 
         // stop bit
-        if (gLineCoding0.u8CharFormat > 0)
+        if (g_sLineCoding0.u8CharFormat > 0)
             u32Reg |= 0x4; // 2 or 1.5 bits
 
         UART0->LINE = u32Reg;
@@ -476,7 +452,7 @@ void VCOM_LineCoding(uint8_t port)
         uint32_t u32parity;     /* parity       */
         uint32_t u32data_width; /* data bits    */
 
-        switch (gLineCoding1.u8CharFormat)
+        switch (g_sLineCoding1.u8CharFormat)
         {
         case 0:
             u32stop_bits = UUART_STOP_BIT_1;
@@ -491,7 +467,7 @@ void VCOM_LineCoding(uint8_t port)
             break;
         }
 
-        switch (gLineCoding1.u8ParityType)
+        switch (g_sLineCoding1.u8ParityType)
         {
         case 0:
             u32parity = UUART_PARITY_NONE;
@@ -510,7 +486,7 @@ void VCOM_LineCoding(uint8_t port)
             break;
         }
 
-        switch (gLineCoding1.u8DataBits)
+        switch (g_sLineCoding1.u8DataBits)
         {
         case 6:
             u32data_width = UUART_WORD_LEN_6;
@@ -534,7 +510,7 @@ void VCOM_LineCoding(uint8_t port)
         }
 
         UUART_SetLine_Config(UUART0,
-                             gLineCoding1.u32DTERate,
+                             g_sLineCoding1.u32DTERate,
                              u32data_width,
                              u32parity,
                              u32stop_bits);

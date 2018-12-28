@@ -8,18 +8,6 @@
 #ifndef __USBD_MASS_H__
 #define __USBD_MASS_H__
 
-/* HIRC trim setting:
- *    HIRC trim reference clock is USB signal.
- *    HIRC trim operation is keep going if clock is inaccuracy.
- *    HIRC Trim retry count limitation is 512 loops.
- *    Trim value calculation is based on average difference in 4 clocks of reference clock.
- *    Enable HIRC auto trim function and trim HIRC to 48 MHz.
- */
-#define DEFAULT_HIRC_TRIM_SETTING    ((0x1ul<<SYS_IRCTCTL_REFCKSEL_Pos)| \
-                                      (0x0ul<<SYS_IRCTCTL_CESTOPEN_Pos)| \
-                                      (0x3ul<<SYS_IRCTCTL_RETRYCNT_Pos)| \
-                                      (0x0ul<<SYS_IRCTCTL_LOOPSEL_Pos) | \
-                                      (0x2ul<<SYS_IRCTCTL_FREQSEL_Pos))
 
 /* Define the vendor id and product id */
 #define USBD_VID        0x0416
@@ -148,11 +136,11 @@ extern const unsigned char eprom[MSC_ImageSize];   /* Disk Image */
 #define STORAGE_BUFFER_SIZE 2048                /* Data transfer buffer size in 2048 bytes alignment */
 #define CDROM_BLOCK_SIZE    2048                /* logic sector size */
 
-extern uint32_t MassBlock[];
-extern uint32_t Storage_Block[];
+extern uint32_t g_au32MassBlock[];
+extern uint32_t g_au32Storage_Block[];
 
-#define MassCMD_BUF        ((uint32_t)&MassBlock[0])
-#define STORAGE_DATA_BUF   ((uint32_t)&Storage_Block[0])
+#define MassCMD_BUF        ((uint32_t)&g_au32MassBlock[0])
+#define STORAGE_DATA_BUF   ((uint32_t)&g_au32Storage_Block[0])
 
 /*-------------------------------------------------------------*/
 

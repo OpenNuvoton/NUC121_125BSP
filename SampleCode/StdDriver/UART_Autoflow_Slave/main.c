@@ -14,9 +14,9 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_u8SendData[12] = {0};
-uint8_t g_u8RecData[RXBUFSIZE]  = {0};
-volatile int32_t g_i32pointer = 0;
+uint8_t g_au8SendData[12] = {0};
+uint8_t g_au8RecData[RXBUFSIZE]  = {0};
+volatile int32_t g_i32Pointer = 0;
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -140,8 +140,8 @@ void UART0_IRQHandler(void)
     if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))
     {
         /* Handle received data */
-        g_u8RecData[g_i32pointer] = UART_READ(UART0);
-        g_i32pointer++;
+        g_au8RecData[g_i32Pointer] = UART_READ(UART0);
+        g_i32Pointer++;
     }
     /* Time out */
     else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RXTOINT_Msk))
@@ -149,8 +149,8 @@ void UART0_IRQHandler(void)
         do
         {
             /* Handle received data */
-            g_u8RecData[g_i32pointer] = UART_READ(UART0);
-            g_i32pointer++;
+            g_au8RecData[g_i32Pointer] = UART_READ(UART0);
+            g_i32Pointer++;
             /* Read data when FIFO RX pointer is not 0 */
         }
         while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
@@ -161,7 +161,7 @@ void UART0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void AutoFlow_FunctionRxTest()
 {
-    uint32_t u32i;
+    uint32_t u32Idx;
 
     printf("\n");
     printf("+-----------------------------------------------------------+\n");
@@ -206,12 +206,12 @@ void AutoFlow_FunctionRxTest()
     printf("\n Starting to receive data...\n");
 
     /* Wait for receive 1k bytes data */
-    while (g_i32pointer < RXBUFSIZE);
+    while (g_i32Pointer < RXBUFSIZE);
 
     /* Compare Data */
-    for (u32i = 0; u32i < RXBUFSIZE; u32i++)
+    for (u32Idx = 0; u32Idx < RXBUFSIZE; u32Idx++)
     {
-        if (g_u8RecData[u32i] != (u32i & 0xFF))
+        if (g_au8RecData[u32Idx] != (u32Idx & 0xFF))
         {
             printf("Compare Data Failed\n");
 

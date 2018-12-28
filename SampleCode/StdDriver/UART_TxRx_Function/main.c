@@ -13,7 +13,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_u8RecData[RXBUFSIZE]  = {0};
+uint8_t g_au8RecData[RXBUFSIZE]  = {0};
 
 volatile uint32_t g_u32comRbytes = 0;
 volatile uint32_t g_u32comRhead  = 0;
@@ -150,7 +150,7 @@ void UART_TEST_HANDLE()
             if (g_u32comRbytes < RXBUFSIZE)
             {
                 /* Enqueue the character */
-                g_u8RecData[g_u32comRtail] = u8InChar;
+                g_au8RecData[g_u32comRtail] = u8InChar;
                 g_u32comRtail = (g_u32comRtail == (RXBUFSIZE - 1)) ? 0 : (g_u32comRtail + 1);
                 g_u32comRbytes++;
             }
@@ -166,7 +166,7 @@ void UART_TEST_HANDLE()
 
         if (g_u32comRhead != tmp)
         {
-            u8InChar = g_u8RecData[g_u32comRhead];
+            u8InChar = g_au8RecData[g_u32comRhead];
 
             while (UART_IS_TX_FULL(UART0)); /* Wait Tx is not full to transmit data */
 

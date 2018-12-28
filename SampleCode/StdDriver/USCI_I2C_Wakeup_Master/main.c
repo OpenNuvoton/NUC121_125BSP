@@ -38,7 +38,7 @@ void USCI_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Rx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_MasterRx(uint32_t u32Status)
+void UI2C_MasterRx(uint32_t u32Status)
 {
     if (UI2C_GET_TIMEOUT_FLAG(UI2C0))
     {
@@ -116,7 +116,7 @@ void USCI_I2C_MasterRx(uint32_t u32Status)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Tx Callback Function                                                                          */
 /*---------------------------------------------------------------------------------------------------------*/
-void USCI_I2C_MasterTx(uint32_t u32Status)
+void UI2C_MasterTx(uint32_t u32Status)
 {
     if (UI2C_GET_TIMEOUT_FLAG(UI2C0))
     {
@@ -240,24 +240,24 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 
 }
 
-int32_t Read_Write_SLAVE(uint8_t slvaddr)
+int32_t UI2C_ReadWriteSlave(uint8_t u8SlvAddr)
 {
-    uint32_t i;
+    uint32_t u32Index;
     uint8_t u8Tmp;
 
-    g_u8DeviceAddr = slvaddr;
+    g_u8DeviceAddr = u8SlvAddr;
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8MstTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8MstTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
 
         g_u8MstDataLen = 0;
         g_u8MstEndFlag = 0;
 
         /* USCI_I2C function to write data to slave */
-        s_UI2C0HandlerFn = (UI2C_FUNC)USCI_I2C_MasterTx;
+        s_UI2C0HandlerFn = (UI2C_FUNC)UI2C_MasterTx;
 
         /* USCI_I2C as master sends START signal */
         m_Event = MASTER_SEND_START;
@@ -269,10 +269,10 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         g_u8MstEndFlag = 0;
 
         /* USCI_I2C function to read data from slave */
-        s_UI2C0HandlerFn = (UI2C_FUNC)USCI_I2C_MasterRx;
+        s_UI2C0HandlerFn = (UI2C_FUNC)UI2C_MasterRx;
 
         g_u8MstDataLen = 0;
-        g_u8DeviceAddr = slvaddr;
+        g_u8DeviceAddr = u8SlvAddr;
 
         m_Event = MASTER_SEND_START;
         UI2C_SET_CONTROL_REG(UI2C0, UI2C_CTL_STA);
@@ -292,7 +292,7 @@ int32_t Read_Write_SLAVE(uint8_t slvaddr)
         }
     }
 
-    printf("Master Access Slave (0x%X) Test OK\n", slvaddr);
+    printf("Master Access Slave (0x%X) Test OK\n", u8SlvAddr);
     return 0;
 }
 
@@ -335,13 +335,13 @@ int main()
     /* Access Slave with no address mask */
     printf("\n");
     printf(" == No Mask Address ==\n");
-    Read_Write_SLAVE(0x15);
+    UI2C_ReadWriteSlave(0x15);
     printf("SLAVE Address test OK.\n");
 
     /* Access Slave with address mask */
     printf("\n");
     printf(" == Mask Address ==\n");
-    Read_Write_SLAVE(0x15 & ~0x01);
+    UI2C_ReadWriteSlave(0x15 & ~0x01);
     printf("SLAVE Address Mask test OK.\n");
 
     while (1);

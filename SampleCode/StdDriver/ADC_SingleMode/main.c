@@ -95,7 +95,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC single mode test.                                                                                  */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcSingleModeTest()
+void AdcSingleModeTest(void)
 {
     uint8_t  u8Option;
     int32_t  i32ConversionData;

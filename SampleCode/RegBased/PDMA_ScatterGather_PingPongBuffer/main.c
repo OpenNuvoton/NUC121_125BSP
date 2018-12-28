@@ -31,9 +31,9 @@ PDMA_DSCT_T DMA_DESC[2]; /* Descriptor table */
 void PDMA_IRQHandler(void)
 {
 
-    uint32_t u32intsts = PDMA_GET_INT_STATUS();
+    uint32_t u32Intsts = PDMA_GET_INT_STATUS();
 
-    if (u32intsts & PDMA_INTSTS_TDIF_Msk)
+    if (u32Intsts & PDMA_INTSTS_TDIF_Msk)
     {
 
         /* Check channel transfer done status */
@@ -67,7 +67,7 @@ void PDMA_IRQHandler(void)
         }
 
     }
-    else if (u32intsts & PDMA_INTSTS_TEIF_Msk)
+    else if (u32Intsts & PDMA_INTSTS_TEIF_Msk)
     {
         /*
            The flag will set if scatter-gather table is empty while PDMA transferring.
@@ -107,7 +107,7 @@ void PDMA_IRQHandler(void)
             while (1);
         }
     }
-    else if (u32intsts & PDMA_INTSTS_ABTIF_Msk)
+    else if (u32Intsts & PDMA_INTSTS_ABTIF_Msk)
     {
 
         /*

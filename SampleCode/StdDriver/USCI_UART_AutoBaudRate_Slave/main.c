@@ -2,7 +2,7 @@
  * @file     main.c
  * @version  V3.00
  * @brief    Show how to use auto baud rate detection function.
- *           This sample code needs to work with UACI_UART_AutoBaudRate_Master.
+ *           This sample code needs to work with USCI_UART_AutoBaudRate_Master.
  *
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
@@ -12,7 +12,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t GetUartBaudrate(UUART_T *uuart);
+uint32_t GetUartBaudrate(UUART_T *psUUART);
 void AutoBaudRate_RxTest(void);
 
 
@@ -118,7 +118,7 @@ int main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Get UUART Baud Rate Function                                                                            */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t GetUuartBaudrate(UUART_T *uuart)
+uint32_t GetUuartBaudrate(UUART_T *psUUART)
 {
     uint32_t u32PCLKFreq, u32PDSCnt, u32DSCnt, u32ClkDiv;
 
@@ -126,13 +126,13 @@ uint32_t GetUuartBaudrate(UUART_T *uuart)
     u32PCLKFreq = CLK_GetPCLK0Freq();
 
     /* Get pre-divider counter */
-    u32PDSCnt = ((uuart->BRGEN & UUART_BRGEN_PDSCNT_Msk) >> UUART_BRGEN_PDSCNT_Pos);
+    u32PDSCnt = ((psUUART->BRGEN & UUART_BRGEN_PDSCNT_Msk) >> UUART_BRGEN_PDSCNT_Pos);
 
     /* Get denominator counter */
-    u32DSCnt = ((uuart->BRGEN & UUART_BRGEN_DSCNT_Msk) >> UUART_BRGEN_DSCNT_Pos);
+    u32DSCnt = ((psUUART->BRGEN & UUART_BRGEN_DSCNT_Msk) >> UUART_BRGEN_DSCNT_Pos);
 
     /* Get clock divider */
-    u32ClkDiv = ((uuart->BRGEN & UUART_BRGEN_CLKDIV_Msk) >> UUART_BRGEN_CLKDIV_Pos);
+    u32ClkDiv = ((psUUART->BRGEN & UUART_BRGEN_CLKDIV_Msk) >> UUART_BRGEN_CLKDIV_Pos);
 
     return (u32PCLKFreq / (u32PDSCnt + 1) / (u32DSCnt + 1) / (u32ClkDiv + 1));
 }

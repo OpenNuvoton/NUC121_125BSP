@@ -36,9 +36,9 @@ uint32_t volatile g_u32IsTestOver = 0;
  */
 void PDMA_IRQHandler(void)
 {
-    uint32_t status = PDMA_GET_INT_STATUS();
+    uint32_t u32Status = PDMA_GET_INT_STATUS();
 
-    if (status & PDMA_INTSTS_ABTIF_Msk)   /* abort */
+    if (u32Status & PDMA_INTSTS_ABTIF_Msk)   /* abort */
     {
         /* Check if channel 2 has abort error */
         if (PDMA_GET_ABORT_STS() & PDMA_ABTSTS_ABTIF2_Msk)
@@ -47,7 +47,7 @@ void PDMA_IRQHandler(void)
         /* Clear abort flag of channel 2 */
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF2_Msk);
     }
-    else if (status & PDMA_INTSTS_TDIF_Msk)     /* done */
+    else if (u32Status & PDMA_INTSTS_TDIF_Msk)     /* done */
     {
         /* Check transmission of channel 2 has been transfer done */
         if (PDMA_GET_TD_STS() & PDMA_TDSTS_TDIF2_Msk)

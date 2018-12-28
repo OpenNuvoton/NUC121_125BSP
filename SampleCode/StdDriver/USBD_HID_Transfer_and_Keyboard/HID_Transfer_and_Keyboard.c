@@ -30,18 +30,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
-
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -56,27 +49,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM
@@ -367,7 +351,7 @@ typedef struct
     uint32_t u32Checksum;
 } CMD_T;
 
-CMD_T gCmd;
+CMD_T g_sCmd;
 
 static uint8_t  g_u8PageBuff[PAGE_SIZE] = {0};    /* Page buffer to upload/download through HID report */
 static uint32_t g_u32BytesInPageBuf = 0;          /* The bytes of data in g_u8PageBuff */
@@ -493,45 +477,45 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
     uint32_t u32sum;
 
 
-    USBD_MemCopy((uint8_t *)&gCmd, pu8Buffer, u32BufferLen);
+    USBD_MemCopy((uint8_t *)&g_sCmd, pu8Buffer, u32BufferLen);
 
     /* Check size */
-    if ((gCmd.u8Size > sizeof(gCmd)) || (gCmd.u8Size > u32BufferLen))
+    if ((g_sCmd.u8Size > sizeof(g_sCmd)) || (g_sCmd.u8Size > u32BufferLen))
         return -1;
 
     /* Check signature */
-    if (gCmd.u32Signature != HID_CMD_SIGNATURE)
+    if (g_sCmd.u32Signature != HID_CMD_SIGNATURE)
         return -1;
 
     /* Calculate checksum & check it*/
-    u32sum = CalCheckSum((uint8_t *)&gCmd, gCmd.u8Size);
+    u32sum = CalCheckSum((uint8_t *)&g_sCmd, g_sCmd.u8Size);
 
-    if (u32sum != gCmd.u32Checksum)
+    if (u32sum != g_sCmd.u32Checksum)
         return -1;
 
-    switch (gCmd.u8Cmd)
+    switch (g_sCmd.u8Cmd)
     {
     case HID_CMD_ERASE:
     {
-        HID_CmdEraseSectors(&gCmd);
+        HID_CmdEraseSectors(&g_sCmd);
         break;
     }
 
     case HID_CMD_READ:
     {
-        HID_CmdReadPages(&gCmd);
+        HID_CmdReadPages(&g_sCmd);
         break;
     }
 
     case HID_CMD_WRITE:
     {
-        HID_CmdWritePages(&gCmd);
+        HID_CmdWritePages(&g_sCmd);
         break;
     }
 
     case HID_CMD_TEST:
     {
-        HID_CmdTest(&gCmd);
+        HID_CmdTest(&g_sCmd);
         break;
     }
 
@@ -551,10 +535,10 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
     uint32_t u32PageCnt;
 
     /* Get command information */
-    u8Cmd        = gCmd.u8Cmd;
-    u32StartPage = gCmd.u32Arg1;
-    u32Pages     = gCmd.u32Arg2;
-    u32PageCnt   = gCmd.u32Signature; /* The signature word is used to count pages */
+    u8Cmd        = g_sCmd.u8Cmd;
+    u32StartPage = g_sCmd.u32Arg1;
+    u32Pages     = g_sCmd.u32Arg2;
+    u32PageCnt   = g_sCmd.u32Signature; /* The signature word is used to count pages */
 
 
     /* Check if it is in the data phase of write command */
@@ -588,13 +572,13 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
         }
 
         /* Update command status */
-        gCmd.u8Cmd        = u8Cmd;
-        gCmd.u32Signature = u32PageCnt;
+        g_sCmd.u8Cmd        = u8Cmd;
+        g_sCmd.u32Signature = u32PageCnt;
     }
     else
     {
         /* Check and process the command packet */
-        if (ProcessCommand(pu8EpBuf, u32Size))
+        if (ProcessCommand(pu8EpBuf, sizeof(g_sCmd)))
         {
             printf("Unknown HID command!\n");
         }
@@ -606,13 +590,13 @@ void HID_SetInReport(void)
     uint32_t u32StartPage;
     uint32_t u32TotalPages;
     uint32_t u32PageCnt;
-    uint8_t *ptr;
+    uint8_t *pu8Ptr;
     uint8_t u8Cmd;
 
-    u8Cmd        = gCmd.u8Cmd;
-    u32StartPage = gCmd.u32Arg1;
-    u32TotalPages = gCmd.u32Arg2;
-    u32PageCnt   = gCmd.u32Signature;
+    u8Cmd        = g_sCmd.u8Cmd;
+    u32StartPage = g_sCmd.u32Arg1;
+    u32TotalPages = g_sCmd.u32Arg2;
+    u32PageCnt   = g_sCmd.u32Signature;
 
     /* Check if it is in data phase of read command */
     if (u8Cmd == HID_CMD_READ)
@@ -640,39 +624,39 @@ void HID_SetInReport(void)
             }
 
             /* Prepare the data for next HID IN transfer */
-            ptr = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
-            USBD_MemCopy(ptr, (void *)&g_u8PageBuff[PAGE_SIZE - g_u32BytesInPageBuf], EP2_MAX_PKT_SIZE);
+            pu8Ptr = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
+            USBD_MemCopy(pu8Ptr, (void *)&g_u8PageBuff[PAGE_SIZE - g_u32BytesInPageBuf], EP2_MAX_PKT_SIZE);
             USBD_SET_PAYLOAD_LEN(EP2, EP2_MAX_PKT_SIZE);
             g_u32BytesInPageBuf -= EP2_MAX_PKT_SIZE;
         }
     }
 
-    gCmd.u8Cmd        = u8Cmd;
-    gCmd.u32Signature = u32PageCnt;
+    g_sCmd.u8Cmd        = u8Cmd;
+    g_sCmd.u32Signature = u32PageCnt;
 }
 
 void HID_UpdateKbData(void)
 {
     int32_t i;
-    uint8_t *buf;
-    uint32_t key = 0xF;
-    static uint32_t preKey;
+    uint8_t *pu8Buf;
+    uint32_t u32Key = 0xF;
+    static uint32_t u32PreKey;
 
     if (g_u8EP4Ready)
     {
-        buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP4));
+        pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP4));
 
         /* If PB.15 = 0, just report it is key 'a' */
-        key = (PB->PIN & (1 << 15)) ? 0 : 1;
+        u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;
 
-        if (key == 0)
+        if (u32Key == 0)
         {
             for (i = 0; i < 8; i++)
             {
-                buf[i] = 0;
+                pu8Buf[i] = 0;
             }
 
-            if (key != preKey)
+            if (u32Key != u32PreKey)
             {
                 /* Trigger to note key release */
                 USBD_SET_PAYLOAD_LEN(EP4, 8);
@@ -680,8 +664,8 @@ void HID_UpdateKbData(void)
         }
         else
         {
-            preKey = key;
-            buf[2] = 0x04; /* Key 'a' */
+            u32PreKey = u32Key;
+            pu8Buf[2] = 0x04; /* Key 'a' */
             USBD_SET_PAYLOAD_LEN(EP4, 8);
         }
     }

@@ -41,15 +41,6 @@ static volatile uint8_t g_u8RecEn = 0;
 static volatile uint8_t g_u8PlayEn = 0;      /* To indicate data is output to I2S */
 static volatile int32_t g_i32AdjFlag = 0;    /* To indicate current I2S frequency adjustment status */
 
-/*
-typedef __packed struct {
-    uint8_t u8Cmd;
-    uint8_t u8Size;
-    uint32_t u32Arg1;
-    uint32_t u32Arg2;
-    uint32_t u32Signature;
-    uint32_t u32Checksum;
-} CMD_T;*/
 
 /*******************************************************************/
 typedef enum
@@ -143,17 +134,11 @@ void USBD_IRQHandler(void)
         {
             /* USB Plug In */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
         else
         {
             /* USB Un-plug */
             USBD_DISABLE_USB();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
     }
 
@@ -168,27 +153,18 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
         {
             /* Enable USB but disable PHY */
             USBD_DISABLE_PHY();
-
-            /*Disable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING & (~SYS_IRCTCTL_FREQSEL_Msk);
         }
 
         if (u32State & USBD_STATE_RESUME)
         {
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
-
-            /*Enable HIRC tirm*/
-            SYS->IRCTCTL = DEFAULT_HIRC_TRIM_SETTING;
         }
 
 #ifdef SUPPORT_LPM

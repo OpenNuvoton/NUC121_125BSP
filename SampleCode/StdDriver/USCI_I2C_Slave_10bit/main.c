@@ -15,7 +15,7 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 volatile uint8_t g_u8SlvData[256];
-volatile uint32_t slave_buff_addr;
+volatile uint32_t g_u32SlaveBuffAddr;
 volatile uint8_t g_au8SlvRxData[4];
 volatile uint16_t g_u16SlvRcvAddr;
 volatile uint8_t g_u8SlvDataLen;
@@ -72,16 +72,16 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         {
             g_u8SlvDataLen = 0;
 
-            UI2C_SET_DATA(UI2C0, g_u8SlvData[slave_buff_addr]);
-            slave_buff_addr++;
+            UI2C_SET_DATA(UI2C0, g_u8SlvData[g_u32SlaveBuffAddr]);
+            g_u32SlaveBuffAddr++;
             g_u16SlvRcvAddr = (uint8_t)UI2C_GET_DATA(UI2C0);
         }
         else if (s_Event == SLAVE_L_WR_ADDRESS_ACK)
         {
             if ((UI2C0->PROTSTS & UI2C_PROTSTS_SLAREAD_Msk) == UI2C_PROTSTS_SLAREAD_Msk)
             {
-                UI2C_SET_DATA(UI2C0, g_u8SlvData[slave_buff_addr]);
-                slave_buff_addr++;
+                UI2C_SET_DATA(UI2C0, g_u8SlvData[g_u32SlaveBuffAddr]);
+                g_u32SlaveBuffAddr++;
             }
             else
             {
@@ -92,8 +92,8 @@ void UI2C_SlaveTRx(uint32_t u32Status)
         }
         else if (s_Event == SLAVE_L_RD_ADDRESS_ACK)
         {
-            UI2C_SET_DATA(UI2C0, g_u8SlvData[slave_buff_addr]);
-            slave_buff_addr++;
+            UI2C_SET_DATA(UI2C0, g_u8SlvData[g_u32SlaveBuffAddr]);
+            g_u32SlaveBuffAddr++;
         }
         else if (s_Event == SLAVE_GET_DATA)
         {
@@ -102,12 +102,12 @@ void UI2C_SlaveTRx(uint32_t u32Status)
 
             if (g_u8SlvDataLen == 2)
             {
-                slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+                g_u32SlaveBuffAddr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
             }
 
             if (g_u8SlvDataLen == 3)
             {
-                g_u8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
+                g_u8SlvData[g_u32SlaveBuffAddr] = g_au8SlvRxData[2];
                 g_u8SlvDataLen = 0;
             }
         }
@@ -206,7 +206,7 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 /*---------------------------------------------------------------------------------------------------------*/
 int main()
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -244,8 +244,8 @@ int main()
     s_Event = SLAVE_H_WR_ADDRESS_ACK;
     UI2C_SET_CONTROL_REG(UI2C0, (UI2C_CTL_PTRG | UI2C_CTL_AA));
 
-    for (i = 0; i < 0x100; i++)
-        g_u8SlvData[i] = 0;
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
+        g_u8SlvData[u32Index] = 0;
 
     /* UI2C0 function to Slave receive/transmit data */
     s_UI2C0HandlerFn = UI2C_SlaveTRx;

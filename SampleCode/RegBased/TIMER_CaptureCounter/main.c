@@ -170,7 +170,7 @@ int main(void)
     TIMER2->EXTCTL = TIMER_EXTCTL_CAPEN_Msk | TIMER_CAPTURE_FREE_COUNTING_MODE | TIMER_CAPTURE_FALLING_EDGE | TIMER_EXTCTL_CAPIEN_Msk;
 
     /* Check Timer2 capture trigger interrupt counts */
-    while (g_au32TMRINTCount[2] <= 10)
+    while ((g_au32TMRINTCount[2] <= 10) && (u32InitCount < 10))
     {
         if (g_au32TMRINTCount[2] != u32InitCount)
         {
@@ -220,7 +220,7 @@ int main(void)
     TIMER2->EXTCTL = TIMER_EXTCTL_CAPEN_Msk | TIMER_CAPTURE_FREE_COUNTING_MODE | TIMER_CAPTURE_RISING_EDGE | TIMER_EXTCTL_CAPIEN_Msk;
 
     /* Check Timer2 capture trigger interrupt counts */
-    while (g_au32TMRINTCount[2] <= 10)
+    while ((g_au32TMRINTCount[2] <= 10) && (u32InitCount < 10))
     {
         if (g_au32TMRINTCount[2] != u32InitCount)
         {

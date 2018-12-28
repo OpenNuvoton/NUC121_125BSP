@@ -29,19 +29,19 @@
  */
 void PWM0_IRQHandler(void)
 {
-    static uint32_t cnt;
-    static uint32_t out;
+    static uint32_t u32Cnt;
+    static uint32_t u32Out;
 
     /* Channel 0 frequency is 5000Hz, every 1 second enter this IRQ handler 5000 times. */
-    if (++cnt == 5000)
+    if (++u32Cnt == 5000)
     {
-        if (out)
+        if (u32Out)
             PWM0->POEN |= (0xF);
         else
             PWM0->POEN &= ~(0xF);
 
-        out ^= 1;
-        cnt = 0;
+        u32Out ^= 1;
+        u32Cnt = 0;
     }
 
     /* Clear channel 0 period interrupt flag */

@@ -13,7 +13,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-volatile uint32_t slave_buff_addr;
+volatile uint32_t g_u32SlaveBuffAddr;
 volatile uint8_t g_au8SlvData[256];
 volatile uint8_t g_au8SlvRxData[3];
 
@@ -66,12 +66,12 @@ void I2C_GCSlaveRx(uint32_t u32Status)
 
         if (g_u8SlvDataLen == 2)
         {
-            slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            g_u32SlaveBuffAddr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
 
         if (g_u8SlvDataLen == 3)
         {
-            g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
+            g_au8SlvData[g_u32SlaveBuffAddr] = g_au8SlvRxData[2];
             g_u8SlvDataLen = 0;
         }
 
@@ -89,7 +89,7 @@ void I2C_GCSlaveRx(uint32_t u32Status)
         g_u8SlvDataLen = 0;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
 
-        if (slave_buff_addr == 0xFF)
+        if (g_u32SlaveBuffAddr == 0xFF)
         {
             g_u8SlvEndFlag = 1;
         }
@@ -204,7 +204,7 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -244,9 +244,9 @@ int32_t main(void)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
 
     /* Clear receive buffer */
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8SlvData[i] = 0;
+        g_au8SlvData[u32Index] = 0;
     }
 
     g_u8SlvEndFlag = 0;
@@ -260,13 +260,13 @@ int32_t main(void)
     while (g_u8SlvEndFlag == 0);
 
     /* Check receive data correct or not */
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8SlvTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8SlvTxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8SlvTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8SlvTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8SlvTxData[2] = (uint8_t)(g_au8SlvTxData[1] + 3);
 
-        if (g_au8SlvData[i] != g_au8SlvTxData[2])
+        if (g_au8SlvData[u32Index] != g_au8SlvTxData[2])
         {
             printf("GC Mode Receive data fail.\n");
 

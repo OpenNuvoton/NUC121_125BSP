@@ -13,7 +13,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint32_t slave_buff_addr;
+uint32_t g_u32SlaveBuffAddr;
 uint8_t g_au8SlvData[256];
 uint8_t g_au8SlvRxData[3];
 uint8_t g_u8SlvPWRDNWK, g_u8SlvI2CWK;
@@ -88,12 +88,12 @@ void I2C_SlaveTRx(uint32_t u32Status)
 
         if (g_u8SlvDataLen == 2)
         {
-            slave_buff_addr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
+            g_u32SlaveBuffAddr = (g_au8SlvRxData[0] << 8) + g_au8SlvRxData[1];
         }
 
         if (g_u8SlvDataLen == 3)
         {
-            g_au8SlvData[slave_buff_addr] = g_au8SlvRxData[2];
+            g_au8SlvData[g_u32SlaveBuffAddr] = g_au8SlvRxData[2];
             g_u8SlvDataLen = 0;
         }
 
@@ -101,8 +101,8 @@ void I2C_SlaveTRx(uint32_t u32Status)
     }
     else if (u32Status == 0xA8)                 /* Own SLA+R has been receive; ACK has been return */
     {
-        I2C_SET_DATA(I2C0, g_au8SlvData[slave_buff_addr]);
-        slave_buff_addr++;
+        I2C_SET_DATA(I2C0, g_au8SlvData[g_u32SlaveBuffAddr]);
+        g_u32SlaveBuffAddr++;
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI_AA);
     }
     else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
@@ -220,7 +220,7 @@ void I2C0_Close(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -251,9 +251,9 @@ int32_t main(void)
     /* Init I2C0 */
     I2C0_Init();
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8SlvData[i] = 0;
+        g_au8SlvData[u32Index] = 0;
     }
 
     /* I2C function to Transmit/Receive data as slave */

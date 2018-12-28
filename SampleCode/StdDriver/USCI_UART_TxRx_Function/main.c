@@ -13,7 +13,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-uint8_t g_u8RecData[RXBUFSIZE]  = {0};
+uint8_t g_au8RecData[RXBUFSIZE]  = {0};
 
 volatile uint32_t g_u32comRbytes = 0;
 volatile uint32_t g_u32comRhead  = 0;
@@ -152,7 +152,7 @@ void USCI_UART_TEST_HANDLE()
             if (g_u32comRbytes < RXBUFSIZE)
             {
                 /* Enqueue the character */
-                g_u8RecData[g_u32comRtail] = u8InChar;
+                g_au8RecData[g_u32comRtail] = u8InChar;
                 g_u32comRtail = (g_u32comRtail == (RXBUFSIZE - 1)) ? 0 : (g_u32comRtail + 1);
                 g_u32comRbytes++;
             }
@@ -164,15 +164,15 @@ void USCI_UART_TEST_HANDLE()
     if (u32IntSts & UUART_PROTSTS_TXENDIF_Msk)
     {
 
-        uint16_t tmp;
-        tmp = g_u32comRtail;
+        uint32_t u32Tmp;
+        u32Tmp = g_u32comRtail;
 
         /* Cleare TX end interrupt flag */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_TXENDIF_Msk);
 
-        if (g_u32comRhead != tmp)
+        if (g_u32comRhead != u32Tmp)
         {
-            u8InChar = g_u8RecData[g_u32comRhead];
+            u8InChar = g_au8RecData[g_u32comRhead];
 
             while (UUART_IS_TX_FULL(UUART0)); /* Wait Tx is not full to transmit data */
 

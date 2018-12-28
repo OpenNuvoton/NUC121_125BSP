@@ -21,7 +21,7 @@
 
 /*--------------------------------------------------------------------------------------*/
 /* Capture function to calculate the input waveform information                         */
-/* u32Count[4] : Keep the internal counter value when input signal rising / falling     */
+/* u16Count[4] : Keep the internal counter value when input signal rising / falling     */
 /*               happens                                                                */
 /*                                                                                      */
 /* time    A    B     C     D                                                           */
@@ -34,7 +34,7 @@
 /*--------------------------------------------------------------------------------------*/
 void CalPeriodTime(PWM_T *PWM, uint32_t u32Ch)
 {
-    uint16_t u32Count[4];
+    uint16_t u16Count[4];
     uint32_t u32i;
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
 
@@ -58,7 +58,7 @@ void CalPeriodTime(PWM_T *PWM, uint32_t u32Ch)
         PWM_ClearCaptureIntFlag(PWM, u32Ch, PWM_CAPTURE_INT_FALLING_LATCH | PWM_CAPTURE_INT_RISING_LATCH);
 
         /* Get Capture Falling Latch Counter Data */
-        u32Count[u32i++] = PWM_GET_CAPTURE_FALLING_DATA(PWM, u32Ch);
+        u16Count[u32i++] = PWM_GET_CAPTURE_FALLING_DATA(PWM, u32Ch);
 
         /* Wait for Capture Rising Indicator */
         while (PWM_GetCaptureIntFlag(PWM, u32Ch) < 2);
@@ -67,18 +67,18 @@ void CalPeriodTime(PWM_T *PWM, uint32_t u32Ch)
         PWM_ClearCaptureIntFlag(PWM, u32Ch, PWM_CAPTURE_INT_RISING_LATCH);
 
         /* Get Capture Rising Latch Counter Data */
-        u32Count[u32i++] = PWM_GET_CAPTURE_RISING_DATA(PWM, u32Ch);
+        u16Count[u32i++] = PWM_GET_CAPTURE_RISING_DATA(PWM, u32Ch);
     }
 
-    u16RisingTime = u32Count[1];
+    u16RisingTime = u16Count[1];
 
-    u16FallingTime = u32Count[0];
+    u16FallingTime = u16Count[0];
 
-    u16HighPeriod = u32Count[1] - u32Count[2];
+    u16HighPeriod = u16Count[1] - u16Count[2];
 
-    u16LowPeriod = 0x10000 - u32Count[1];
+    u16LowPeriod = 0x10000 - u16Count[1];
 
-    u16TotalPeriod = 0x10000 - u32Count[2];
+    u16TotalPeriod = 0x10000 - u16Count[2];
 
     printf("\nPWM generate: \nHigh Period=14999 ~ 15001, Low Period=34999 ~ 35001, Total Period=49999 ~ 50001\n");
     printf("\nCapture Result: Rising Time = %d, Falling Time = %d \nHigh Period = %d, Low Period = %d, Total Period = %d.\n\n",

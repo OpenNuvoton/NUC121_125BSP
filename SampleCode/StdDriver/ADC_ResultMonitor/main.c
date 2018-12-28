@@ -95,7 +95,7 @@ void UART0_Init()
 /* Description:                                                                                             */
 /*   ADC result monitor function test.                                                                      */
 /*----------------------------------------------------------------------------------------------------------*/
-void AdcResultMonitorTest()
+void AdcResultMonitorTest(void)
 {
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");

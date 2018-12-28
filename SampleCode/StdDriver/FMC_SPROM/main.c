@@ -15,7 +15,7 @@
    BS should be APROM or APROM with IAP, flash lock should be disabled,
    please use target option -> Utilities -> setting -> config to check */
 
-extern void Sprom_function(void);
+extern void SPROM_Function(void);
 
 void SYS_Init(void)
 {
@@ -66,7 +66,7 @@ void UART_Init(void)
     UART_Open(UART0, 115200);
 }
 
-void SPROM_Dump(void)
+void SPROMDump(void)
 {
     volatile uint32_t  addr;
     printf("Dump SPROM from 0x200000 to 0x2001FF\n");
@@ -108,8 +108,8 @@ int main(void)
     {
         printf("======= SPROM is in non-security mode ========\n");
         printf("User should see valid data on SPROM with non-security mode\n");
-        SPROM_Dump();
-        Sprom_function();
+        SPROMDump();
+        SPROM_Function();
         printf("--------------------------------------------------------\n");
         printf("press any key to enter in SPROM security mode....\n");
         getchar();
@@ -123,8 +123,8 @@ int main(void)
 
     printf("======= SPROM is in security mode =======\n");
     printf("User should see all zero data on SPROM with security mode\n");
-    SPROM_Dump();
-    Sprom_function();
+    SPROMDump();
+    SPROM_Function();
     printf("--------------------------------------------------------\n");
 
     FMC_Close();

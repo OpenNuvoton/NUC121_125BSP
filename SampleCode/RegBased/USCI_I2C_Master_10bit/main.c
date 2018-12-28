@@ -316,18 +316,18 @@ void UART_Init(void)
     UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 115200);
 }
 
-int32_t Read_Write_SLAVE(uint16_t slvaddr)
+int32_t UI2C_ReadWriteSlave(uint16_t u16SlvAddr)
 {
-    uint32_t i;
+    uint32_t u32Index;
 
     /* Init Send 10-bit Addr */
-    g_u8DeviceHAddr = (slvaddr >> 8) | SLV_10BIT_ADDR;
-    g_u8DeviceLAddr = slvaddr & 0xFF;
+    g_u8DeviceHAddr = (u16SlvAddr >> 8) | SLV_10BIT_ADDR;
+    g_u8DeviceLAddr = u16SlvAddr & 0xFF;
 
-    for (i = 0; i < 0x100; i++)
+    for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
-        g_au8MstTxData[0] = (uint8_t)((i & 0xFF00) >> 8);
-        g_au8MstTxData[1] = (uint8_t)(i & 0x00FF);
+        g_au8MstTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
+        g_au8MstTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);
 
         g_u8MstDataLen = 0;
@@ -366,7 +366,7 @@ int32_t Read_Write_SLAVE(uint16_t slvaddr)
         }
     }
 
-    printf("Master Access Slave (0x%X) Test OK\n", slvaddr);
+    printf("Master Access Slave (0x%X) Test OK\n", u16SlvAddr);
     return 0;
 }
 
@@ -410,14 +410,14 @@ int main()
     /* Master Access Slave with no address mask */
     printf("\n");
     printf(" == No Mask Address ==\n");
-    Read_Write_SLAVE(0x116);
-    Read_Write_SLAVE(0x136);
+    UI2C_ReadWriteSlave(0x116);
+    UI2C_ReadWriteSlave(0x136);
     printf("SLAVE Address test OK.\n");
     /* Master Access Slave with address mask */
     printf("\n");
     printf(" == Mask Address ==\n");
-    Read_Write_SLAVE(0x116 & ~0x04);
-    Read_Write_SLAVE(0x136 & ~0x02);
+    UI2C_ReadWriteSlave(0x116 & ~0x04);
+    UI2C_ReadWriteSlave(0x136 & ~0x02);
     printf("SLAVE Address Mask test OK.\n");
 
     while (1);

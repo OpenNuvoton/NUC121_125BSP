@@ -31,25 +31,25 @@ typedef struct
 #define NAU8822_ADDR    0x1A                /* NAU8822 Device ID */
 /* Function prototype declaration */
 void SYS_Init(void);
-volatile uint8_t u8TxIdx = 0, u8RxIdx = 0;
-uint32_t PcmRxBuff[2][BUFF_LEN] = {0};
-uint32_t PcmTxBuff[2][BUFF_LEN] = {0};
+volatile uint8_t g_u8TxIdx = 0, g_u8RxIdx = 0;
+uint32_t g_au32PcmRxBuff[2][BUFF_LEN] = {0};
+uint32_t g_au32PcmTxBuff[2][BUFF_LEN] = {0};
 uint32_t volatile u32BuffPos = 0;
 DESC_TABLE_T g_asDescTable_TX[2], g_asDescTable_RX[2];
 
 void NAU8822_Setup(void);
 
-void Delay(int count)
+void Delay(int i32DelayCount)
 {
-    volatile uint32_t i;
+    volatile uint32_t u32Count;
 
-    for (i = 0; i < count ; i++);
+    for (u32Count = 0; u32Count < i32DelayCount ; u32Count++);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Write 9-bit data to 7-bit address register of NAU8822 with I2C0                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-void I2C_WriteNAU8822(uint8_t u8addr, uint16_t u16data)
+void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
 {
 
     I2C_START(I2C0);
@@ -59,11 +59,11 @@ void I2C_WriteNAU8822(uint8_t u8addr, uint16_t u16data)
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     I2C_WAIT_READY(I2C0);
 
-    I2C_SET_DATA(I2C0, (uint8_t)((u8addr << 1) | (u16data >> 8)));
+    I2C_SET_DATA(I2C0, (uint8_t)((u8Addr << 1) | (u16Data >> 8)));
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     I2C_WAIT_READY(I2C0);
 
-    I2C_SET_DATA(I2C0, (uint8_t)(u16data & 0x00FF));
+    I2C_SET_DATA(I2C0, (uint8_t)(u16Data & 0x00FF));
     I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     I2C_WAIT_READY(I2C0);
 
@@ -77,24 +77,24 @@ void PDMA_Init(void)
 {
     /* Tx description */
     g_asDescTable_TX[0].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
-    g_asDescTable_TX[0].SA = (uint32_t)&PcmTxBuff[0];
+    g_asDescTable_TX[0].SA = (uint32_t)&g_au32PcmTxBuff[0];
     g_asDescTable_TX[0].DA = (uint32_t)&SPI0->TX;
     g_asDescTable_TX[0].FIRST = (uint32_t)&g_asDescTable_TX[1] - (PDMA->SCATBA);
 
     g_asDescTable_TX[1].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
-    g_asDescTable_TX[1].SA = (uint32_t)&PcmTxBuff[1];
+    g_asDescTable_TX[1].SA = (uint32_t)&g_au32PcmTxBuff[1];
     g_asDescTable_TX[1].DA = (uint32_t)&SPI0->TX;
     g_asDescTable_TX[1].FIRST = (uint32_t)&g_asDescTable_TX[0] - (PDMA->SCATBA);   //link to first description
 
     /* Rx description */
     g_asDescTable_RX[0].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
     g_asDescTable_RX[0].SA = (uint32_t)&SPI0->RX;
-    g_asDescTable_RX[0].DA = (uint32_t)&PcmRxBuff[0];
+    g_asDescTable_RX[0].DA = (uint32_t)&g_au32PcmRxBuff[0];
     g_asDescTable_RX[0].FIRST = (uint32_t)&g_asDescTable_RX[1] - (PDMA->SCATBA);
 
     g_asDescTable_RX[1].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_FIX | PDMA_DAR_INC | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
     g_asDescTable_RX[1].SA = (uint32_t)&SPI0->RX;
-    g_asDescTable_RX[1].DA = (uint32_t)&PcmRxBuff[1];
+    g_asDescTable_RX[1].DA = (uint32_t)&g_au32PcmRxBuff[1];
     g_asDescTable_RX[1].FIRST = (uint32_t)&g_asDescTable_RX[0] - (PDMA->SCATBA);   //link to first description
 
     /* Open PDMA channel 1 for SPI TX and channel 2 for SPI RX */
@@ -112,17 +112,17 @@ void PDMA_Init(void)
 }
 
 /* Once PDMA has transferred, software need to reset Scatter-Gather table */
-void PDMA_ResetTxSGTable(uint8_t id)
+void PDMA_ResetTxSGTable(uint8_t u8Id)
 {
-    g_asDescTable_TX[id].CTL |= PDMA_OP_SCATTER;
-    g_asDescTable_TX[id].CTL |= ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos);
+    g_asDescTable_TX[u8Id].CTL |= PDMA_OP_SCATTER;
+    g_asDescTable_TX[u8Id].CTL |= ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos);
 }
 
 /* Once PDMA has transferred, software need to reset Scatter-Gather table */
-void PDMA_ResetRxSGTable(uint8_t id)
+void PDMA_ResetRxSGTable(uint8_t u8Id)
 {
-    g_asDescTable_RX[id].CTL |= PDMA_OP_SCATTER;
-    g_asDescTable_RX[id].CTL |= ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos);
+    g_asDescTable_RX[u8Id].CTL |= PDMA_OP_SCATTER;
+    g_asDescTable_RX[u8Id].CTL |= ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos);
 }
 
 /* Init I2C interface */
@@ -313,17 +313,17 @@ void PDMA_IRQHandler(void)
         if (PDMA_GET_TD_STS() & 0x4)            /* channel 2 done */
         {
             /* Copy RX data to TX buffer */
-            memcpy(&PcmTxBuff[u8TxIdx ^ 1], &PcmRxBuff[u8RxIdx], BUFF_LEN * 4);
+            memcpy(&g_au32PcmTxBuff[g_u8TxIdx ^ 1], &g_au32PcmRxBuff[g_u8RxIdx], BUFF_LEN * 4);
             /* Reset PDMA Scater-Gatter table */
-            PDMA_ResetRxSGTable(u8RxIdx);
-            u8RxIdx ^= 1;
+            PDMA_ResetRxSGTable(g_u8RxIdx);
+            g_u8RxIdx ^= 1;
         }
 
         if (PDMA_GET_TD_STS() & 0x2)            /* channel 1 done */
         {
             /* Reset PDMA Scater-Gatter table */
-            PDMA_ResetTxSGTable(u8TxIdx);
-            u8TxIdx ^= 1;
+            PDMA_ResetTxSGTable(g_u8TxIdx);
+            g_u8TxIdx ^= 1;
         }
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);

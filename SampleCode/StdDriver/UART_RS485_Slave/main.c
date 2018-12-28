@@ -36,21 +36,21 @@ void UART0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void RS485_HANDLE()
 {
-    volatile uint32_t addr = 0;
+    volatile uint32_t u32Addr = 0;
 
     if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RLSINT_Msk) && UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))     /* RLS INT & RDA INT */
     {
         if (UART_RS485_GET_ADDR_FLAG(UART0))        /* ADD_IF, RS485 mode */
         {
-            addr = UART_READ(UART0);
+            u32Addr = UART_READ(UART0);
             UART_RS485_CLEAR_ADDR_FLAG(UART0);      /* clear ADD_IF flag */
-            printf("\nAddr=0x%x,Get:", addr);
+            printf("\nAddr=0x%x,Get:", u32Addr);
 
 #if (IS_USE_RS485NMM ==1) //RS485_NMM
 
             /* if address match, enable RX to receive data, otherwise to disable RX. */
             /* In NMM mode,user can decide multi-address filter. In AAD mode,only one address can set */
-            if ((addr == MATCH_ADDRSS1) || (addr == MATCH_ADDRSS2))
+            if ((u32Addr == MATCH_ADDRSS1) || (u32Addr == MATCH_ADDRSS2))
             {
                 UART0->FIFO &= ~UART_FIFO_RXOFF_Msk;   /* Enable RS485 RX */
             }
