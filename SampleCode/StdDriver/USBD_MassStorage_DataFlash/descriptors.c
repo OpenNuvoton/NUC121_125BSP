@@ -11,8 +11,18 @@
 
 /*----------------------------------------------------------------------------*/
 /*!<USB Device Descriptor */
-const uint8_t gu8DeviceDescriptor[] =
+#ifdef __ICCARM__
+#pragma data_alignment=4
+uint8_t gu8DeviceDescriptor[] =
 {
+
+
+
+
+#else
+uint8_t gu8DeviceDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_DEVICE,     /* bLength */
     DESC_DEVICE,    /* bDescriptorType */
 #ifdef SUPPORT_LPM
@@ -38,8 +48,14 @@ const uint8_t gu8DeviceDescriptor[] =
 };
 
 /*!<USB Configure Descriptor */
-const uint8_t gu8ConfigDescriptor[] =
+#ifdef __ICCARM__
+#pragma data_alignment=4
+uint8_t gu8ConfigDescriptor[] =
 {
+#else
+uint8_t gu8ConfigDescriptor[] __attribute__((aligned(4))) =
+{
+#endif
     LEN_CONFIG,                                         // bLength
     DESC_CONFIG,                                        // bDescriptorType
     (LEN_CONFIG + LEN_INTERFACE + LEN_ENDPOINT * 2), 0x00, // wTotalLength
@@ -119,15 +135,25 @@ const uint8_t gu8VendorStringDesc[16] =
 };
 
 /*!<USB Product String Descriptor */
-const uint8_t gu8ProductStringDesc[22] =
+#ifdef __ICCARM__
+#pragma data_alignment=4
+uint8_t gu8ProductStringDesc[] =
 {
+#else
+uint8_t gu8ProductStringDesc[] __attribute__((aligned(4))) =
+{
+#endif
     22,             /* bLength          */
     DESC_STRING,    /* bDescriptorType  */
     'U', 0, 'S', 0, 'B', 0, ' ', 0, 'D', 0, 'e', 0, 'v', 0, 'i', 0, 'c', 0, 'e', 0
 };
 
-
-uint8_t gu8StringSerial[26] =
+#ifdef __ICCARM__
+    #pragma data_alignment=4
+    uint8_t gu8StringSerial[] =
+#else
+    uint8_t gu8StringSerial[] __attribute__((aligned(4))) =
+#endif
 {
     26,             // bLength
     DESC_STRING,    // bDescriptorType

@@ -20,7 +20,7 @@
 #define UAC_SPEAKER     1
 
 /*!<Define Audio information */
-#define PLAY_RATE      16000        /* The audo play sampling rate. It could be 8000, 16000, 32000, and 48000 */
+#define PLAY_RATE      48000        /* The audo play sampling rate. It could be 8000, 16000, 32000, and 48000 */
 
 #define PLAY_CHANNELS   2           /* Number of channels. Don't Change */
 #define REC_RATE        PLAY_RATE   /* The record sampling rate. Must be the same with PLAY_RATE */
@@ -91,7 +91,7 @@
 
 #define EP2_MAX_PKT_SIZE (REC_RATE*REC_CHANNELS*2/1000)
 
-#define EP3_MAX_PKT_SIZE    (PLAY_RATE*PLAY_CHANNELS*2/1000)
+#define EP3_MAX_PKT_SIZE (PLAY_RATE*PLAY_CHANNELS*2/1000)
 
 #define SETUP_BUF_BASE      0
 #define SETUP_BUF_LEN       8

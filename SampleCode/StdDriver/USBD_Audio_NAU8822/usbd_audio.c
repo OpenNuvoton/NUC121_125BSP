@@ -838,7 +838,7 @@ void SPI0_IRQHandler(void)
 
     if (u32I2SIntFlag & SPI_I2SSTS_RXTHIF_Msk)
     {
-        if ((g_u32RecPos < 96) && g_u8RecEn)
+        if ((g_u32RecPos < (sizeof(g_au32PcmRecBuf) / 4)) && g_u8RecEn)
         {
             /*16-Bit*/
             g_au32PcmRecBuf[g_u32RecPos    ] = I2S_READ_RX_FIFO(SPI0);
@@ -919,6 +919,10 @@ void UAC_DeviceEnable(uint8_t u8Object)
             g_u32RecPos = 0;
         }
 
+        I2S_CLR_RX_FIFO(SPI0);
+        I2S_EnableInt(SPI0, I2S_FIFO_RXTH_INT_MASK);
+        I2S_ENABLE_RX(SPI0);
+
     }
     else
     {
@@ -933,6 +937,10 @@ void UAC_DeviceEnable(uint8_t u8Object)
             g_u32PlayPos_Out = 0;
             g_u8PlayEn = 1;
         }
+
+        I2S_CLR_TX_FIFO(SPI0);
+        I2S_EnableInt(SPI0, I2S_FIFO_TXTH_INT_MASK);
+        I2S_ENABLE_TX(SPI0);
 
     }
 }
@@ -949,11 +957,19 @@ void UAC_DeviceDisable(uint8_t u8Object)
     {
         /* Disable record hardware/stop record */
         g_u8RecEn = 0;
+
+        I2S_DisableInt(SPI0, I2S_FIFO_RXTH_INT_MASK);
+        I2S_DISABLE_RX(SPI0);
+        I2S_CLR_RX_FIFO(SPI0);
     }
     else
     {
         /* Disable play hardware/stop play */
         g_u8PlayEn = 0;
+
+        I2S_DisableInt(SPI0, I2S_FIFO_TXTH_INT_MASK);
+        I2S_DISABLE_TX(SPI0);
+        I2S_CLR_TX_FIFO(SPI0);
     }
 }
 

@@ -264,7 +264,10 @@ uint32_t UUART_Open(UUART_T *psUUART, uint32_t u32Baudrate)
     /* Get PCLK frequency */
     u32PCLKFreq = CLK_GetPCLK0Freq();
 
+    /* Find out divide value */
     u32Div = u32PCLKFreq / u32Baudrate;
+
+    /* Avoid decimal of divider being discarded and find divider that are closest to the baud rate */
     u32Tmp = (u32PCLKFreq / u32Div) - u32Baudrate;
     u32Tmp2 = u32Baudrate - (u32PCLKFreq / (u32Div + 1));
 
@@ -273,15 +276,19 @@ uint32_t UUART_Open(UUART_T *psUUART, uint32_t u32Baudrate)
         u32Div = u32Div + 1;
     }
 
+    /* Divide value = CLKDIV(MAX. = 0x400) * DSCNT(MAX. = 0x10) * PDSCNT */
     u32Tmp = 0x400 * 0x10;
 
+    /* Find out PDSCNT value */
     for (u32PDSCnt = 1; u32PDSCnt <= 0x04; u32PDSCnt++)
     {
         if (u32Div <= (u32Tmp * u32PDSCnt)) break;
     }
 
+    /* PDSCNT MAX.= 0x4 */
     if (u32PDSCnt > 0x4) u32PDSCnt = 0x4;
 
+    /* Avoid decimal of PDSCNT being discarded */
     u32Tmp = u32Div / u32PDSCnt;
     u32Tmp2 = (u32Div / u32Tmp) - u32PDSCnt;
     u32Tmp3 = u32PDSCnt - (u32Div / (u32Tmp + 1));
@@ -292,7 +299,7 @@ uint32_t UUART_Open(UUART_T *psUUART, uint32_t u32Baudrate)
     }
     else u32Div = u32Tmp;
 
-    /* Find best solution */
+    /* Find best solution of DSCNT and CLKDIV */
     u32Min = (uint32_t) - 1;
     u32MinDSCnt = 0;
     u32MinClkDiv = 0;
@@ -309,7 +316,7 @@ uint32_t UUART_Open(UUART_T *psUUART, uint32_t u32Baudrate)
             u32ClkDiv = 0x400;
             u32Tmp = u32Tmp2 = abs((int)(u32PCLKFreq / (u32ClkDiv * u32DSCnt * u32PDSCnt)) - (int)u32Baudrate);
         }
-        else
+        else    /* Avoid decimal of PDSCNT being discarded */
         {
             u32Tmp = abs((int)(u32PCLKFreq / (u32ClkDiv * u32DSCnt * u32PDSCnt)) - (int)u32Baudrate);
             u32Tmp2 = abs((int)(u32PCLKFreq / ((u32ClkDiv + 1) * u32DSCnt * u32PDSCnt)) - (int)u32Baudrate);
@@ -321,6 +328,7 @@ uint32_t UUART_Open(UUART_T *psUUART, uint32_t u32Baudrate)
         }
         else u32Tmp2 = u32Tmp;
 
+        /* Record the closest solution */
         if (u32Tmp2 < u32Min)
         {
             u32Min = u32Tmp2;

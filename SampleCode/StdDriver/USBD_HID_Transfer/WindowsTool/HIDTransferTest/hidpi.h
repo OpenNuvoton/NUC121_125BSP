@@ -298,8 +298,7 @@ typedef struct _HIDP_EXTENDED_ATTRIBUTES
     ULONG   Data [1]; // variableLength  DO NOT ACCESS THIS FIELD
 } HIDP_EXTENDED_ATTRIBUTES, *PHIDP_EXTENDED_ATTRIBUTES;
 
-NTSTATUS __stdcall
-HidP_GetCaps(
+NTSTATUS __stdcall HidP_GetCaps(
     IN      PHIDP_PREPARSED_DATA      PreparsedData,
     OUT     PHIDP_CAPS                Capabilities
 );
@@ -317,8 +316,7 @@ Return Value:
 ? HIDP_STATUS_INVALID_PREPARSED_DATA
 --*/
 
-NTSTATUS __stdcall
-HidP_GetLinkCollectionNodes(
+NTSTATUS __stdcall HidP_GetLinkCollectionNodes(
     OUT      PHIDP_LINK_COLLECTION_NODE LinkCollectionNodes,
     IN OUT   PULONG                     LinkCollectionNodesLength,
     IN       PHIDP_PREPARSED_DATA       PreparsedData
@@ -342,8 +340,7 @@ Arguments:
 
 --*/
 
-NTSTATUS __stdcall
-HidP_GetButtonCaps(
+NTSTATUS __stdcall HidP_GetButtonCaps(
     IN       HIDP_REPORT_TYPE     ReportType,
     OUT      PHIDP_BUTTON_CAPS    ButtonCaps,
     IN OUT   PUSHORT              ButtonCapsLength,
@@ -351,8 +348,7 @@ HidP_GetButtonCaps(
 );
 #define HidP_GetButtonCaps(_Type_, _Caps_, _Len_, _Data_) \
     HidP_GetSpecificButtonCaps (_Type_, 0, 0, 0, _Caps_, _Len_, _Data_)
-NTSTATUS __stdcall
-HidP_GetSpecificButtonCaps(
+NTSTATUS __stdcall HidP_GetSpecificButtonCaps(
     IN       HIDP_REPORT_TYPE     ReportType,
     IN       USAGE                UsagePage,      // Optional (0 => ignore)
     IN       USHORT               LinkCollection, // Optional (0 => ignore)
@@ -413,8 +409,7 @@ HidP_GetSpecificButtonCaps returns the following error codes:
 ?HIDP_STATUS_USAGE_NOT_FOUND
 --*/
 
-NTSTATUS __stdcall
-HidP_GetValueCaps(
+NTSTATUS __stdcall HidP_GetValueCaps(
     IN       HIDP_REPORT_TYPE     ReportType,
     OUT      PHIDP_VALUE_CAPS     ValueCaps,
     IN OUT   PUSHORT              ValueCapsLength,
@@ -422,8 +417,7 @@ HidP_GetValueCaps(
 );
 #define HidP_GetValueCaps(_Type_, _Caps_, _Len_, _Data_) \
     HidP_GetSpecificValueCaps (_Type_, 0, 0, 0, _Caps_, _Len_, _Data_)
-NTSTATUS __stdcall
-HidP_GetSpecificValueCaps(
+NTSTATUS __stdcall HidP_GetSpecificValueCaps(
     IN       HIDP_REPORT_TYPE     ReportType,
     IN       USAGE                UsagePage,      // Optional (0 => ignore)
     IN       USHORT               LinkCollection, // Optional (0 => ignore)
@@ -485,8 +479,7 @@ HidP_GetValueCaps returns the following error codes:
 
 --*/
 
-NTSTATUS __stdcall
-HidP_GetExtendedAttributes(
+NTSTATUS __stdcall HidP_GetExtendedAttributes(
     IN      HIDP_REPORT_TYPE            ReportType,
     IN      USHORT                      DataIndex,
     IN      PHIDP_PREPARSED_DATA        PreparsedData,
@@ -516,8 +509,7 @@ Return Value
     HIDP_STATUS_DATA_INDEX_NOT_FOUND
 --*/
 
-NTSTATUS __stdcall
-HidP_InitializeReportForID(
+NTSTATUS __stdcall HidP_InitializeReportForID(
     IN       HIDP_REPORT_TYPE      ReportType,
     IN       UCHAR                 ReportID,
     IN       PHIDP_PREPARSED_DATA  PreparsedData,
@@ -554,8 +546,7 @@ Return Value
 
 --*/
 
-NTSTATUS __stdcall
-HidP_SetData(
+NTSTATUS __stdcall HidP_SetData(
     IN       HIDP_REPORT_TYPE      ReportType,
     IN       PHIDP_DATA            DataList,
     IN OUT   PULONG                DataLength,
@@ -626,8 +617,7 @@ Return Value
                                         set
 --*/
 
-NTSTATUS __stdcall
-HidP_GetData(
+NTSTATUS __stdcall HidP_GetData(
     IN       HIDP_REPORT_TYPE      ReportType,
     OUT      PHIDP_DATA            DataList,
     IN OUT   PULONG                DataLength,
@@ -680,8 +670,7 @@ Return Value
                                         required to hold all data
 --*/
 
-ULONG __stdcall
-HidP_MaxDataListLength(
+ULONG __stdcall HidP_MaxDataListLength(
     IN HIDP_REPORT_TYPE      ReportType,
     IN PHIDP_PREPARSED_DATA  PreparsedData
 );
@@ -708,8 +697,7 @@ Return Value:
 #define HidP_SetButtons(Rty, Up, Lco, ULi, ULe, Ppd, Rep, Rle) \
     HidP_SetUsages(Rty, Up, Lco, ULi, ULe, Ppd, Rep, Rle)
 
-NTSTATUS __stdcall
-HidP_SetUsages(
+NTSTATUS __stdcall HidP_SetUsages(
     IN       HIDP_REPORT_TYPE      ReportType,
     IN       USAGE                 UsagePage,
     IN       USHORT                LinkCollection, // Optional
@@ -801,8 +789,7 @@ Return Value
 #define HidP_UnsetButtons(Rty, Up, Lco, ULi, ULe, Ppd, Rep, Rle) \
     HidP_UnsetUsages(Rty, Up, Lco, ULi, ULe, Ppd, Rep, Rle)
 
-NTSTATUS __stdcall
-HidP_UnsetUsages(
+NTSTATUS __stdcall HidP_UnsetUsages(
     IN       HIDP_REPORT_TYPE      ReportType,
     IN       USAGE                 UsagePage,
     IN       USHORT                LinkCollection, // Optional
@@ -893,8 +880,7 @@ Return Value
 #define HidP_GetButtons(Rty, UPa, LCo, ULi, ULe, Ppd, Rep, RLe) \
     HidP_GetUsages(Rty, UPa, LCo, ULi, ULe, Ppd, Rep, RLe)
 
-NTSTATUS __stdcall
-HidP_GetUsages(
+NTSTATUS __stdcall HidP_GetUsages(
     IN       HIDP_REPORT_TYPE     ReportType,
     IN       USAGE                UsagePage,
     IN       USHORT               LinkCollection, // Optional
@@ -978,8 +964,7 @@ Return Value
 #define HidP_GetButtonsEx(Rty, LCo, BLi, ULe, Ppd, Rep, RLe)  \
     HidP_GetUsagesEx(Rty, LCo, BLi, ULe, Ppd, Rep, RLe)
 
-NTSTATUS __stdcall
-HidP_GetUsagesEx(
+NTSTATUS __stdcall HidP_GetUsagesEx(
     IN       HIDP_REPORT_TYPE     ReportType,
     IN       USHORT               LinkCollection, // Optional
     OUT      PUSAGE_AND_PAGE      ButtonList,
@@ -1055,8 +1040,7 @@ Return Value
 #define HidP_GetButtonListLength(RTy, UPa, Ppd) \
     HidP_GetUsageListLength(Rty, UPa, Ppd)
 
-ULONG __stdcall
-HidP_MaxUsageListLength(
+ULONG __stdcall HidP_MaxUsageListLength(
     IN HIDP_REPORT_TYPE      ReportType,
     IN USAGE                 UsagePage, // Optional
     IN PHIDP_PREPARSED_DATA  PreparsedData
@@ -1086,8 +1070,7 @@ Return Value:
     returns 0.
 --*/
 
-NTSTATUS __stdcall
-HidP_SetUsageValue(
+NTSTATUS __stdcall HidP_SetUsageValue(
     IN       HIDP_REPORT_TYPE     ReportType,
     IN       USAGE                UsagePage,
     IN       USHORT               LinkCollection, // Optional
@@ -1166,8 +1149,7 @@ Return Value:
                                         in any reports for this ReportType
 --*/
 
-NTSTATUS __stdcall
-HidP_SetScaledUsageValue(
+NTSTATUS __stdcall HidP_SetScaledUsageValue(
     IN       HIDP_REPORT_TYPE     ReportType,
     IN       USAGE                UsagePage,
     IN       USHORT               LinkCollection, // Optional
@@ -1260,8 +1242,7 @@ Return Value:
                                         in any reports for this ReportType
 --*/
 
-NTSTATUS __stdcall
-HidP_SetUsageValueArray(
+NTSTATUS __stdcall HidP_SetUsageValueArray(
     IN    HIDP_REPORT_TYPE     ReportType,
     IN    USAGE                UsagePage,
     IN    USHORT               LinkCollection, // Optional
@@ -1368,8 +1349,7 @@ Return Value:
 --*/
 
 
-NTSTATUS __stdcall
-HidP_GetUsageValue(
+NTSTATUS __stdcall HidP_GetUsageValue(
     IN    HIDP_REPORT_TYPE     ReportType,
     IN    USAGE                UsagePage,
     IN    USHORT               LinkCollection, // Optional
@@ -1441,8 +1421,7 @@ Return Value:
 --*/
 
 
-NTSTATUS __stdcall
-HidP_GetScaledUsageValue(
+NTSTATUS __stdcall HidP_GetScaledUsageValue(
     IN    HIDP_REPORT_TYPE     ReportType,
     IN    USAGE                UsagePage,
     IN    USHORT               LinkCollection, // Optional
@@ -1536,8 +1515,7 @@ Return Value:
                                         in any reports for this ReportType
 --*/
 
-NTSTATUS __stdcall
-HidP_GetUsageValueArray(
+NTSTATUS __stdcall HidP_GetUsageValueArray(
     IN    HIDP_REPORT_TYPE     ReportType,
     IN    USAGE                UsagePage,
     IN    USHORT               LinkCollection, // Optional
@@ -1639,8 +1617,7 @@ Return Value:
                                         in any reports for this ReportType
 --*/
 
-NTSTATUS __stdcall
-HidP_UsageListDifference(
+NTSTATUS __stdcall HidP_UsageListDifference(
     IN    PUSAGE   PreviousUsageList,
     IN    PUSAGE   CurrentUsageList,
     OUT   PUSAGE   BreakUsageList,
@@ -1670,8 +1647,7 @@ Parameters:
                         will be ignored.
 --*/
 
-NTSTATUS __stdcall
-HidP_UsageAndPageListDifference(
+NTSTATUS __stdcall HidP_UsageAndPageListDifference(
     IN    PUSAGE_AND_PAGE PreviousUsageList,
     IN    PUSAGE_AND_PAGE CurrentUsageList,
     OUT   PUSAGE_AND_PAGE BreakUsageList,
@@ -1726,8 +1702,7 @@ typedef BOOLEAN(* PHIDP_INSERT_SCANCODES)(
     IN ULONG Length // the length of the scan codes.
 );
 
-NTSTATUS __stdcall
-HidP_TranslateUsageAndPagesToI8042ScanCodes(
+NTSTATUS __stdcall HidP_TranslateUsageAndPagesToI8042ScanCodes(
     IN     PUSAGE_AND_PAGE               ChangedUsageList,
     IN     ULONG                         UsageListLength,
     IN     HIDP_KEYBOARD_DIRECTION       KeyAction,
@@ -1740,8 +1715,7 @@ Routine Description:
 Parameters:
 --*/
 
-NTSTATUS __stdcall
-HidP_TranslateUsagesToI8042ScanCodes(
+NTSTATUS __stdcall HidP_TranslateUsagesToI8042ScanCodes(
     IN     PUSAGE                        ChangedUsageList,
     IN     ULONG                         UsageListLength,
     IN     HIDP_KEYBOARD_DIRECTION       KeyAction,

@@ -9,6 +9,9 @@
 #include "NuMicro.h"
 #include "VCOM_and_HID_keyboard.h"
 
+#define CRYSTAL_LESS        1
+#define TRIM_INIT           (SYS_BASE+0x110)
+
 /*--------------------------------------------------------------------------*/
 STR_VCOM_LINE_CODING g_sLineCoding = {115200, 0, 0, 8}; /* Baud rate : 115200    */
 /* Stop bit              */
@@ -17,8 +20,6 @@ STR_VCOM_LINE_CODING g_sLineCoding = {115200, 0, 0, 8}; /* Baud rate : 115200   
 uint16_t g_u16CtrlSignal = 0;     /* BIT0: DTR(Data Terminal Ready) , BIT1: RTS(Request To Send) */
 
 /*--------------------------------------------------------------------------*/
-
-#define CRYSTAL_LESS        1
 
 #define RXBUFSIZE           512 /* RX buffer size */
 #define TXBUFSIZE           512 /* RX buffer size */
@@ -286,6 +287,9 @@ void VCOM_TransferData(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+#if CRYSTAL_LESS
+    uint32_t u32TrimInit;
+#endif
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -308,36 +312,50 @@ int32_t main(void)
     /* Start USB device */
     USBD_Start();
 
-#if CRYSTAL_LESS
-    /* Waiting for USB bus stable */
-    USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
-
-    while ((USBD_GET_INT_FLAG() & USBD_INTSTS_SOFIF_Msk) == 0);
-
-    /* Enable USB crystal-less - Set reference clock from USB SOF packet & Enable HIRC auto trim function */
-    SYS->IRCTCTL |= (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);
-#endif
-
     NVIC_EnableIRQ(USBD_IRQn);
     NVIC_EnableIRQ(UART0_IRQn);
+
+#if CRYSTAL_LESS
+    /* Backup default trim value */
+    u32TrimInit = M32(TRIM_INIT);
+
+    /* Clear SOF */
+    USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+#endif
 
     while (1)
     {
 #if CRYSTAL_LESS
 
-        /* Re-start auto trim when any error found */
+        /* Start USB trim function if it is not enabled. */
+        if ((SYS->IRCTCTL & SYS_IRCTCTL_FREQSEL_Msk) != 0x2)
+        {
+            /* Start USB trim only when USB signal arrived */
+            if (USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
+            {
+                /* Clear SOF */
+                USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+                /* Enable USB clock trim function */
+                SYS->IRCTCTL |= (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);
+            }
+        }
+
+        /* Disable USB Trim when any error found */
         if (SYS->IRCTISTS & (SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk))
         {
+            /* Init TRIM */
+            M32(TRIM_INIT) = u32TrimInit;
+
+            /* Disable USB clock trim function */
+            SYS->IRCTCTL = 0;
+
+            /* Clear trim error flags */
             SYS->IRCTISTS = SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk;
 
-            /* Waiting for USB signal before auto trim */
+            /* Clear SOF */
             USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
 
-            while ((USBD->INTSTS & USBD_INTSTS_SOFIF_Msk) == 0);
-
-            /* Re-enable crystal-less - Set reference clock from USB SOF packet & Enable HIRC auto trim function */
-            SYS->IRCTCTL |= (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);
-            //printf("USB trim fail. Just retry. SYS->HIRCTRIMSTS = 0x%x, SYS->HIRCTRIMCTL = 0x%x\n", SYS->HIRCTRIMSTS, SYS->HIRCTRIMCTL);
         }
 
 #endif

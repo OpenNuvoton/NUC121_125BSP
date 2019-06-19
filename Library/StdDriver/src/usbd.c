@@ -40,27 +40,28 @@ volatile uint8_t g_USBD_u8RemoteWakeupEn = 0; /*!< Remote wake up function enabl
 /**
  * @cond HIDDEN_SYMBOLS
  */
-static volatile uint8_t *s_USBD_pu8CtrlInPointer = 0;
-static volatile uint32_t s_USBD_u32CtrlInSize = 0;
-static volatile uint8_t *s_USBD_pu8CtrlOutPointer  = 0;
-static volatile uint32_t s_USBD_u32CtrlOutSize = 0;
-static volatile uint32_t s_USBD_u32CtrlOutSizeLimit = 0;
-static volatile uint32_t s_USBD_u32UsbAddr = 0;
-static volatile uint32_t s_USBD_u32UsbConfig = 0;
-static volatile uint32_t s_USBD_u32CtrlMaxPktSize = 8UL;
-static volatile uint32_t s_USBD_u32UsbAltInterface = 0;
-static volatile uint8_t  s_USBD_u8CtrlInZeroFlag = 0;
+static volatile uint8_t *s_USBD_pu8CtrlInPointer        = 0;
+static volatile uint32_t s_USBD_u32CtrlInSize           = 0;
+static volatile uint8_t *s_USBD_pu8CtrlOutPointer       = 0;
+static volatile uint32_t s_USBD_u32CtrlOutSize          = 0;
+static volatile uint32_t s_USBD_u32CtrlOutSizeLimit     = 0;
+static volatile uint32_t s_USBD_u32UsbAddr              = 0;
+static volatile uint32_t s_USBD_u32UsbConfig            = 0;
+static volatile uint32_t s_USBD_u32CtrlMaxPktSize       = 8UL;
+static volatile uint32_t s_USBD_u32UsbAltInterface      = 0;
+static volatile uint8_t  s_USBD_u8CtrlInZeroFlag        = 0;
+static volatile uint32_t s_USBD_u32CtrlOutToggle        = 0ul;
 /**
  * @endcond
  */
 
 const S_USBD_INFO_T *g_USBD_sINFO;                  /*!< A pointer for USB information structure */
 
-VENDOR_REQ g_usbd_pfnVendorRequest       = NULL;    /*!< USB Vendor Request Functional Pointer */
-CLASS_REQ g_usbd_pfnClassRequest         = NULL;    /*!< USB Class Request Functional Pointer */
-SET_INTERFACE_REQ g_usbd_pfnSetInterface = NULL;    /*!< USB Set Interface Functional Pointer */
-SET_CONFIG_CB g_usbd_pfnSetConfigCallback = NULL;   /*!< USB Set configuration callback function pointer */
-uint32_t g_u32EpStallLock                = 0;       /*!< Bit map flag to lock specified EP when SET_FEATURE */
+VENDOR_REQ g_usbd_pfnVendorRequest          = NULL;    /*!< USB Vendor Request Functional Pointer */
+CLASS_REQ g_usbd_pfnClassRequest            = NULL;    /*!< USB Class Request Functional Pointer */
+SET_INTERFACE_REQ g_usbd_pfnSetInterface    = NULL;    /*!< USB Set Interface Functional Pointer */
+SET_CONFIG_CB g_usbd_pfnSetConfigCallback   = NULL;   /*!< USB Set configuration callback function pointer */
+uint32_t g_u32EpStallLock                   = 0;       /*!< Bit map flag to lock specified EP when SET_FEATURE */
 
 /**
   * @brief      This function makes USBD module to be ready to use
@@ -142,6 +143,7 @@ void USBD_GetSetupPacket(uint8_t *buf)
   */
 void USBD_ProcessSetupPacket(void)
 {
+    s_USBD_u32CtrlOutToggle = 0;
     /* Get SETUP packet from USB buffer */
     USBD_MemCopy(g_USBD_au8SetupPacket, (uint8_t *)USBD_BUF_BASE + USBD->STBUFSEG, 8);
 
@@ -198,6 +200,7 @@ void USBD_GetDescriptor(void)
 {
     uint32_t u32Len;
 
+    s_USBD_u8CtrlInZeroFlag = (uint8_t)0ul;
     u32Len = 0;
     u32Len = g_USBD_au8SetupPacket[7];
     u32Len <<= 8;
@@ -225,7 +228,17 @@ void USBD_GetDescriptor(void)
         u32TotalLen = g_USBD_sINFO->gu8ConfigDesc[2] + (u32TotalLen << 8);
 
         DBG_PRINTF("Get config desc len %d, acture len %d\n", u32Len, u32TotalLen);
-        u32Len = Minimum(u32Len, u32TotalLen);
+
+        if (u32Len > u32TotalLen)
+        {
+            u32Len = u32TotalLen;
+
+            if ((u32Len % s_USBD_u32CtrlMaxPktSize) == 0ul)
+            {
+                s_USBD_u8CtrlInZeroFlag = (uint8_t)1ul;
+            }
+        }
+
         DBG_PRINTF("Minimum len %d\n", u32Len);
 
         USBD_PrepareCtrlIn((uint8_t *)g_USBD_sINFO->gu8ConfigDesc, u32Len);
@@ -253,7 +266,16 @@ void USBD_GetDescriptor(void)
     {
         DBG_PRINTF("Get HID report, %d\n", u32Len);
 
-        u32Len = Minimum(u32Len, g_USBD_sINFO->gu32HidReportSize[g_USBD_au8SetupPacket[4]]);
+        if (u32Len > g_USBD_sINFO->gu32HidReportSize[g_USBD_au8SetupPacket[4]])
+        {
+            u32Len = g_USBD_sINFO->gu32HidReportSize[g_USBD_au8SetupPacket[4]];
+
+            if ((u32Len % s_USBD_u32CtrlMaxPktSize) == 0ul)
+            {
+                s_USBD_u8CtrlInZeroFlag = (uint8_t)1ul;
+            }
+        }
+
         USBD_PrepareCtrlIn((uint8_t *)g_USBD_sINFO->gu8HidReportDesc[g_USBD_au8SetupPacket[4]], u32Len);
         break;
     }
@@ -264,7 +286,16 @@ void USBD_GetDescriptor(void)
         // Get String Descriptor
         if (g_USBD_au8SetupPacket[2] < 4)
         {
-            u32Len = Minimum(u32Len, g_USBD_sINFO->gu8StringDesc[g_USBD_au8SetupPacket[2]][0]);
+            if (u32Len > g_USBD_sINFO->gu8StringDesc[g_USBD_au8SetupPacket[2]][0])
+            {
+                u32Len = g_USBD_sINFO->gu8StringDesc[g_USBD_au8SetupPacket[2]][0];
+
+                if ((u32Len % s_USBD_u32CtrlMaxPktSize) == 0ul)
+                {
+                    s_USBD_u8CtrlInZeroFlag = (uint8_t)1ul;
+                }
+            }
+
             DBG_PRINTF("Get string desc %d\n", u32Len);
 
             USBD_PrepareCtrlIn((uint8_t *)g_USBD_sINFO->gu8StringDesc[g_USBD_au8SetupPacket[2]], u32Len);
@@ -284,24 +315,25 @@ void USBD_GetDescriptor(void)
         }
     }
 
-#ifdef SUPPORT_LPM
+
 
     case DESC_BOS:
     {
-        uint32_t u32TotalLen;
+        if (g_USBD_sINFO->gu8BosDesc == 0)
+        {
+            USBD_SET_EP_STALL(EP0);
+            USBD_SET_EP_STALL(EP1);
+        }
+        else
+        {
+            u32Len = Minimum(u32Len, LEN_BOS + LEN_DEVCAP);
+            USBD_PrepareCtrlIn((uint8_t *)g_USBD_sINFO->gu8BosDesc, u32Len);
+        }
 
-        u32TotalLen = g_USBD_sINFO->gu8BosDesc[3];
-        u32TotalLen = g_USBD_sINFO->gu8BosDesc[2] + (u32TotalLen << 8);
-
-        DBG_PRINTF("Get BOS desc len %d, acture len %d\n", u32Len, u32TotalLen);
-        u32Len = Minimum(u32Len, u32TotalLen);
-        DBG_PRINTF("Minimum len %d\n", u32Len);
-
-        USBD_PrepareCtrlIn((uint8_t *)g_USBD_sINFO->gu8BosDesc, u32Len);
         break;
     }
 
-#endif
+
 
     default:
         // Not support. Reply STALL.
@@ -443,6 +475,7 @@ void USBD_StandardRequest(void)
                     if (((USBD->EP[i].CFG & 0xF) == epNum) && ((g_u32EpStallLock & (1 << i)) == 0))
                     {
                         USBD->EP[i].CFGP &= ~USBD_CFGP_SSTALL_Msk;
+                        USBD->EP[i].CFG &= ~USBD_CFG_DSQSYNC_Msk;
                         DBG_PRINTF("Clr stall ep%d %x\n", i, USBD->EP[i].CFGP);
                     }
                 }
@@ -571,9 +604,6 @@ void USBD_PrepareCtrlIn(uint8_t *pu8Buf, uint32_t u32Size)
         s_USBD_pu8CtrlInPointer = 0;
         s_USBD_u32CtrlInSize = 0;
 
-        if (u32Size == s_USBD_u32CtrlMaxPktSize)
-            s_USBD_u8CtrlInZeroFlag = 1;
-
         USBD_SET_DATA1(EP0);
         USBD_MemCopy((uint8_t *)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0), pu8Buf, u32Size);
         USBD_SET_PAYLOAD_LEN(EP0, u32Size);
@@ -611,11 +641,8 @@ void USBD_CtrlIn(void)
             USBD_MemCopy((uint8_t *)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0), (uint8_t *)s_USBD_pu8CtrlInPointer, s_USBD_u32CtrlInSize);
             USBD_SET_PAYLOAD_LEN(EP0, s_USBD_u32CtrlInSize);
 
-            if (s_USBD_u32CtrlInSize == s_USBD_u32CtrlMaxPktSize)
-                s_USBD_u8CtrlInZeroFlag = 1;
-
             s_USBD_pu8CtrlInPointer = 0;
-            s_USBD_u32CtrlInSize = 0;
+            s_USBD_u32CtrlInSize    = 0;
         }
     }
     else     // No more data for IN token
@@ -673,19 +700,34 @@ void USBD_PrepareCtrlOut(uint8_t *pu8Buf, uint32_t u32Size)
 void USBD_CtrlOut(void)
 {
     uint32_t u32Size;
+    uint32_t addr;
 
     DBG_PRINTF("Ctrl Out Ack %d\n", g_USBD_u32_CtrlOutSize);
 
-    if (s_USBD_u32CtrlOutSize < s_USBD_u32CtrlOutSizeLimit)
+    if (s_USBD_u32CtrlOutToggle != (USBD->EPSTS & USBD_EPSTS_EPSTS1_Msk))
     {
-        u32Size = USBD_GET_PAYLOAD_LEN(EP1);
-        USBD_MemCopy((uint8_t *)s_USBD_pu8CtrlOutPointer, (uint8_t *)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP1), u32Size);
-        s_USBD_pu8CtrlOutPointer  += u32Size;
-        s_USBD_u32CtrlOutSize += u32Size;
+        s_USBD_u32CtrlOutToggle = USBD->EPSTS & USBD_EPSTS_EPSTS1_Msk; //keep H/W EP1 toggle status
+
+
+
 
         if (s_USBD_u32CtrlOutSize < s_USBD_u32CtrlOutSizeLimit)
-            USBD_SET_PAYLOAD_LEN(EP1, s_USBD_u32CtrlMaxPktSize);
+        {
+            u32Size = USBD_GET_PAYLOAD_LEN(EP1);
+            addr = USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP1);
+            USBD_MemCopy((uint8_t *)s_USBD_pu8CtrlOutPointer, (uint8_t *)addr, u32Size);
+            s_USBD_pu8CtrlOutPointer += u32Size;
+            s_USBD_u32CtrlOutSize += u32Size;
 
+            if (s_USBD_u32CtrlOutSize < s_USBD_u32CtrlOutSizeLimit)
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, s_USBD_u32CtrlMaxPktSize);
+            }
+        }
+    }
+    else
+    {
+        USBD_SET_PAYLOAD_LEN(EP1, s_USBD_u32CtrlMaxPktSize);
     }
 }
 

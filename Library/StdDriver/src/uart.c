@@ -121,16 +121,6 @@ void UART_DisableInt(UART_T  *psUART, uint32_t u32InterruptFlag)
 
 }
 
-
-/**
- *    @brief        Enable UART auto flow control function
- *
- *    @param[in]    psUART    The pointer of the specified UART module.
- *
- *    @return       None
- *
- *    @details      The function is used to Enable UART auto flow control.
- */
 /**
  *    @brief        Enable UART auto flow control function
  *

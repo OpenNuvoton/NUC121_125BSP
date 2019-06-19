@@ -11,6 +11,8 @@
 #include "NuMicro.h"
 #include "cdc_serial.h"
 
+uint32_t volatile g_u32OutToggle0 = 0, g_u32OutToggle1 = 0;
+
 /*--------------------------------------------------------------------------*/
 void USBD_IRQHandler(void)
 {
@@ -46,6 +48,8 @@ void USBD_IRQHandler(void)
             /* Bus reset */
             USBD_ENABLE_USB();
             USBD_SwReset();
+            g_u32OutToggle0 = 0;
+            g_u32OutToggle1 = 0;
         }
 
         if (u32State & USBD_STATE_SUSPEND)
@@ -185,21 +189,35 @@ void EP2_Handler(void)
 void EP3_Handler(void)
 {
     /* Bulk OUT */
-    g_u32RxSize0 = USBD_GET_PAYLOAD_LEN(EP3);
-    g_pu8RxBuf0 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
-
-    /* Set a flag to indicate bulk out ready */
-    g_i8BulkOutReady0 = 1;
+    if (g_u32OutToggle0 == (USBD->EPSTS & USBD_EPSTS_EPSTS3_Msk))
+    {
+        USBD_SET_PAYLOAD_LEN(EP3, EP3_MAX_PKT_SIZE);
+    }
+    else
+    {
+        g_u32RxSize0 = USBD_GET_PAYLOAD_LEN(EP3);
+        g_pu8RxBuf0 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
+        g_u32OutToggle0 = USBD->EPSTS & USBD_EPSTS_EPSTS3_Msk;
+        /* Set a flag to indicate bulk out ready */
+        g_i8BulkOutReady0 = 1;
+    }
 }
 
 void EP6_Handler(void)
 {
     /* Bulk OUT */
-    g_u32RxSize1 = USBD_GET_PAYLOAD_LEN(EP6);
-    g_pu8RxBuf1 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP6));
-
-    /* Set a flag to indicate bulk out ready */
-    g_i8BulkOutReady1 = 1;
+    if (g_u32OutToggle1 == (USBD->EPSTS & USBD_EPSTS_EPSTS6_Msk))
+    {
+        USBD_SET_PAYLOAD_LEN(EP3, EP3_MAX_PKT_SIZE);
+    }
+    else
+    {
+        g_u32RxSize1 = USBD_GET_PAYLOAD_LEN(EP6);
+        g_pu8RxBuf1 = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP6));
+        g_u32OutToggle1 = USBD->EPSTS & USBD_EPSTS_EPSTS6_Msk;
+        /* Set a flag to indicate bulk out ready */
+        g_i8BulkOutReady1 = 1;
+    }
 }
 
 void EP7_Handler(void)

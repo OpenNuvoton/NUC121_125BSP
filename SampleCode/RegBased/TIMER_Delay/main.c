@@ -51,6 +51,26 @@ void SYS_Init(void)
     SYS->GPB_MFPL |= (1 << SYS_GPB_MFPL_PB1MFP_Pos);
 }
 
+uint32_t CLK_GetPCLK0Freq(void)
+{
+    SystemCoreClockUpdate();
+
+    if (CLK->CLKSEL0 & CLK_CLKSEL0_PCLK0SEL_Msk)
+        return SystemCoreClock >> 1;
+    else
+        return SystemCoreClock;
+}
+
+uint32_t CLK_GetPCLK1Freq(void)
+{
+    SystemCoreClockUpdate();
+
+    if (CLK->CLKSEL0 & CLK_CLKSEL0_PCLK1SEL_Msk)
+        return SystemCoreClock >> 1;
+    else
+        return SystemCoreClock;
+}
+
 void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -67,7 +87,7 @@ void UART0_Init(void)
 
 uint32_t TIMER_GetModuleClock(TIMER_T *timer)
 {
-    uint32_t u32Src;
+    uint32_t u32Src, u32Clk;
     const uint32_t au32Clk[] = {__HXT, __LXT, 0, 0, 0, __LIRC, 0, __HIRC_DIV2};
 
     if (timer == TIMER0)
@@ -81,12 +101,23 @@ uint32_t TIMER_GetModuleClock(TIMER_T *timer)
     else
         return 0;
 
-    if (u32Src == 2)
+    if (u32Src == 2UL)
     {
-        return (SystemCoreClock);
+        if ((timer == TIMER0) || (timer == TIMER1))
+        {
+            u32Clk = CLK_GetPCLK0Freq();
+        }
+        else
+        {
+            u32Clk = CLK_GetPCLK1Freq();
+        }
+    }
+    else
+    {
+        u32Clk = au32Clk[u32Src];
     }
 
-    return (au32Clk[u32Src]);
+    return u32Clk;
 }
 
 void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)

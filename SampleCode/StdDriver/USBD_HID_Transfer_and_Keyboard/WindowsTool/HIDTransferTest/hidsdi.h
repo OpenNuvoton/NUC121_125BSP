@@ -57,8 +57,7 @@ typedef struct _HIDD_ATTRIBUTES
 } HIDD_ATTRIBUTES, *PHIDD_ATTRIBUTES;
 
 
-BOOLEAN __stdcall
-HidD_GetAttributes(
+BOOLEAN __stdcall HidD_GetAttributes(
     IN  HANDLE              HidDeviceObject,
     OUT PHIDD_ATTRIBUTES    Attributes
 );
@@ -70,13 +69,11 @@ Routine Description:
 --*/
 
 
-void __stdcall
-HidD_GetHidGuid(
+void __stdcall HidD_GetHidGuid(
     OUT   LPGUID   HidGuid
 );
 
-BOOLEAN __stdcall
-HidD_GetPreparsedData(
+BOOLEAN __stdcall HidD_GetPreparsedData(
     IN    HANDLE                  HidDeviceObject,
     OUT   PHIDP_PREPARSED_DATA   *PreparsedData
 );
@@ -101,13 +98,11 @@ Return Value:
    FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_FreePreparsedData(
+BOOLEAN __stdcall HidD_FreePreparsedData(
     IN    PHIDP_PREPARSED_DATA PreparsedData
 );
 
-BOOLEAN __stdcall
-HidD_FlushQueue(
+BOOLEAN __stdcall HidD_FlushQueue(
     IN    HANDLE                HidDeviceObject
 );
 /*++
@@ -124,8 +119,7 @@ Return Value:
    FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetConfiguration(
+BOOLEAN __stdcall HidD_GetConfiguration(
     IN   HANDLE               HidDeviceObject,
     OUT  PHIDD_CONFIGURATION  Configuration,
     IN   ULONG                ConfigurationLength
@@ -150,8 +144,7 @@ Return Value:
    FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_SetConfiguration(
+BOOLEAN __stdcall HidD_SetConfiguration(
     IN   HANDLE               HidDeviceObject,
     IN   PHIDD_CONFIGURATION  Configuration,
     IN   ULONG                ConfigurationLength
@@ -180,8 +173,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetFeature(
+BOOLEAN __stdcall HidD_GetFeature(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    ReportBuffer,
     IN    ULONG    ReportBufferLength
@@ -206,8 +198,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_SetFeature(
+BOOLEAN __stdcall HidD_SetFeature(
     IN    HANDLE   HidDeviceObject,
     IN    PVOID    ReportBuffer,
     IN    ULONG    ReportBufferLength
@@ -230,8 +221,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetInputReport(
+BOOLEAN __stdcall HidD_GetInputReport(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    ReportBuffer,
     IN    ULONG    ReportBufferLength
@@ -256,8 +246,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_SetOutputReport(
+BOOLEAN __stdcall HidD_SetOutputReport(
     IN    HANDLE   HidDeviceObject,
     IN    PVOID    ReportBuffer,
     IN    ULONG    ReportBufferLength
@@ -280,8 +269,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetNumInputBuffers(
+BOOLEAN __stdcall HidD_GetNumInputBuffers(
     IN  HANDLE  HidDeviceObject,
     OUT PULONG  NumberBuffers
 );
@@ -303,8 +291,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_SetNumInputBuffers(
+BOOLEAN __stdcall HidD_SetNumInputBuffers(
     IN  HANDLE HidDeviceObject,
     OUT ULONG  NumberBuffers
 );
@@ -327,8 +314,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetPhysicalDescriptor(
+BOOLEAN __stdcall HidD_GetPhysicalDescriptor(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    Buffer,
     IN    ULONG    BufferLength
@@ -353,8 +339,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetManufacturerString(
+BOOLEAN __stdcall HidD_GetManufacturerString(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    Buffer,
     IN    ULONG    BufferLength
@@ -379,8 +364,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetProductString(
+BOOLEAN __stdcall HidD_GetProductString(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    Buffer,
     IN    ULONG    BufferLength
@@ -405,8 +389,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetIndexedString(
+BOOLEAN __stdcall HidD_GetIndexedString(
     IN    HANDLE   HidDeviceObject,
     IN    ULONG    StringIndex,
     OUT   PVOID    Buffer,
@@ -433,8 +416,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetSerialNumberString(
+BOOLEAN __stdcall HidD_GetSerialNumberString(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    Buffer,
     IN    ULONG    BufferLength
@@ -458,8 +440,7 @@ Return Value:
     FALSE otherwise  -- Use GetLastError() to get extended error information
 --*/
 
-BOOLEAN __stdcall
-HidD_GetMsGenreDescriptor(
+BOOLEAN __stdcall HidD_GetMsGenreDescriptor(
     IN    HANDLE   HidDeviceObject,
     OUT   PVOID    Buffer,
     IN    ULONG    BufferLength

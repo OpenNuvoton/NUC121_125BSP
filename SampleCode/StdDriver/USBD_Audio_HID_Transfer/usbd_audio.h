@@ -93,8 +93,8 @@
 /*-------------------------------------------------------------*/
 #define USBD_HANDLER(ep)        ep##_Handler(void)
 
-#define ISO_IN_MAX_PKT_SIZE         192
-#define ISO_OUT_MAX_PKT_SIZE        200
+#define ISO_IN_MAX_PKT_SIZE         (REC_RATE*REC_CHANNELS*2/1000)
+#define ISO_OUT_MAX_PKT_SIZE        (PLAY_RATE*PLAY_CHANNELS*2/1000)
 #define HID_TRANS_IN_MAX_PKT_SIZE   32
 #define HID_TRANS_OUT_MAX_PKT_SIZE  32
 #define HID_KEY_IN_MAX_PKT_SIZE     16

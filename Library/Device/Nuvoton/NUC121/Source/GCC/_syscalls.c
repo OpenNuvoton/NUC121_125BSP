@@ -23,8 +23,7 @@ void *__dso_handle __attribute__((weak));
 #include <limits.h>
 #include <signal.h>
 
-void
-__initialize_args(int *p_argc, char ***p_argv);
+void __initialize_args(int *p_argc, char ***p_argv);
 
 // This is the standard default implementation for the routine to
 // process args. It returns a single empty arg.
@@ -60,18 +59,15 @@ __initialize_args(int *p_argc, char ***p_argv)
 // If you detect other functions to be needed, just let us know
 // and we'll add them.
 
-int
-raise(int sig __attribute__((unused)))
+int raise(int sig __attribute__((unused)))
 {
     errno = ENOSYS;
     return -1;
 }
 
-int
-kill(pid_t pid, int sig);
+int kill(pid_t pid, int sig);
 
-int
-kill(pid_t pid __attribute__((unused)), int sig __attribute__((unused)))
+int kill(pid_t pid __attribute__((unused)), int sig __attribute__((unused)))
 {
     errno = ENOSYS;
     return -1;
@@ -92,65 +88,45 @@ char **environ = __env;
 
 // Forward declarations
 
-int
-_chown(const char *path, uid_t owner, gid_t group);
+int _chown(const char *path, uid_t owner, gid_t group);
 
-int
-_close(int fildes);
+int _close(int fildes);
 
-int
-_execve(char *name, char **argv, char **env);
+int _execve(char *name, char **argv, char **env);
 
-int
-_fork(void);
+int _fork(void);
 
-int
-_fstat(int fildes, struct stat *st);
+int _fstat(int fildes, struct stat *st);
 
-int
-_getpid(void);
+int _getpid(void);
 
-int
-_gettimeofday(struct timeval *ptimeval, void *ptimezone);
+int _gettimeofday(struct timeval *ptimeval, void *ptimezone);
 
-int
-_isatty(int file);
+int _isatty(int file);
 
-int
-_kill(int pid, int sig);
+int _kill(int pid, int sig);
 
-int
-_link(char *existing, char *_new);
+int _link(char *existing, char *_new);
 
-int
-_lseek(int file, int ptr, int dir);
+int _lseek(int file, int ptr, int dir);
 
-int
-_open(char *file, int flags, int mode);
+int _open(char *file, int flags, int mode);
 
-int
-_read(int file, char *ptr, int len);
+int _read(int file, char *ptr, int len);
 
-int
-_readlink(const char *path, char *buf, size_t bufsize);
+int _readlink(const char *path, char *buf, size_t bufsize);
 
-int
-_stat(const char *file, struct stat *st);
+int _stat(const char *file, struct stat *st);
 
-int
-_symlink(const char *path1, const char *path2);
+int _symlink(const char *path1, const char *path2);
 
-clock_t
-_times(struct tms *buf);
+clock_t _times(struct tms *buf);
 
-int
-_unlink(char *name);
+int _unlink(char *name);
 
-int
-_wait(int *status);
+int _wait(int *status);
 
-int
-_write(int file, char *ptr, int len);
+int _write(int file, char *ptr, int len);
 
 // Definitions
 
@@ -335,73 +311,44 @@ _write(int file __attribute__((unused)), char *ptr __attribute__((unused)),
 
 #include "semihosting.h"
 
-int
-_kill(int pid, int sig);
+int _kill(int pid, int sig);
 
-void
-__attribute__((noreturn))
+void __attribute__((noreturn))
 _exit(int status);
 
 // Forward declarations.
-int
-_system(const char *);
-int
-_rename(const char *, const char *);
-int
-_isatty(int);
-clock_t
-_times(struct tms *);
-int
-_gettimeofday(struct timeval *, void *);
-int
-_unlink(const char *);
-int
-_link(void);
+int _system(const char *);
+int _rename(const char *, const char *);
+int _isatty(int);
+clock_t _times(struct tms *);
+int _gettimeofday(struct timeval *, void *);
+int _unlink(const char *);
+int _link(void);
 
-int
-_stat(const char *, struct stat *);
+int _stat(const char *, struct stat *);
 
-int
-_fstat(int, struct stat *);
-int
-_swistat(int fd, struct stat *st);
-int
-_getpid(int);
-int
-_close(int);
-clock_t
-_clock(void);
-int
-_swiclose(int);
-int
-_open(const char *, int, ...);
-int
-_swiopen(const char *, int);
-int
-_write(int, char *, int);
-int
-_swiwrite(int, char *, int);
-int
-_lseek(int, int, int);
-int
-_swilseek(int, int, int);
-int
-_read(int, char *, int);
-int
-_swiread(int, char *, int);
+int _fstat(int, struct stat *);
+int _swistat(int fd, struct stat *st);
+int _getpid(int);
+int _close(int);
+clock_t _clock(void);
+int _swiclose(int);
+int _open(const char *, int, ...);
+int _swiopen(const char *, int);
+int _write(int, char *, int);
+int _swiwrite(int, char *, int);
+int _lseek(int, int, int);
+int _swilseek(int, int, int);
+int _read(int, char *, int);
+int _swiread(int, char *, int);
 
-void
-initialise_monitor_handles(void);
+void initialise_monitor_handles(void);
 
-void
-__initialize_args(int *p_argc, char ***p_argv);
+void __initialize_args(int *p_argc, char ***p_argv);
 
-static int
-checkerror(int);
-static int
-error(int);
-static int
-get_errno(void);
+static int checkerror(int);
+static int error(int);
+static int get_errno(void);
 
 // ----------------------------------------------------------------------------
 
@@ -414,8 +361,7 @@ typedef struct
     int size;
 } CommandLineBlock;
 
-void
-__initialize_args(int *p_argc, char ***p_argv)
+void __initialize_args(int *p_argc, char ***p_argv)
 {
 
     // Array of chars to receive the command line from the host
@@ -513,8 +459,7 @@ __initialize_args(int *p_argc, char ***p_argv)
 
 // ----------------------------------------------------------------------------
 
-void
-_exit(int status)
+void _exit(int status)
 {
     /* There is only one SWI for both _exit and _kill. For _exit, call
      the SWI with the second argument set to -1, an invalid value for
@@ -563,10 +508,8 @@ struct fdent
 
 static struct fdent openfiles[MAX_OPEN_FILES];
 
-static struct fdent *
-findslot(int);
-static int
-newslot(void);
+static struct fdent *findslot(int);
+static int newslot(void);
 
 /* Register name faking - works in collusion with the linker.  */
 register char *stack_ptr asm("sp");
@@ -587,8 +530,7 @@ static int monitor_stderr;
 
 /* Return a pointer to the structure associated with
  the user file descriptor fd. */
-static struct fdent *
-findslot(int fd)
+static struct fdent *findslot(int fd)
 {
     CHECK_INIT(_REENT);
 
@@ -610,8 +552,7 @@ findslot(int fd)
 
 /* Return the next lowest numbered free file
  structure, or -1 if we can't find one. */
-static int
-newslot(void)
+static int newslot(void)
 {
     int i;
 
@@ -631,8 +572,7 @@ newslot(void)
     return i;
 }
 
-void
-initialise_monitor_handles(void)
+void initialise_monitor_handles(void)
 {
     int i;
 
@@ -682,23 +622,20 @@ initialise_monitor_handles(void)
     openfiles[2].pos = 0;
 }
 
-static int
-get_errno(void)
+static int get_errno(void)
 {
     return call_host(SEMIHOSTING_SYS_ERRNO, NULL);
 }
 
 /* Set errno and return result. */
-static int
-error(int result)
+static int error(int result)
 {
     errno = get_errno();
     return result;
 }
 
 /* Check the return and set errno appropriately. */
-static int
-checkerror(int result)
+static int checkerror(int result)
 {
     if (result == -1)
     {
@@ -712,8 +649,7 @@ checkerror(int result)
  ptr, is a null terminated string.
  len, is the length in bytes to read.
  Returns the number of bytes *not* written. */
-int
-_swiread(int fh, char *ptr, int len)
+int _swiread(int fh, char *ptr, int len)
 {
     int block[3];
 
@@ -727,8 +663,7 @@ _swiread(int fh, char *ptr, int len)
 /* fd, is a valid user file handle.
  Translates the return of _swiread into
  bytes read. */
-int
-_read(int fd, char *ptr, int len)
+int _read(int fd, char *ptr, int len)
 {
     int res;
     struct fdent *pfd;
@@ -756,8 +691,7 @@ _read(int fd, char *ptr, int len)
 }
 
 /* fd, is a user file descriptor. */
-int
-_swilseek(int fd, int ptr, int dir)
+int _swilseek(int fd, int ptr, int dir)
 {
     int res;
     struct fdent *pfd;
@@ -831,16 +765,14 @@ _swilseek(int fd, int ptr, int dir)
     }
 }
 
-int
-_lseek(int fd, int ptr, int dir)
+int _lseek(int fd, int ptr, int dir)
 {
     return _swilseek(fd, ptr, dir);
 }
 
 /* fh, is a valid internal file handle.
  Returns the number of bytes *not* written. */
-int
-_swiwrite(int fh, char *ptr, int len)
+int _swiwrite(int fh, char *ptr, int len)
 {
     int block[3];
 
@@ -852,8 +784,7 @@ _swiwrite(int fh, char *ptr, int len)
 }
 
 /* fd, is a user file descriptor. */
-int
-_write(int fd, char *ptr, int len)
+int _write(int fd, char *ptr, int len)
 {
     int res;
     struct fdent *pfd;
@@ -886,8 +817,7 @@ _write(int fd, char *ptr, int len)
     return (len - res);
 }
 
-int
-_swiopen(const char *path, int flags)
+int _swiopen(const char *path, int flags)
 {
     int aflags = 0, fh;
     uint32_t block[3];
@@ -962,22 +892,19 @@ _swiopen(const char *path, int flags)
     }
 }
 
-int
-_open(const char *path, int flags, ...)
+int _open(const char *path, int flags, ...)
 {
     return _swiopen(path, flags);
 }
 
 /* fh, is a valid internal file handle. */
-int
-_swiclose(int fh)
+int _swiclose(int fh)
 {
     return checkerror(call_host(SEMIHOSTING_SYS_CLOSE, &fh));
 }
 
 /* fd, is a user file descriptor. */
-int
-_close(int fd)
+int _close(int fd)
 {
     int res;
     struct fdent *pfd;
@@ -1015,8 +942,7 @@ _getpid(int n __attribute__((unused)))
     return 1;
 }
 
-int
-_swistat(int fd, struct stat *st)
+int _swistat(int fd, struct stat *st)
 {
     struct fdent *pfd;
     int res;
@@ -1079,8 +1005,7 @@ _link(void)
     return -1;
 }
 
-int
-_unlink(const char *path)
+int _unlink(const char *path)
 {
     int res;
     uint32_t block[2];
@@ -1096,8 +1021,7 @@ _unlink(const char *path)
     return 0;
 }
 
-int
-_gettimeofday(struct timeval *tp, void *tzvp)
+int _gettimeofday(struct timeval *tp, void *tzvp)
 {
     struct timezone *tzp = tzvp;
 
@@ -1119,8 +1043,7 @@ _gettimeofday(struct timeval *tp, void *tzvp)
 }
 
 /* Return a clock that ticks at 100Hz.  */
-clock_t
-_clock(void)
+clock_t _clock(void)
 {
     clock_t timeval;
 
@@ -1129,8 +1052,7 @@ _clock(void)
 }
 
 /* Return a clock that ticks at 100Hz.  */
-clock_t
-_times(struct tms *tp)
+clock_t _times(struct tms *tp)
 {
     clock_t timeval = _clock();
 
@@ -1145,8 +1067,7 @@ _times(struct tms *tp)
     return timeval;
 }
 
-int
-_isatty(int fd)
+int _isatty(int fd)
 {
     struct fdent *pfd;
     int tty;
@@ -1170,8 +1091,7 @@ _isatty(int fd)
     return 0;
 }
 
-int
-_system(const char *s)
+int _system(const char *s)
 {
     uint32_t block[2];
     int e;
@@ -1204,8 +1124,7 @@ _system(const char *s)
     return e;
 }
 
-int
-_rename(const char *oldpath, const char *newpath)
+int _rename(const char *oldpath, const char *newpath)
 {
     uint32_t block[4];
     block[0] = (uint32_t) oldpath;
@@ -1218,9 +1137,8 @@ _rename(const char *oldpath, const char *newpath)
 // ----------------------------------------------------------------------------
 // Required by Google Tests
 
-int
-mkdir(const char *path __attribute__((unused)),
-      mode_t mode __attribute__((unused)))
+int mkdir(const char *path __attribute__((unused)),
+          mode_t mode __attribute__((unused)))
 {
 #if 0
     // always return true
@@ -1231,8 +1149,7 @@ mkdir(const char *path __attribute__((unused)),
 #endif
 }
 
-char *
-getcwd(char *buf, size_t size)
+char *getcwd(char *buf, size_t size)
 {
     // no cwd available via semihosting, so we use the temporary folder
     strncpy(buf, "/tmp", size);
