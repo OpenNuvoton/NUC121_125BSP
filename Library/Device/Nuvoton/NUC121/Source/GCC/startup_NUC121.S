@@ -133,10 +133,12 @@ Reset_Handler:
 
 .L_loop0_0:
 	subs	r3, #4
+	blt	.L_loop0_0_done	
 	ldr	r0, [r1,r3]
 	str	r0, [r2,r3]
-	bge	.L_loop0_0
+	b	.L_loop0_0
 
+.L_loop0_0_done:
 	adds	r4, #12
 	b	.L_loop0
 

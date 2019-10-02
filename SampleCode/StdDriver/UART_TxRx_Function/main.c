@@ -129,12 +129,12 @@ void UART_TEST_HANDLE()
     uint8_t u8InChar = 0xFF;
     uint32_t u32IntSts = UART0->INTSTS;
 
-    if (u32IntSts & UART_INTSTS_RDAINT_Msk)
+    if ((u32IntSts & UART_INTSTS_RDAINT_Msk) || (u32IntSts & UART_INTSTS_RXTOINT_Msk))
     {
         printf("\nInput:");
 
         /* Get all the input characters */
-        while (UART_IS_RX_READY(UART0))
+        while (UART_GET_RX_EMPTY(UART0) == 0)
         {
             /* Get the character from UART Buffer */
             u8InChar = UART_READ(UART0);
@@ -175,6 +175,11 @@ void UART_TEST_HANDLE()
             g_u32comRbytes--;
         }
     }
+
+    if (UART0->FIFOSTS & (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk))
+    {
+        UART0->FIFOSTS = (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk);
+    }
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -197,13 +202,23 @@ void UART_FunctionTest()
         UART0 will print the received char on screen.
     */
 
+    UART_SetTimeoutCnt(UART0, 0x10); // Set Rx Time-out counter
+
+    // Set RX FIFO Interrupt Trigger Level
+    UART0->FIFO &= ~ UART_FIFO_RFITL_Msk;
+    UART0->FIFO |= UART_FIFO_RFITL_4BYTES;
+
     /* Enable UART RDA and THRE interrupt */
-    UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
+    UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
 
     while (g_bWait);
 
     /* Disable UART RDA and THRE interrupt */
-    UART_DisableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk));
+    UART_DisableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
+
+    // Reset RX FIFO Interrupt Trigger Level
+    UART0->FIFO &= ~ UART_FIFO_RFITL_Msk;
+
     g_bWait = TRUE;
     printf("\nUART Sample Demo End.\n");
 

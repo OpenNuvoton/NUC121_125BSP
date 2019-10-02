@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define APROM_TEST_BASE     0x4000
+#define APROM_TEST_BASE     0x6000
 
 void SYS_Init(void)
 {

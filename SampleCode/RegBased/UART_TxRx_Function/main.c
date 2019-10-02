@@ -124,12 +124,12 @@ void UART_TEST_HANDLE()
     uint8_t u8InChar = 0xFF;
     uint32_t u32IntSts = UART0->INTSTS;
 
-    if (u32IntSts & UART_INTSTS_RDAINT_Msk)
+    if ((u32IntSts & UART_INTSTS_RDAINT_Msk) || (u32IntSts & UART_INTSTS_RXTOINT_Msk))
     {
         printf("\nInput:");
 
         /* Get all the input characters */
-        while (UART0->INTSTS & UART_INTSTS_RDAIF_Msk)
+        while (UART_GET_RX_EMPTY(UART0) == 0)
         {
             /* Get the character from UART Buffer */
             u8InChar = UART0->DAT;
@@ -170,6 +170,11 @@ void UART_TEST_HANDLE()
             g_u32comRbytes--;
         }
     }
+
+    if (UART0->FIFOSTS & (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk))
+    {
+        UART0->FIFOSTS = (UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_RXOVIF_Msk);
+    }
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -192,16 +197,31 @@ void UART_FunctionTest()
         UART0 will print the received char on screen.
     */
 
+    /* Set Rx Time-out counter           */
+    /* Set time-out interrupt comparator */
+    UART0->TOUT &= ~UART_TOUT_TOIC_Msk | (0x10);
+
+    /* Set time-out counter enable */
+    UART0->INTEN |= UART_INTEN_TOCNTEN_Msk;
+
+    // Set RX FIFO Interrupt Trigger Level
+    UART0->FIFO &= ~ UART_FIFO_RFITL_Msk;
+    UART0->FIFO |= UART_FIFO_RFITL_4BYTES;
+
     /* Enable UART RDA and THRE Interrupt */
-    UART0->INTEN |= UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk;
+    UART0->INTEN |= UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk;
     NVIC_EnableIRQ(UART0_IRQn);
 
     while (g_bWait);
 
     /* Disable UART RDA and THRE Interrupt */
-    UART0->INTEN &= ~(UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk);
+    UART0->INTEN &= ~(UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk);
     NVIC_DisableIRQ(UART0_IRQn);
+
+    // Reset RX FIFO Interrupt Trigger Level
+    UART0->FIFO &= ~ UART_FIFO_RFITL_Msk;
     g_bWait = TRUE;
+
     printf("\nUART Sample Demo End.\n");
 
 }

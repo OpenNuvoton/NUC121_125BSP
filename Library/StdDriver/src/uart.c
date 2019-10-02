@@ -460,7 +460,7 @@ uint32_t UART_Write(UART_T *psUART, uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
     {
         u32Delayno = 0;
 
-        while ((psUART->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0)   /* Wait Tx empty and Time-out manner */
+        while (psUART->FIFOSTS & UART_FIFOSTS_TXFULL_Msk)  /* Check Tx Full */
         {
             u32Delayno++;
 

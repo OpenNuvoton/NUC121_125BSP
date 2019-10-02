@@ -10,8 +10,8 @@
 
 #if defined(__GNUC__)
 
-    #define MASS_STORAGE_OFFSET       0x00005800  /* To avoid the code to write APROM */
-    #define DATA_FLASH_STORAGE_SIZE   (10*1024)   /* Configure the DATA FLASH storage size. To pass USB-IF MSC Test, it needs > 64KB */
+    #define MASS_STORAGE_OFFSET       0x00004C00  /* To avoid the code to write APROM */
+    #define DATA_FLASH_STORAGE_SIZE   (13*1024)   /* Configure the DATA FLASH storage size. To pass USB-IF MSC Test, it needs > 64KB */
     /* Windows 7 will take about 20 KB to do formatting. We cannot format the flash due to the free space is not enough. */
 #else //for KEIL/IAR
     #define MASS_STORAGE_OFFSET       0x00002C00  /* To avoid the code to write APROM */
