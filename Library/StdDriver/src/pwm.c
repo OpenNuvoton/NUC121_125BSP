@@ -38,6 +38,8 @@ uint32_t PWM_ConfigCaptureChannel(PWM_T *pwm, uint32_t u32ChannelNum, uint32_t u
     uint32_t u32NearestUnitTimeNsec;
     uint16_t u16Prescale = 1, u16CNR = 0xFFFF;
 
+    (void) u32CaptureEdge;
+
     if (pwm == PWM0)
         u32Src = CLK->CLKSEL1 & CLK_CLKSEL1_PWM0SEL_Msk;
     else//(pwm == PWM1)
@@ -66,7 +68,7 @@ uint32_t PWM_ConfigCaptureChannel(PWM_T *pwm, uint32_t u32ChannelNum, uint32_t u
             if (u16Prescale == 0x1000) //limit to the maximum unit time(nano second)
                 break;
 
-            if (!((1000000 * (u16Prescale + 1) > (u32NearestUnitTimeNsec * u32PWMClockSrc))))
+            if (!((1000000UL * (u16Prescale + 1) > (u32NearestUnitTimeNsec * u32PWMClockSrc))))
                 break;
 
             continue;
@@ -303,6 +305,7 @@ void PWM_DisableADCTrigger(PWM_T *pwm, uint32_t u32ChannelNum)
  */
 void PWM_ClearADCTriggerFlag(PWM_T *pwm, uint32_t u32ChannelNum, uint32_t u32Condition)
 {
+    (void) u32Condition;
     (pwm)->STATUS = (PWM_STATUS_ADCTRG0_Msk << u32ChannelNum);
 }
 
@@ -735,6 +738,7 @@ uint32_t PWM_GetFaultBrakeIntFlag(PWM_T *pwm, uint32_t u32BrakeSource)
  */
 void PWM_EnablePeriodInt(PWM_T *pwm, uint32_t u32ChannelNum,  uint32_t u32IntPeriodType)
 {
+    (void) u32IntPeriodType;
     (pwm)->INTEN0 |= (PWM_INTEN0_PIEN0_Msk << ((u32ChannelNum >> 1) << 1));
 }
 
@@ -858,7 +862,7 @@ uint32_t PWM_GetZeroIntFlag(PWM_T *pwm, uint32_t u32ChannelNum)
  */
 void PWM_SetClockSource(PWM_T *pwm, uint32_t u32ChannelNum, uint32_t u32ClkSrcSel)
 {
-    (pwm)->CLKSRC = (pwm)->CLKSRC & ~(PWM_CLKSRC_ECLKSRC0_Msk << ((u32ChannelNum >> 1) * PWM_CLKSRC_ECLKSRC2_Pos)) | \
+    (pwm)->CLKSRC = ((pwm)->CLKSRC & ~(PWM_CLKSRC_ECLKSRC0_Msk << ((u32ChannelNum >> 1) * PWM_CLKSRC_ECLKSRC2_Pos))) | \
                     (u32ClkSrcSel << ((u32ChannelNum >> 1) * PWM_CLKSRC_ECLKSRC2_Pos));
 }
 

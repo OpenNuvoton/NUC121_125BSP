@@ -464,7 +464,7 @@ void USBD_StandardRequest(void)
         {
             if (g_USBD_au8SetupPacket[2] == FEATURE_ENDPOINT_HALT)
             {
-                int32_t epNum, i;
+                uint32_t epNum, i;
 
                 /* EP number stall is not allow to be clear in MSC class "Error Recovery Test".
                    a flag: g_u32EpStallLock is added to support it */

@@ -59,6 +59,7 @@ void ADC_Open(ADC_T *adc,
   */
 void ADC_Close(ADC_T *adc)
 {
+    (void) adc;
     SYS->IPRST1 |= SYS_IPRST1_ADCRST_Msk;
     SYS->IPRST1 &= ~SYS_IPRST1_ADCRST_Msk;
     return;
@@ -125,6 +126,7 @@ void ADC_EnableTimerTrigger(ADC_T *adc,
                             uint32_t u32Source,
                             uint32_t u32Param)
 {
+    (void) u32Param;
     adc->ADCR &= ~(ADC_ADCR_TRGS_Msk | ADC_ADCR_TRGCOND_Msk | ADC_ADCR_TRGEN_Msk);
     adc->ADCR |= u32Source | ADC_ADCR_TRGEN_Msk;
     return;
