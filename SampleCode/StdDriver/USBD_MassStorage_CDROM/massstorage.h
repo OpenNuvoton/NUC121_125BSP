@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    USB mass storage header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __USBD_MASS_H__

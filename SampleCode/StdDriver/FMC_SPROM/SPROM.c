@@ -1,11 +1,13 @@
-/*---------------------------------------------------------------------------------------------------------*/
-/*                                                                                                         */
-/* Copyright(c) 2016 Nuvoton Technology Corp. All rights reserved.                                         */
-/*                                                                                                         */
-/* This smaple code simulate how to excute code in SPROM area, its obj file should be placed               */
-/* on SPROM_BASE. User can refer to scatter file(option->linker) to see how it works.                      */
-/*                                                                                                         */
-/*---------------------------------------------------------------------------------------------------------*/
+/*************************************************************************//**
+ *
+ * Copyright(c) 2016 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * This sample code simulate how to execute code in SPROM area, its obj file
+ * should be placed on SPROM_BASE.
+ * User can refer to scatter file(option->linker) to see how it works.
+ *
+*****************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 

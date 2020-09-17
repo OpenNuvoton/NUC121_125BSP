@@ -4,6 +4,7 @@
  * @brief
  *           Change duty cycle of output waveform by configured period.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *
  ******************************************************************************/

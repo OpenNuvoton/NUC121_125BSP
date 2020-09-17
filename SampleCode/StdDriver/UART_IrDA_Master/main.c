@@ -4,6 +4,7 @@
  * @brief    Transmit and receive data in UART IrDA mode.
  *           This sample code needs to work with UART_IrDA_Slave.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -76,8 +77,7 @@ void IrDA_FunctionTxTest()
         u8OutChar = getchar();
         printf("   Input: %c , Send %c out\n", u8OutChar, u8OutChar);
         UART_WRITE(UART0, u8OutChar);
-    }
-    while (u8OutChar != '0');
+    } while (u8OutChar != '0');
 
     printf("\nIrDA Sample Code End.\n");
 

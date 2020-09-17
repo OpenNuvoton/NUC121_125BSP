@@ -4,6 +4,7 @@
  * @brief    Show how to use auto baud rate detection function.
  *           This sample code needs to work with UART_AutoBaudRate_Slave.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -177,23 +178,22 @@ void AutoBaudRate_TxTest()
         /* Set different baud rate */
         switch (u32Item)
         {
-        case '1':
-            UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 38400);
-            break;
+            case '1':
+                UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 38400);
+                break;
 
-        case '2':
-            UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 57600);
-            break;
+            case '2':
+                UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 57600);
+                break;
 
-        default:
-            UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 115200);
-            break;
+            default:
+                UART0->BAUD = UART_BAUD_MODE2 | UART_BAUD_MODE2_DIVIDER(__HIRC_DIV2, 115200);
+                break;
         }
 
         /* Send input pattern 0x1 for auto baud rate detection bit length is 1-bit */
         UART_WRITE(UART0, 0x1);
 
-    }
-    while (u32Item != 27);
+    } while (u32Item != 27);
 
 }

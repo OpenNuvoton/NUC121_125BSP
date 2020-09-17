@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series PWM driver header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __PWM_H__
@@ -481,7 +482,7 @@ extern "C"
  */
 #define PWM_SET_DEADZONE_CLK_SRC(pwm, u32ChannelNum, u32AfterPrescaler) \
     (*(__IO uint32_t *) (&((pwm)->DTCTL0_1) + ((u32ChannelNum) >> 1)) = (*(__IO uint32_t *) (&((pwm)->DTCTL0_1) + ((u32ChannelNum) >> 1)) & ~PWM_DTCTL0_1_DTCKSEL_Msk) | \
-            ((u32AfterPrescaler) << PWM_DTCTL0_1_DTCKSEL_Pos))
+                                                                        ((u32AfterPrescaler) << PWM_DTCTL0_1_DTCKSEL_Pos))
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define PWM functions prototype                                                                          */

@@ -4,6 +4,7 @@
  * @brief    Show how to reboot to LDROM functions from APROM.
  *           This sample code set VECMAP to LDROM and reset to re-boot to LDROM.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
@@ -293,46 +294,45 @@ int main()
 
         switch (u8Item)
         {
-        case '0':
-            FMC->ISPCTL |= FMC_ISPCTL_LDUEN_Msk;
+            case '0':
+                FMC->ISPCTL |= FMC_ISPCTL_LDUEN_Msk;
 
-            if (LoadImage((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
-                          FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
-            {
-                printf("Load image to LDROM failed!\n");
-                goto lexit;
-            }
+                if (LoadImage((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
+                              FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+                {
+                    printf("Load image to LDROM failed!\n");
+                    goto lexit;
+                }
 
-            FMC->ISPCTL &= ~FMC_ISPCTL_LDUEN_Msk;
-            break;
+                FMC->ISPCTL &= ~FMC_ISPCTL_LDUEN_Msk;
+                break;
 
-        case '1':
-            printf("\n\nChange VECMAP and branch to LDROM...\n");
-            UART_WAIT_TX_EMPTY(UART0); /* To make sure all message has been print out */
+            case '1':
+                printf("\n\nChange VECMAP and branch to LDROM...\n");
+                UART_WAIT_TX_EMPTY(UART0); /* To make sure all message has been print out */
 
-            while (!(((UART0->FIFOSTS) & UART_FIFOSTS_TXEMPTYF_Msk) >> UART_FIFOSTS_TXEMPTYF_Pos))
+                while (!(((UART0->FIFOSTS) & UART_FIFOSTS_TXEMPTYF_Msk) >> UART_FIFOSTS_TXEMPTYF_Pos))
 
-                /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
-                __set_PRIMASK(1);
+                    /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
+                    __set_PRIMASK(1);
 
-            /* Set VECMAP to LDROM for booting from LDROM */
-            FMC->ISPCMD = FMC_ISPCMD_VECMAP;
-            FMC->ISPADDR = FMC_LDROM_BASE;
-            FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
-            __ISB();
+                /* Set VECMAP to LDROM for booting from LDROM */
+                FMC->ISPCMD = FMC_ISPCMD_VECMAP;
+                FMC->ISPADDR = FMC_LDROM_BASE;
+                FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;
+                __ISB();
 
-            while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
+                while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
 
-            /* Software reset to boot to LDROM */
-            NVIC_SystemReset();
+                /* Software reset to boot to LDROM */
+                NVIC_SystemReset();
 
-            break;
+                break;
 
-        default :
-            break;
+            default :
+                break;
         }
-    }
-    while (1);
+    } while (1);
 
 
 lexit:

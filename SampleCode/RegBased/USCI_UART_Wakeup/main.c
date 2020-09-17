@@ -4,6 +4,7 @@
  * @brief    Show how to wake up system from Power-down mode
  *           by USCI interrupt in UART mode.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
@@ -228,16 +229,16 @@ void USCI_UART_PowerDownWakeUpTest(void)
 
     switch (u32Item)
     {
-    case '1':
-        USCI_UART_CTSWakeUp();
-        break;
+        case '1':
+            USCI_UART_CTSWakeUp();
+            break;
 
-    case '2':
-        USCI_UART_DataWakeUp();
-        break;
+        case '2':
+            USCI_UART_DataWakeUp();
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 
     /* Unlock protected registers before entering Power-down mode */

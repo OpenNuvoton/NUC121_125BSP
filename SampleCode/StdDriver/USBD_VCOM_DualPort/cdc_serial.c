@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series USBD VCOM sample file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -299,33 +300,33 @@ void VCOM_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
-        case GET_LINE_CODE:
-        {
-            if (au8Buf[4] == 0)   /* VCOM-1 */
+            case GET_LINE_CODE:
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding0, 7);
+                if (au8Buf[4] == 0)   /* VCOM-1 */
+                {
+                    USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding0, 7);
+                }
+
+                if (au8Buf[4] == 2)   /* VCOM-2 */
+                {
+                    USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding1, 7);
+                }
+
+                /* Data stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 7);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
             }
 
-            if (au8Buf[4] == 2)   /* VCOM-2 */
+            default:
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding1, 7);
+                /* Setup error, stall the device */
+                USBD_SetStall(EP0);
+                USBD_SetStall(EP1);
+                break;
             }
-
-            /* Data stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 7);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
-
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(EP0);
-            USBD_SetStall(EP1);
-            break;
-        }
         }
     }
     else
@@ -333,58 +334,58 @@ void VCOM_ClassRequest(void)
         // Host to device
         switch (au8Buf[1])
         {
-        case SET_CONTROL_LINE_STATE:
-        {
-            if (au8Buf[4] == 0)   /* VCOM-1 */
+            case SET_CONTROL_LINE_STATE:
             {
-                g_u16CtrlSignal0 = au8Buf[3];
-                g_u16CtrlSignal0 = (g_u16CtrlSignal0 << 8) | au8Buf[2];
-                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
+                if (au8Buf[4] == 0)   /* VCOM-1 */
+                {
+                    g_u16CtrlSignal0 = au8Buf[3];
+                    g_u16CtrlSignal0 = (g_u16CtrlSignal0 << 8) | au8Buf[2];
+                    //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
+                }
+
+                if (au8Buf[4] == 2)   /* VCOM-2 */
+                {
+                    g_u16CtrlSignal1 = au8Buf[3];
+                    g_u16CtrlSignal1 = (g_u16CtrlSignal1 << 8) | au8Buf[2];
+                    //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
+                }
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
             }
 
-            if (au8Buf[4] == 2)   /* VCOM-2 */
+            case SET_LINE_CODE:
             {
-                g_u16CtrlSignal1 = au8Buf[3];
-                g_u16CtrlSignal1 = (g_u16CtrlSignal1 << 8) | au8Buf[2];
-                //printf("RTS=%d  DTR=%d\n", (g_u16CtrlSignal0 >> 1) & 1, g_u16CtrlSignal0 & 1);
+                if (au8Buf[4] == 0) /* VCOM-1 */
+                    USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding0, 7);
+
+                if (au8Buf[4] == 2) /* VCOM-2 */
+                    USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding1, 7);
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+
+                /* UART setting */
+                if (au8Buf[4] == 0) /* VCOM-1 */
+                    VCOM_LineCoding(0);
+
+                if (au8Buf[4] == 2) /* VCOM-2 */
+                    VCOM_LineCoding(1);
+
+                break;
             }
 
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        case SET_LINE_CODE:
-        {
-            if (au8Buf[4] == 0) /* VCOM-1 */
-                USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding0, 7);
-
-            if (au8Buf[4] == 2) /* VCOM-2 */
-                USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding1, 7);
-
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-
-            /* UART setting */
-            if (au8Buf[4] == 0) /* VCOM-1 */
-                VCOM_LineCoding(0);
-
-            if (au8Buf[4] == 2) /* VCOM-2 */
-                VCOM_LineCoding(1);
-
-            break;
-        }
-
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(EP0);
-            USBD_SetStall(EP1);
-            break;
-        }
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(EP0);
+                USBD_SetStall(EP1);
+                break;
+            }
         }
     }
 }
@@ -433,24 +434,24 @@ void VCOM_LineCoding(uint8_t port)
         // bit width
         switch (g_sLineCoding0.u8DataBits)
         {
-        case 5:
-            u32Reg |= 0;
-            break;
+            case 5:
+                u32Reg |= 0;
+                break;
 
-        case 6:
-            u32Reg |= 1;
-            break;
+            case 6:
+                u32Reg |= 1;
+                break;
 
-        case 7:
-            u32Reg |= 2;
-            break;
+            case 7:
+                u32Reg |= 2;
+                break;
 
-        case 8:
-            u32Reg |= 3;
-            break;
+            case 8:
+                u32Reg |= 3;
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
         // stop bit
@@ -472,59 +473,59 @@ void VCOM_LineCoding(uint8_t port)
 
         switch (g_sLineCoding1.u8CharFormat)
         {
-        case 0:
-            u32stop_bits = UUART_STOP_BIT_1;
-            break;
+            case 0:
+                u32stop_bits = UUART_STOP_BIT_1;
+                break;
 
-        case 2:
-            u32stop_bits = UUART_STOP_BIT_2;
-            break;
+            case 2:
+                u32stop_bits = UUART_STOP_BIT_2;
+                break;
 
-        default:
-            u32stop_bits = UUART_STOP_BIT_1;
-            break;
+            default:
+                u32stop_bits = UUART_STOP_BIT_1;
+                break;
         }
 
         switch (g_sLineCoding1.u8ParityType)
         {
-        case 0:
-            u32parity = UUART_PARITY_NONE;
-            break;
+            case 0:
+                u32parity = UUART_PARITY_NONE;
+                break;
 
-        case 1:
-            u32parity = UUART_PARITY_ODD;
-            break;
+            case 1:
+                u32parity = UUART_PARITY_ODD;
+                break;
 
-        case 2:
-            u32parity = UUART_PARITY_EVEN;
-            break;
+            case 2:
+                u32parity = UUART_PARITY_EVEN;
+                break;
 
-        default:
-            u32parity = UUART_PARITY_NONE;
-            break;
+            default:
+                u32parity = UUART_PARITY_NONE;
+                break;
         }
 
         switch (g_sLineCoding1.u8DataBits)
         {
-        case 6:
-            u32data_width = UUART_WORD_LEN_6;
-            break;
+            case 6:
+                u32data_width = UUART_WORD_LEN_6;
+                break;
 
-        case 7:
-            u32data_width = UUART_WORD_LEN_7;
-            break;
+            case 7:
+                u32data_width = UUART_WORD_LEN_7;
+                break;
 
-        case 8:
-            u32data_width = UUART_WORD_LEN_8;
-            break;
+            case 8:
+                u32data_width = UUART_WORD_LEN_8;
+                break;
 
-        case 9:
-            u32data_width = UUART_WORD_LEN_9;
-            break;
+            case 9:
+                u32data_width = UUART_WORD_LEN_9;
+                break;
 
-        default:
-            u32data_width = UUART_WORD_LEN_8;
-            break;
+            default:
+                u32data_width = UUART_WORD_LEN_8;
+                break;
         }
 
         UUART_SetLine_Config(UUART0,

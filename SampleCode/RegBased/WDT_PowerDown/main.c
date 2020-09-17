@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Use WDT time-out interrupt event to wake-up system.
 
+ * SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

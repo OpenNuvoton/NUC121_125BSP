@@ -5,6 +5,7 @@
  *           from Master in GC (General Call) mode.
  *           This sample code needs to work with USCI_I2C_GCMode_Master.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

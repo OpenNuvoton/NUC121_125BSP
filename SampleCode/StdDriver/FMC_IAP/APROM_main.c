@@ -4,6 +4,7 @@
  * @brief    Show how to reboot to LDROM functions from APROM.
  *           This sample code set VECMAP to LDROM and reset to re-boot to LDROM.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>
@@ -207,39 +208,38 @@ int main()
 
         switch (u8Item)
         {
-        case '0':
-            FMC_EnableLDUpdate();
+            case '0':
+                FMC_EnableLDUpdate();
 
-            if (LoadImage((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
-                          FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
-            {
-                printf("Load image to LDROM failed!\n");
-                goto lexit;
-            }
+                if (LoadImage((uint32_t)&loaderImage1Base, (uint32_t)&loaderImage1Limit,
+                              FMC_LDROM_BASE, FMC_LDROM_SIZE) != 0)
+                {
+                    printf("Load image to LDROM failed!\n");
+                    goto lexit;
+                }
 
-            FMC_DisableLDUpdate();
-            break;
+                FMC_DisableLDUpdate();
+                break;
 
-        case '1':
-            printf("\n\nChange VECMAP and branch to LDROM...\n");
-            UART_WAIT_TX_EMPTY(UART0); /* To make sure all message has been print out */
+            case '1':
+                printf("\n\nChange VECMAP and branch to LDROM...\n");
+                UART_WAIT_TX_EMPTY(UART0); /* To make sure all message has been print out */
 
-            /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
-            __set_PRIMASK(1);
+                /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
+                __set_PRIMASK(1);
 
-            /* Set VECMAP to LDROM for booting from LDROM */
-            FMC_SetVectorPageAddr(FMC_LDROM_BASE);
+                /* Set VECMAP to LDROM for booting from LDROM */
+                FMC_SetVectorPageAddr(FMC_LDROM_BASE);
 
-            /* Software reset to boot to LDROM */
-            NVIC_SystemReset();
+                /* Software reset to boot to LDROM */
+                NVIC_SystemReset();
 
-            break;
+                break;
 
-        default :
-            break;
+            default :
+                break;
         }
-    }
-    while (1);
+    } while (1);
 
 
 lexit:

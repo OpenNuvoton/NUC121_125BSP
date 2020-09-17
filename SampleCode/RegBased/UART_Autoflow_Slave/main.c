@@ -4,6 +4,7 @@
  * @brief    Transmit and receive data with auto flow control.
  *           This sample code needs to work with UART_Autoflow_Master.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -164,8 +165,7 @@ void UART0_IRQHandler(void)
             g_u8RecData[g_i32pointer] = UART_READ(UART0);
             g_i32pointer++;
             /* Read data when FIFO RX pointer is not 0 */
-        }
-        while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
+        } while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
     }
 }
 /*---------------------------------------------------------------------------------------------------------*/

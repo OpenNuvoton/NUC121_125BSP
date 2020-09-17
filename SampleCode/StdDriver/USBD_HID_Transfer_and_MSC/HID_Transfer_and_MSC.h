@@ -2,6 +2,7 @@
  * @file     HID_Transfer_and_MSC.h
  * @brief    NUC121 series USB device header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __USBD_HID_MSC_H__

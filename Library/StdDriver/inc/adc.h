@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series ADC driver header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
@@ -225,10 +226,10 @@ extern "C"
                         u32Condition, \
                         u32Data, \
                         u32MatchCount) ((adc)->ADCMPR[0] = ((u32ChNum) << ADC_ADCMPR_CMPCH_Pos) \
-                                        | (u32Condition) \
-                                        | ((u32Data) << ADC_ADCMPR_CMPD_Pos) \
-                                        | (((u32MatchCount) - 1) << ADC_ADCMPR_CMPMATCNT_Pos) \
-                                        | ADC_ADCMPR_CMPEN_Msk)
+                                                           | (u32Condition) \
+                                                           | ((u32Data) << ADC_ADCMPR_CMPD_Pos) \
+                                                           | (((u32MatchCount) - 1) << ADC_ADCMPR_CMPMATCNT_Pos) \
+                                                           | ADC_ADCMPR_CMPEN_Msk)
 
 /**
   * @brief Disable comparator 0
@@ -259,10 +260,10 @@ extern "C"
                         u32Condition, \
                         u32Data, \
                         u32MatchCount) ((adc)->ADCMPR[1] = ((u32ChNum) << ADC_ADCMPR_CMPCH_Pos) \
-                                        | (u32Condition) \
-                                        | ((u32Data) << ADC_ADCMPR_CMPD_Pos) \
-                                        | (((u32MatchCount) - 1) << ADC_ADCMPR_CMPMATCNT_Pos) \
-                                        | ADC_ADCMPR_CMPEN_Msk)
+                                                           | (u32Condition) \
+                                                           | ((u32Data) << ADC_ADCMPR_CMPD_Pos) \
+                                                           | (((u32MatchCount) - 1) << ADC_ADCMPR_CMPMATCNT_Pos) \
+                                                           | ADC_ADCMPR_CMPEN_Msk)
 
 /**
   * @brief Disable comparator 1.

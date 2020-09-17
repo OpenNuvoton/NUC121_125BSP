@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Perform A/D Conversion with ADC single mode.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

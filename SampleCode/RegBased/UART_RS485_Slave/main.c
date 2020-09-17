@@ -4,6 +4,7 @@
  * @brief    Transmit and receive data in UART RS485 mode.
  *           This sample code needs to work with UART_RS485_Master.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -80,8 +81,7 @@ void RS485_HANDLE()
         do
         {
             printf("%d,", UART0->DAT);
-        }
-        while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
+        } while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
     }
     else if (u32IntSts & UART_INTSTS_BUFERRINT_Msk)     /* Buffer Error INT */
     {

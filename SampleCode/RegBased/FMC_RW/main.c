@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Show how to read/program embedded flash by ISP function.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Toggle PB.4 to turn on/off LED.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"

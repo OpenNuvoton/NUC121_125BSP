@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Show how to wake up system from Power-down mode by UART interrupt.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
@@ -292,16 +293,16 @@ void UART_PowerDownWakeUpTest(void)
 
     switch (u32Item)
     {
-    case '1':
-        UART_RxThresholdWakeUp();
-        break;
+        case '1':
+            UART_RxThresholdWakeUp();
+            break;
 
-    case '2':
-        UART_RS485WakeUp();
-        break;
+        case '2':
+            UART_RS485WakeUp();
+            break;
 
-    default:
-        break;
+        default:
+            break;
     }
 
     /* Unlock protected registers before entering Power-down mode */

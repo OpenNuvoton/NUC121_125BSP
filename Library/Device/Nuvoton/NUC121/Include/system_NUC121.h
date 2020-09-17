@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 Series System Setting Header File
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __SYSTEM_NUC121_H__
@@ -32,11 +33,15 @@ extern "C" {
 /*----------------------------------------------------------------------------
   Define SYSCLK
  *----------------------------------------------------------------------------*/
+#ifndef __HXT
 #define __HXT       (12000000UL)    /*!< External Crystal Clock Frequency     */
+#endif
 #define __LIRC      (10000UL)       /*!< Internal 10K RC Oscillator Frequency */
 #define __HIRC      (48000000UL)    /*!< Internal 48M RC Oscillator Frequency */
 #define __HIRC_DIV2 (__HIRC/2)
+#ifndef __LXT
 #define __LXT       (32768UL)       /*!< External Crystal Clock Frequency 32.768KHz */
+#endif
 #define __HSI       (96000000UL)    /*!< PLL default output is 96MHz@24M HIRC_DIV2 */
 #define __HSI_DIV2  (__HSI/2)
 

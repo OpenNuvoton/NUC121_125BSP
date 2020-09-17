@@ -5,6 +5,7 @@
  *           It use PC0 ~ PC5 to control mouse direction and mouse key.
  *           It also supports USB suspend and remote wakeup.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

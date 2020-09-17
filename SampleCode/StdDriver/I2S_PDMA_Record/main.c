@@ -4,6 +4,7 @@
  * @brief    NUC121 SPI Driver Sample Code
  *           This is a I2S demo for recording data and demonstrate how I2S works with PDMA.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

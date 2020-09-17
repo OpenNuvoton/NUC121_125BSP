@@ -5,6 +5,7 @@
  *              When SPROM is in security mode, user only can see zero data in SPROM Area.
  *              (Support KEIL MDK Only)
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 

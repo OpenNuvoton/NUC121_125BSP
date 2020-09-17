@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series USBD micro printer sample file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -233,22 +234,22 @@ void PTR_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
-        case GET_PORT_STATUS:
-        {
-            /* Data stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
+            case GET_PORT_STATUS:
+            {
+                /* Data stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
 
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else

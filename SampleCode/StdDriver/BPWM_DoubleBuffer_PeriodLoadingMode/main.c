@@ -4,6 +4,7 @@
  * @brief
  *           Change duty cycle and period of output waveform by BPWM Double Buffer function.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *
  ******************************************************************************/

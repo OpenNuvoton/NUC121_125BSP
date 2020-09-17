@@ -7,7 +7,8 @@
  *           sample code to connect with chip UART and assign update file
  *           of Flash.
  *
- * @Copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *******************************************************************************/
 #include "stdio.h"
 #include "targetdev.h"

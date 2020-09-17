@@ -8,6 +8,7 @@
  *           sample code to connect with chip USB device and assign update file
  *           of Flash.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

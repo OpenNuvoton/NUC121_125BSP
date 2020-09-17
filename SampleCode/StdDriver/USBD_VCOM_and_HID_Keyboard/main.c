@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Implement a USB composite device with virtual COM port and keyboard functions.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

@@ -5,6 +5,7 @@
  *           Show how to wake up MCU in Power-down mode through I2C interface.
  *           This sample code needs to work with I2C_Wakeup_Master.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -16,7 +17,7 @@
 uint32_t g_u32SlaveBuffAddr;
 uint8_t g_au8SlvData[256];
 uint8_t g_au8SlvRxData[3];
-uint8_t g_u8SlvPWRDNWK, g_u8SlvI2CWK;
+volatile uint8_t g_u8SlvI2CWK;
 
 volatile uint8_t g_u8DeviceAddr;
 volatile uint8_t g_u8SlvDataLen;
@@ -35,8 +36,14 @@ void I2C0_IRQHandler(void)
     /* Check I2C Wake-up interrupt flag set or not */
     if (I2C_GET_WAKEUP_FLAG(I2C0))
     {
+        /* Make sure that the ACK bit is done */
+        while (!(I2C0->WKSTS & I2C_WKSTS_WKAKDONE_Msk)) {};
+
         /* Clear I2C Wake-up interrupt flag */
         I2C_CLEAR_WAKEUP_FLAG(I2C0);
+
+        I2C0->WKSTS = I2C_WKSTS_WKAKDONE_Msk;
+
         g_u8SlvI2CWK = 1;
 
         return;
@@ -55,19 +62,17 @@ void I2C0_IRQHandler(void)
             s_I2C0HandlerFn(u32Status);
     }
 }
-/*---------------------------------------------------------------------------------------------------------*/
-/*  Power Wake-up IRQ Handler                                                                              */
-/*---------------------------------------------------------------------------------------------------------*/
-void PWRWU_IRQHandler(void)
-{
-    /* Check system power down mode wake-up interrupt flag */
-    if (((CLK->PWRCTL) & CLK_PWRCTL_PDWKIF_Msk) != 0)
-    {
-        /* Clear system power down wake-up interrupt flag */
-        CLK->PWRCTL |= CLK_PWRCTL_PDWKIF_Msk;
-        g_u8SlvPWRDNWK = 1;
 
-    }
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Function for System Entry to Power Down Mode                                                           */
+/*---------------------------------------------------------------------------------------------------------*/
+void PowerDownFunction(void)
+{
+    /* Check if all the debug messages are finished */
+    UART_WAIT_TX_EMPTY(DEBUG_PORT);
+
+    /* Enter to Power-down mode */
+    CLK_PowerDown();
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -265,20 +270,9 @@ int32_t main(void)
     /* Unlock protected registers */
     SYS_UnlockReg();
 
-    /* Enable power wake-up interrupt */
-    CLK->PWRCTL |= CLK_PWRCTL_PDWKIEN_Msk;
-    NVIC_EnableIRQ(PWRWU_IRQn);
-    g_u8SlvPWRDNWK = 0;
-
     /* Enable I2C wake-up */
     I2C_EnableWakeup(I2C0);
     g_u8SlvI2CWK = 0;
-
-    /* Set the processor uses deep sleep as its low power mode */
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-
-    /* Set system Power-down enabled*/
-    CLK->PWRCTL |= CLK_PWRCTL_PDEN_Msk;
 
     printf("\n");
     printf("Enter PD 0x%x 0x%x 0x%x\n", I2C0->CTL, I2C0->STATUS, CLK->PWRCTL);
@@ -293,25 +287,11 @@ int32_t main(void)
         I2C_SET_CONTROL_REG(I2C0, I2C_CTL_SI);
     }
 
-    /*  Use WFI instruction to idle the CPU. NOTE:
-        If ICE is attached, system will wakeup immediately because ICE is a wakeup event. */
-    __WFI();
-    __NOP();
-    __NOP();
-    __NOP();
+    /* Enter to Power-down mode */
+    PowerDownFunction();
 
-    while ((g_u8SlvPWRDNWK & g_u8SlvI2CWK) == 0);
-
-    while (!I2C_GET_WAKEUP_DONE(I2C0));
-
-    I2C_CLEAR_WAKEUP_DONE(I2C0);
-
-    /* Wake-up Interrupt Message */
-    printf("Power-down Wake-up INT 0x%x\n", (uint32_t)(CLK->PWRCTL & CLK_PWRCTL_PDWKIF_Msk));
-
-    /* Disable power wake-up interrupt */
-    CLK->PWRCTL &= ~CLK_PWRCTL_PDWKIEN_Msk;
-    NVIC_DisableIRQ(PWRWU_IRQn);
+    /* Waiting for syteem wake-up and I2C wake-up finish*/
+    while (!g_u8SlvI2CWK);
 
     /* Lock protected registers */
     SYS_LockReg();

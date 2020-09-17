@@ -5,6 +5,7 @@
  *           SPI0 will be configured as Master mode.
  *           Both TX PDMA function and RX PDMA function will be enabled.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -218,8 +219,7 @@ void SPI_LoopTestWithPDMA(void)
     PDMA->DSCT[SPI_MASTER_RX_DMA_CH].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
 
     /* Enable SPI master DMA function */
-    SPI_TRIGGER_TX_PDMA(SPI0);
-    SPI_TRIGGER_RX_PDMA(SPI0);
+    SPI_TRIGGER_TX_RX_PDMA(SPI0);
 
     i32Err = 0;
 
@@ -246,8 +246,7 @@ void SPI_LoopTestWithPDMA(void)
                     /* Clear the PDMA transfer done flags */
                     PDMA_CLR_TD_FLAG((1 << SPI_MASTER_TX_DMA_CH) | (1 << SPI_MASTER_RX_DMA_CH) | (1 << SPI_SLAVE_TX_DMA_CH) | (1 << SPI_SLAVE_RX_DMA_CH));
                     /* Disable SPI master's PDMA transfer function */
-                    SPI_DISABLE_TX_PDMA(SPI0);
-                    SPI_DISABLE_RX_PDMA(SPI0);
+                    SPI_DISABLE_TX_RX_PDMA(SPI0);
 
                     /* Check the transfer data */
                     for (u32DataCount = 0; u32DataCount < TEST_COUNT; u32DataCount++)
@@ -279,8 +278,7 @@ void SPI_LoopTestWithPDMA(void)
                     PDMA_SetTransferMode(SPI_MASTER_RX_DMA_CH, PDMA_SPI0_RX, FALSE, 0);
 
                     /* Enable master's DMA transfer function */
-                    SPI_TRIGGER_TX_PDMA(SPI0);
-                    SPI_TRIGGER_RX_PDMA(SPI0);
+                    SPI_TRIGGER_TX_RX_PDMA(SPI0);
                     break;
                 }
             }
@@ -297,10 +295,10 @@ void SPI_LoopTestWithPDMA(void)
             }
 
             /* Check the DMA time-out interrupt flag */
-            if (u32RegValue & 0x00000300)
+            if (u32RegValue & (PDMA_INTSTS_REQTOF0_Msk | PDMA_INTSTS_REQTOF1_Msk))
             {
                 /* Clear the time-out flag */
-                PDMA->INTSTS = u32RegValue & 0x00000300;
+                PDMA->INTSTS = u32RegValue & (PDMA_INTSTS_REQTOF0_Msk | PDMA_INTSTS_REQTOF1_Msk);
                 i32Err = 1;
                 break;
             }

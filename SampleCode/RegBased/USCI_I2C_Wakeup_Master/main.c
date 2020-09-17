@@ -4,6 +4,7 @@
  * @brief    Show how to wake up I2C slave from Power-down mode.
  *           This sample code needs to work with USCI_I2C_Wakeup_Slave.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

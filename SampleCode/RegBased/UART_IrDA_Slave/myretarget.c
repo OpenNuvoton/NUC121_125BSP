@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 Series Debug Port and Semihost Setting Source File
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -490,17 +491,15 @@ Get_LR_and_Branch
 #ifndef NONBLOCK_PRINTF
 void SendChar_ToUART(int ch)
 {
-
     while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
-
-    DEBUG_PORT->TXDAT = ch;
 
     if (ch == '\n')
     {
+        DEBUG_PORT->TXDAT = '\r';			
         while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
-
-        DEBUG_PORT->TXDAT = '\r';
     }
+		
+		DEBUG_PORT->TXDAT = ch;
 }
 
 #else
@@ -517,16 +516,6 @@ void SendChar_ToUART(int ch)
     if (ch)
     {
         // Push char
-        i32Tmp = i32Head + 1;
-
-        if (i32Tmp > BUF_SIZE) i32Tmp = 0;
-
-        if (i32Tmp != i32Tail)
-        {
-            u8Buf[i32Head] = ch;
-            i32Head = i32Tmp;
-        }
-
         if (ch == '\n')
         {
             i32Tmp = i32Head + 1;
@@ -539,6 +528,16 @@ void SendChar_ToUART(int ch)
                 i32Head = i32Tmp;
             }
         }
+				
+        i32Tmp = i32Head + 1;
+
+        if (i32Tmp > BUF_SIZE) i32Tmp = 0;
+
+        if (i32Tmp != i32Tail)
+        {
+            u8Buf[i32Head] = ch;
+            i32Head = i32Tmp;
+        }				
     }
     else
     {
@@ -555,7 +554,7 @@ void SendChar_ToUART(int ch)
 
         if ((DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk) == 0)
         {
-            DEBUG_PORT->DATA = u8Buf[i32Tail];
+            DEBUG_PORT->TXDAT = u8Buf[i32Tail];
             i32Tail = i32Tmp;
         }
         else
@@ -742,21 +741,20 @@ int _write(int fd, char *ptr, int len)
 
     while (i--)
     {
-        while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
-
-        DEBUG_PORT->TXDAT = *ptr++;
-
+		while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
+       
         if (*ptr == '\n')
         {
+            DEBUG_PORT->TXDAT = '\r';			
+			
             while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
-
-            DEBUG_PORT->TXDAT = '\r';
         }
+		
+		DEBUG_PORT->TXDAT = *ptr++;
     }
 
     return len;
 }
-
 
 int _read(int fd, char *ptr, int len)
 {

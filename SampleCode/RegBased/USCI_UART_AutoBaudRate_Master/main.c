@@ -4,6 +4,7 @@
  * @brief    Show how to use auto baud rate detection function.
  *           This sample code needs to work with USCI_UART_AutoBaudRate_Slave.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -183,21 +184,20 @@ void AutoBaudRate_TxTest()
         /* Set different baud rate */
         switch (u32Item)
         {
-        case '1':
-            UUART0->BRGEN = ((103 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
-            break;
+            case '1':
+                UUART0->BRGEN = ((103 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
+                break;
 
-        case '2':
-            UUART0->BRGEN = ((68 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
-            break;
+            case '2':
+                UUART0->BRGEN = ((68 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
+                break;
 
-        default:
-            UUART0->BRGEN = ((34 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
-            break;
+            default:
+                UUART0->BRGEN = ((34 << UUART_BRGEN_CLKDIV_Pos) | (5 << UUART_BRGEN_DSCNT_Pos) | (1 << UUART_BRGEN_PDSCNT_Pos));
+                break;
         }
 
         UUART0->TXDAT = 0x55;
-    }
-    while (u32Item != 27);
+    } while (u32Item != 27);
 
 }

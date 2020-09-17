@@ -4,6 +4,7 @@
  * @brief    Transmit and receive UART data with PDMA.
  *
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
@@ -61,8 +62,7 @@ void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
             *pAddr++ = (uint8_t)(u32Idxj + u32Idxi);
 
         u32Idxi++;
-    }
-    while ((u32Loop != 0) || (u32Length != 0));
+    } while ((u32Loop != 0) || (u32Length != 0));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -325,11 +325,12 @@ void PDMA_UART(int32_t i32Option)
 
     /* Enable UART Tx and Rx PDMA function */
     if (g_u32TwoChannelPdmaTest == 1)
-        UART0->INTEN |= UART_INTEN_TXPDMAEN_Msk;
+        UART_PDMA_ENABLE(UART0, UART_INTEN_TXPDMAEN_Msk);
     else
-        UART0->INTEN &= ~UART_INTEN_TXPDMAEN_Msk;
+        UART_PDMA_DISABLE(UART0, UART_INTEN_TXPDMAEN_Msk);
 
-    UART0->INTEN |= UART_INTEN_RXPDMAEN_Msk | UART_INTEN_RLSIEN_Msk;
+    UART_ENABLE_INT(UART0, UART_INTEN_RLSIEN_Msk);
+    UART_PDMA_ENABLE(UART0, UART_INTEN_RXPDMAEN_Msk);
 
     NVIC_EnableIRQ(UART0_IRQn);
 
@@ -341,7 +342,7 @@ void PDMA_UART(int32_t i32Option)
         printf("target abort...\n");
 
     /* Disable UART Tx and Rx PDMA function */
-    UART0->INTEN &= ~(UART_INTEN_TXPDMAEN_Msk | UART_INTEN_RXPDMAEN_Msk);
+    UART_PDMA_DISABLE(UART0, UART_INTEN_TXPDMAEN_Msk | UART_INTEN_RXPDMAEN_Msk);
 
     /* Disable PDMA channel */
     PDMA_Close();
@@ -479,8 +480,7 @@ int32_t main(void)
             printf("\n\n  UART PDMA sample code is complete.\n");
         }
 
-    }
-    while (u8Item != 27);
+    } while (u8Item != 27);
 
     while (1);
 

@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Implement timer1 event counter function to count the external input event.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

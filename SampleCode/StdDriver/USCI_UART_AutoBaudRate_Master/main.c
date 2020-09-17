@@ -4,6 +4,7 @@
  * @brief    Show how to use auto baud rate detection function.
  *           This sample code needs to work with USCI_UART_AutoBaudRate_Slave.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -177,24 +178,23 @@ void AutoBaudRate_TxTest()
         /* Set different baud rate */
         switch (u32Item)
         {
-        case '1':
-            UUART_Open(UUART0, 38400);
-            break;
+            case '1':
+                UUART_Open(UUART0, 38400);
+                break;
 
-        case '2':
-            UUART_Open(UUART0, 57600);
-            break;
+            case '2':
+                UUART_Open(UUART0, 57600);
+                break;
 
-        default:
-            UUART_Open(UUART0, 115200);
-            break;
+            default:
+                UUART_Open(UUART0, 115200);
+                break;
         }
 
         /* Send input pattern 0x1 for auto baud rate detection bit length is 1-bit */
         u8Char = 0x55;
         UUART_Write(UUART0, &u8Char, 1);
 
-    }
-    while (u32Item != 27);
+    } while (u32Item != 27);
 
 }

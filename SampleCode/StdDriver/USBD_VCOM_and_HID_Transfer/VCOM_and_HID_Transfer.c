@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series USBD VCOM and HID transfer sample file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -280,30 +281,30 @@ void HID_ClassRequest(void)
         // Device to host
         switch (buf[1])
         {
-        case GET_LINE_CODE:
-        {
-            if (buf[4] == 0)   /* VCOM-1 */
+            case GET_LINE_CODE:
             {
-                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding, 7);
+                if (buf[4] == 0)   /* VCOM-1 */
+                {
+                    USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0)), (uint8_t *)&g_sLineCoding, 7);
+                }
+
+                /* Data stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 7);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
             }
 
-            /* Data stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 7);
-            /* Status stage */
-            USBD_PrepareCtrlOut(0, 0);
-            break;
-        }
-
-        case GET_REPORT:
-        case GET_IDLE:
-        case GET_PROTOCOL:
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            case GET_REPORT:
+            case GET_IDLE:
+            case GET_PROTOCOL:
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else
@@ -311,66 +312,66 @@ void HID_ClassRequest(void)
         // Host to device
         switch (buf[1])
         {
-        case SET_CONTROL_LINE_STATE:
-        {
-            if (buf[4] == 0)   /* VCOM-1 */
+            case SET_CONTROL_LINE_STATE:
             {
-                g_u16CtrlSignal = buf[3];
-                g_u16CtrlSignal = (g_u16CtrlSignal << 8) | buf[2];
+                if (buf[4] == 0)   /* VCOM-1 */
+                {
+                    g_u16CtrlSignal = buf[3];
+                    g_u16CtrlSignal = (g_u16CtrlSignal << 8) | buf[2];
 
+                }
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
             }
 
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        case SET_LINE_CODE:
-        {
-            //g_usbd_UsbConfig = 0100;
-            if (buf[4] == 0) /* VCOM-1 */
-                USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding, 7);
-
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-
-            /* UART setting */
-            if (buf[4] == 0) /* VCOM-1 */
-                VCOM_LineCoding(0);
-
-            break;
-        }
-
-        case SET_REPORT:
-        {
-            if (buf[3] == 3)
+            case SET_LINE_CODE:
             {
-                /* Request Type = Feature */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, 0);
+                //g_usbd_UsbConfig = 0100;
+                if (buf[4] == 0) /* VCOM-1 */
+                    USBD_PrepareCtrlOut((uint8_t *)&g_sLineCoding, 7);
+
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+
+                /* UART setting */
+                if (buf[4] == 0) /* VCOM-1 */
+                    VCOM_LineCoding(0);
+
+                break;
             }
 
-            break;
-        }
+            case SET_REPORT:
+            {
+                if (buf[3] == 3)
+                {
+                    /* Request Type = Feature */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, 0);
+                }
 
-        case SET_IDLE:
-        {
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
+                break;
+            }
 
-        case SET_PROTOCOL:
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            case SET_IDLE:
+            {
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
+
+            case SET_PROTOCOL:
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
 }
@@ -418,24 +419,24 @@ void VCOM_LineCoding(uint8_t port)
         /* bit width */
         switch (g_sLineCoding.u8DataBits)
         {
-        case 5:
-            u32Reg |= 0;
-            break;
+            case 5:
+                u32Reg |= 0;
+                break;
 
-        case 6:
-            u32Reg |= 1;
-            break;
+            case 6:
+                u32Reg |= 1;
+                break;
 
-        case 7:
-            u32Reg |= 2;
-            break;
+            case 7:
+                u32Reg |= 2;
+                break;
 
-        case 8:
-            u32Reg |= 3;
-            break;
+            case 8:
+                u32Reg |= 3;
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
         /* stop bit */
@@ -621,32 +622,32 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
 
     switch (g_sCmd.u8Cmd)
     {
-    case HID_CMD_ERASE:
-    {
-        HID_CmdEraseSectors(&g_sCmd);
-        break;
-    }
+        case HID_CMD_ERASE:
+        {
+            HID_CmdEraseSectors(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_READ:
-    {
-        HID_CmdReadPages(&g_sCmd);
-        break;
-    }
+        case HID_CMD_READ:
+        {
+            HID_CmdReadPages(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_WRITE:
-    {
-        HID_CmdWritePages(&g_sCmd);
-        break;
-    }
+        case HID_CMD_WRITE:
+        {
+            HID_CmdWritePages(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_TEST:
-    {
-        HID_CmdTest(&g_sCmd);
-        break;
-    }
+        case HID_CMD_TEST:
+        {
+            HID_CmdTest(&g_sCmd);
+            break;
+        }
 
-    default:
-        return -1;
+        default:
+            return -1;
     }
 
     return 0;

@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series USBD HID transfer + keyboard sample file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -247,27 +248,27 @@ void HID_ClassRequest(void)
         // Device to host
         switch (buf[1])
         {
-        case GET_REPORT:
+            case GET_REPORT:
 
-        //             {
-        //                 break;
-        //             }
-        case GET_IDLE:
+            //             {
+            //                 break;
+            //             }
+            case GET_IDLE:
 
-        //             {
-        //                 break;
-        //             }
-        case GET_PROTOCOL:
+            //             {
+            //                 break;
+            //             }
+            case GET_PROTOCOL:
 
-        //            {
-        //                break;
-        //            }
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            //            {
+            //                break;
+            //            }
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else
@@ -275,52 +276,52 @@ void HID_ClassRequest(void)
         // Host to device
         switch (buf[1])
         {
-        case SET_REPORT:
-        {
-            if (buf[3] == 3)
+            case SET_REPORT:
             {
-                /* Request Type = Feature */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, 0);
+                if (buf[3] == 3)
+                {
+                    /* Request Type = Feature */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, 0);
+                }
+                else if (buf[3] == 2)
+                {
+                    /* Request Type = Output */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, buf[6]);
+
+                    /* Trigger for HID Int in */
+                    USBD_SET_PAYLOAD_LEN(EP4, 0);
+
+                    /* Status stage */
+                    USBD_PrepareCtrlIn(0, 0);
+                }
+
+                break;
             }
-            else if (buf[3] == 2)
+
+            case SET_IDLE:
             {
-                /* Request Type = Output */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, buf[6]);
-
-                /* Trigger for HID Int in */
-                USBD_SET_PAYLOAD_LEN(EP4, 0);
-
                 /* Status stage */
-                USBD_PrepareCtrlIn(0, 0);
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
             }
 
-            break;
-        }
+            case SET_PROTOCOL:
+            {
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
 
-        case SET_IDLE:
-        {
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        case SET_PROTOCOL:
-        {
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
-
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
 }
@@ -495,32 +496,32 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
 
     switch (g_sCmd.u8Cmd)
     {
-    case HID_CMD_ERASE:
-    {
-        HID_CmdEraseSectors(&g_sCmd);
-        break;
-    }
+        case HID_CMD_ERASE:
+        {
+            HID_CmdEraseSectors(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_READ:
-    {
-        HID_CmdReadPages(&g_sCmd);
-        break;
-    }
+        case HID_CMD_READ:
+        {
+            HID_CmdReadPages(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_WRITE:
-    {
-        HID_CmdWritePages(&g_sCmd);
-        break;
-    }
+        case HID_CMD_WRITE:
+        {
+            HID_CmdWritePages(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_TEST:
-    {
-        HID_CmdTest(&g_sCmd);
-        break;
-    }
+        case HID_CMD_TEST:
+        {
+            HID_CmdTest(&g_sCmd);
+            break;
+        }
 
-    default:
-        return -1;
+        default:
+            return -1;
     }
 
     return 0;

@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 Series System Setting Source File
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -42,16 +43,16 @@ void SystemCoreClockUpdate(void)
 
     switch (u32ClkSrc)
     {
-    case CLK_CLKSEL0_HCLKSEL_PLL:
-        u32Freq = PllClock;
-        break;
+        case CLK_CLKSEL0_HCLKSEL_PLL:
+            u32Freq = PllClock;
+            break;
 
-    case CLK_CLKSEL0_HCLKSEL_PLL_DIV2:
-        u32Freq = PllClock / 2;
-        break;
+        case CLK_CLKSEL0_HCLKSEL_PLL_DIV2:
+            u32Freq = PllClock / 2;
+            break;
 
-    default:
-        u32Freq = gau32ClkSrcTbl[u32ClkSrc];
+        default:
+            u32Freq = gau32ClkSrcTbl[u32ClkSrc];
     }
 
 

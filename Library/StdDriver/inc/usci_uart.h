@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series UUART (USCI-UART) driver header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #ifndef __USCI_UART_H__

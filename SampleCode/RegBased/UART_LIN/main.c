@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Transmit LIN frame including header and response in UART LIN mode.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
@@ -101,23 +102,22 @@ void LIN_FunctionTest()
 
         switch (u32Item)
         {
-        case '1':
-            LIN_SendHeader(0x30);
-            break;
+            case '1':
+                LIN_SendHeader(0x30);
+                break;
 
-        case '2':
-            LIN_MasterTest(0x35, MODE_CLASSIC);
-            break;
+            case '2':
+                LIN_MasterTest(0x35, MODE_CLASSIC);
+                break;
 
-        case '3':
-            LIN_MasterTest(0x12, MODE_ENHANCED);
-            break;
+            case '3':
+                LIN_MasterTest(0x12, MODE_ENHANCED);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
-    }
-    while (u32Item != 27);
+    } while (u32Item != 27);
 
     /* Select UART function mode */
     UART0->FUNCSEL = UART_FUNCSEL_UART;
@@ -161,23 +161,22 @@ void LIN_FunctionTestUsingLinCtlReg(void)
 
         switch (u32Item)
         {
-        case '1':
-            LIN_SendHeaderUsingLinCtlReg(0x30, UART_LINCTL_HSEL_BREAK_SYNC_ID);
-            break;
+            case '1':
+                LIN_SendHeaderUsingLinCtlReg(0x30, UART_LINCTL_HSEL_BREAK_SYNC_ID);
+                break;
 
-        case '2':
-            LIN_MasterTestUsingLinCtlReg(0x35, MODE_CLASSIC);
-            break;
+            case '2':
+                LIN_MasterTestUsingLinCtlReg(0x35, MODE_CLASSIC);
+                break;
 
-        case '3':
-            LIN_MasterTestUsingLinCtlReg(0x12, MODE_ENHANCED);
-            break;
+            case '3':
+                LIN_MasterTestUsingLinCtlReg(0x12, MODE_ENHANCED);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
-    }
-    while (u32Item != 27);
+    } while (u32Item != 27);
 
     /* Clear header select setting */
     UART0->LINCTL &= ~UART_LINCTL_HSEL_Msk;
@@ -561,19 +560,18 @@ int main(void)
 
         switch (u32Item)
         {
-        case '1':
-            LIN_FunctionTest();
-            break;
+            case '1':
+                LIN_FunctionTest();
+                break;
 
-        case '2':
-            LIN_FunctionTestUsingLinCtlReg();
-            break;
+            case '2':
+                LIN_FunctionTestUsingLinCtlReg();
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
-    }
-    while (u32Item != 27);
+    } while (u32Item != 27);
 
     while (1);
 

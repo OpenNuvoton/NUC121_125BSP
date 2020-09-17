@@ -4,6 +4,7 @@
  * @brief
  *           Show a UI2C how to monitor I2C bus.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2018 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

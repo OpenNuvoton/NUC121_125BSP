@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Data Flash Access API
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -137,8 +138,7 @@ void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer)
             addr += len;
             buffer += len;
 
-        }
-        while (size > 0);
+        } while (size > 0);
     }
 
     FMC_Close();

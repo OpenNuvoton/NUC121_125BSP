@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    Transmit and receive UART data with PDMA.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include "stdio.h"
@@ -60,8 +61,7 @@ void BuildSrcPattern(uint32_t u32Addr, uint32_t u32Length)
             *pAddr++ = (uint8_t)(j + i);
 
         i++;
-    }
-    while ((loop != 0) || (u32Length != 0));
+    } while ((loop != 0) || (u32Length != 0));
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -485,8 +485,7 @@ int32_t main(void)
             printf("\n\n  UART PDMA sample code is complete.\n");
         }
 
-    }
-    while (unItem != 27);
+    } while (unItem != 27);
 
     while (1);
 

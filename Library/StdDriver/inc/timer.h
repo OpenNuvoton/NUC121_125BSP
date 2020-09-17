@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series Timer driver header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __TIMER_H__
@@ -119,6 +120,21 @@ extern "C"
   * \hideinitializer
   */
 #define TIMER_SELECT_TOUT_PIN(timer, u32ToutSel)    ((timer)->CTL = ((timer)->CTL & ~TIMER_CTL_TGLPINSEL_Msk) | (u32ToutSel))
+
+/**
+  * @brief      Select Timer operating mode
+  *
+  * @param[in]  timer       The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
+  * @param[in]  u32OpMode   Operation mode. Possible options are
+  *                         - \ref TIMER_ONESHOT_MODE
+  *                         - \ref TIMER_PERIODIC_MODE
+  *                         - \ref TIMER_TOGGLE_MODE
+  *                         - \ref TIMER_CONTINUOUS_MODE
+  *
+  * @return     None
+  * \hideinitializer
+  */
+#define TIMER_SET_OPMODE(timer, u32OpMode)   ((timer)->CTL = ((timer)->CTL & ~TIMER_CTL_OPMODE_Msk) | (u32OpMode))
 
 /**
   * @brief      Start Timer Counting

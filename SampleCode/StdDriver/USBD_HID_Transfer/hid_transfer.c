@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series USBD HID transfer sample file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -234,27 +235,27 @@ void HID_ClassRequest(void)
         // Device to host
         switch (u8Buf[1])
         {
-        case GET_REPORT:
+            case GET_REPORT:
 
-        //             {
-        //                 break;
-        //             }
-        case GET_IDLE:
+            //             {
+            //                 break;
+            //             }
+            case GET_IDLE:
 
-        //             {
-        //                 break;
-        //             }
-        case GET_PROTOCOL:
+            //             {
+            //                 break;
+            //             }
+            case GET_PROTOCOL:
 
-        //            {
-        //                break;
-        //            }
-        default:
-        {
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            //            {
+            //                break;
+            //            }
+            default:
+            {
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
     else
@@ -262,38 +263,38 @@ void HID_ClassRequest(void)
         // Host to device
         switch (u8Buf[1])
         {
-        case SET_REPORT:
-        {
-            if (u8Buf[3] == 3)
+            case SET_REPORT:
             {
-                /* Request Type = Feature */
-                USBD_SET_DATA1(EP1);
-                USBD_SET_PAYLOAD_LEN(EP1, 0);
+                if (u8Buf[3] == 3)
+                {
+                    /* Request Type = Feature */
+                    USBD_SET_DATA1(EP1);
+                    USBD_SET_PAYLOAD_LEN(EP1, 0);
+                }
+
+                break;
             }
 
-            break;
-        }
+            case SET_IDLE:
+            {
+                /* Status stage */
+                USBD_SET_DATA1(EP0);
+                USBD_SET_PAYLOAD_LEN(EP0, 0);
+                break;
+            }
 
-        case SET_IDLE:
-        {
-            /* Status stage */
-            USBD_SET_DATA1(EP0);
-            USBD_SET_PAYLOAD_LEN(EP0, 0);
-            break;
-        }
+            case SET_PROTOCOL:
 
-        case SET_PROTOCOL:
-
-        //             {
-        //                 break;
-        //             }
-        default:
-        {
-            // Stall
-            /* Setup error, stall the device */
-            USBD_SetStall(0);
-            break;
-        }
+            //             {
+            //                 break;
+            //             }
+            default:
+            {
+                // Stall
+                /* Setup error, stall the device */
+                USBD_SetStall(0);
+                break;
+            }
         }
     }
 }
@@ -468,32 +469,32 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
 
     switch (g_sCmd.u8Cmd)
     {
-    case HID_CMD_ERASE:
-    {
-        HID_CmdEraseSectors(&g_sCmd);
-        break;
-    }
+        case HID_CMD_ERASE:
+        {
+            HID_CmdEraseSectors(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_READ:
-    {
-        HID_CmdReadPages(&g_sCmd);
-        break;
-    }
+        case HID_CMD_READ:
+        {
+            HID_CmdReadPages(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_WRITE:
-    {
-        HID_CmdWritePages(&g_sCmd);
-        break;
-    }
+        case HID_CMD_WRITE:
+        {
+            HID_CmdWritePages(&g_sCmd);
+            break;
+        }
 
-    case HID_CMD_TEST:
-    {
-        HID_CmdTest(&g_sCmd);
-        break;
-    }
+        case HID_CMD_TEST:
+        {
+            HID_CmdTest(&g_sCmd);
+            break;
+        }
 
-    default:
-        return -1;
+        default:
+            return -1;
     }
 
     return 0;

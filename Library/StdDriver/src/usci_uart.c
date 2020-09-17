@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series UUART (USCI-UART) driver source file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 
@@ -517,7 +518,7 @@ uint32_t UUART_SetLine_Config(UUART_T *psUUART, uint32_t u32Baudrate, uint32_t u
     /* Set USCI_UART line configuration */
     psUUART->LINECTL = (psUUART->LINECTL & ~UUART_LINECTL_DWIDTH_Msk) | u32DataWidth;
     psUUART->PROTCTL = (psUUART->PROTCTL & ~(UUART_PROTCTL_STICKEN_Msk | UUART_PROTCTL_EVENPARITY_Msk |
-                        UUART_PROTCTL_PARITYEN_Msk)) | u32Parity;
+                                             UUART_PROTCTL_PARITYEN_Msk)) | u32Parity;
     psUUART->PROTCTL = (psUUART->PROTCTL & ~UUART_PROTCTL_STOPB_Msk) | u32StopBits;
 
     return (u32PCLKFreq / u32PDSCnt / u32MinDSCnt / u32MinClkDiv);

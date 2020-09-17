@@ -5,6 +5,7 @@
  *           Implement a USB composite device.
  *           It supports one virtual COM port and one USB Mass-Storage device.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

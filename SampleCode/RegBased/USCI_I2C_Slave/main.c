@@ -4,6 +4,7 @@
  * @brief    Show a Master how to access 7-bit address Slave
  *           This sample code needs to work with USCI_I2C_Master
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

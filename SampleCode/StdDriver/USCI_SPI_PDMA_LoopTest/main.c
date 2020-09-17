@@ -5,6 +5,7 @@
  *          USCI_SPI0 (USPI0) will be configured as Master mode and transfer data loopback to self by connect MOSI pin to MISO pin.
  *          Both TX PDMA function and RX PDMA function will be enabled.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include <stdio.h>

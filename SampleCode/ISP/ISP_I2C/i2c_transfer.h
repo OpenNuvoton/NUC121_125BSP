@@ -3,8 +3,8 @@
  * @brief    ISP support function header file
  * @version  V3.00
  *
- * @note
- * Copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
+ * SPDX-License-Identifier: Apache-2.0
+ * @copyright (C) 2019 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __I2C_TRANS_H__
 #define __I2C_TRANS_H__

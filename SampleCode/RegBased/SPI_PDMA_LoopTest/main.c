@@ -5,6 +5,7 @@
  *           SPI0 will be configured as Master mode.
  *           Both TX PDMA function and RX PDMA function will be enabled.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

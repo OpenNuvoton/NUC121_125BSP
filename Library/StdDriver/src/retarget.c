@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 Series Debug Port and Semihost Setting Source File
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 
@@ -66,14 +67,16 @@ enum { r0, r1, r2, r3, r12, lr, pc, psr};
  */
 static void stackDump(uint32_t stack[])
 {
-    printf("r0  = 0x%lx\n", stack[r0]);
-    printf("r1  = 0x%lx\n", stack[r1]);
-    printf("r2  = 0x%lx\n", stack[r2]);
-    printf("r3  = 0x%lx\n", stack[r3]);
-    printf("r12 = 0x%lx\n", stack[r12]);
-    printf("lr  = 0x%lx\n", stack[lr]);
-    printf("pc  = 0x%lx\n", stack[pc]);
-    printf("psr = 0x%lx\n", stack[psr]);
+ /*
+    printf("r0  = 0x%x\n", stack[r0]);
+    printf("r1  = 0x%x\n", stack[r1]);
+    printf("r2  = 0x%x\n", stack[r2]);
+    printf("r3  = 0x%x\n", stack[r3]);
+    printf("r12 = 0x%x\n", stack[r12]);
+    printf("lr  = 0x%x\n", stack[lr]);
+    printf("pc  = 0x%x\n", stack[pc]);
+    printf("psr = 0x%x\n", stack[psr]);
+ */
 }
 
 /**
@@ -490,16 +493,15 @@ Get_LR_and_Branch
 void SendChar_ToUART(int ch)
 {
 
-    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-
-    DEBUG_PORT->DAT = ch;
+    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);    
 
     if (ch == '\n')
     {
+        DEBUG_PORT->DAT = '\r';		
         while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-
-        DEBUG_PORT->DAT = '\r';
     }
+	
+	DEBUG_PORT->DAT = ch;
 }
 
 #else
@@ -516,16 +518,6 @@ void SendChar_ToUART(int ch)
     if (ch)
     {
         // Push char
-        i32Tmp = i32Head + 1;
-
-        if (i32Tmp > BUF_SIZE) i32Tmp = 0;
-
-        if (i32Tmp != i32Tail)
-        {
-            u8Buf[i32Head] = ch;
-            i32Head = i32Tmp;
-        }
-
         if (ch == '\n')
         {
             i32Tmp = i32Head + 1;
@@ -538,6 +530,16 @@ void SendChar_ToUART(int ch)
                 i32Head = i32Tmp;
             }
         }
+		
+        i32Tmp = i32Head + 1;
+
+        if (i32Tmp > BUF_SIZE) i32Tmp = 0;
+
+        if (i32Tmp != i32Tail)
+        {
+            u8Buf[i32Head] = ch;
+            i32Head = i32Tmp;
+        }		
     }
     else
     {
@@ -552,9 +554,9 @@ void SendChar_ToUART(int ch)
 
         if (i32Tmp > BUF_SIZE) i32Tmp = 0;
 
-        if ((DEBUG_PORT->FSR & UART_FSR_TX_FULL_Msk) == 0)
+        if ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) == 0)
         {
-            DEBUG_PORT->DATA = u8Buf[i32Tail];
+            DEBUG_PORT->DAT = u8Buf[i32Tail];
             i32Tail = i32Tmp;
         }
         else
@@ -599,15 +601,7 @@ void SendChar(int ch)
     }
 
 #else
-
-#if defined ( __GNUC__ )
-    char ch0;
-    ch0 = (char)ch;
-    _write(0, &ch0, 1);
-#else
     SendChar_ToUART(ch);
-#endif /* ( __GNUC__ ) */
-
 #endif
 }
 
@@ -745,15 +739,15 @@ int _write(int fd, char *ptr, int len)
     while (i--)
     {
         while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-
-        DEBUG_PORT->DAT = *ptr++;
-
+       
         if (*ptr == '\n')
         {
+            DEBUG_PORT->DAT = '\r';			
+			
             while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-
-            DEBUG_PORT->DAT = '\r';
         }
+		
+		DEBUG_PORT->DAT = *ptr++;
     }
 
     return len;

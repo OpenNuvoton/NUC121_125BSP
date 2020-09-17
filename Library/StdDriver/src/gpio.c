@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series GPIO driver source file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include "NuMicro.h"
@@ -26,8 +27,8 @@
  * @param[in]   u32PinMask  The single or multiple pins of specified GPIO port. \n
  *                          It could be BIT11 ~ BIT15 for PA. \n
  *                          It could be BIT0 ~ BIT15(exclude BIT11) for PB. \n
- *                          It could be BIT0 ~ BIT13(exclude BIT6、BIT7) for PC. \n
- *                          It could be BIT0 ~ BIT11(exclude BIT6、BIT7) for PD. \n
+ *                          It could be BIT0 ~ BIT13(exclude BIT6BIT7) for PC. \n
+ *                          It could be BIT0 ~ BIT11(exclude BIT6BIT7) for PD. \n
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
@@ -58,8 +59,8 @@ void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  * @param[in]   u32Pin          The pin of specified GPIO port. \n
  *                              It could be 11 ~ 15 for PA. \n
  *                              It could be 0 ~ 15(exclude 11) for PB. \n
- *                              It could be 0 ~ 13(exclude 6、7) for PC. \n
- *                              It could be 0 ~ 11(exclude 6、7) for PD. \n
+ *                              It could be 0 ~ 13(exclude 67) for PC. \n
+ *                              It could be 0 ~ 11(exclude 67) for PD. \n
  *                              It could be 0 ~ 2 for PE. \n
  *                              It could be 0 ~ 5 for PF.
  *
@@ -87,8 +88,8 @@ void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs)
  * @param[in]   u32Pin          The pin of specified GPIO port. \n
  *                              It could be 11 ~ 15 for PA. \n
  *                              It could be 0 ~ 15(exclude 11) for PB. \n
- *                              It could be 0 ~ 13(exclude 6、7) for PC. \n
- *                              It could be 0 ~ 11(exclude 6、7) for PD. \n
+ *                              It could be 0 ~ 13(exclude 67) for PC. \n
+ *                              It could be 0 ~ 11(exclude 67) for PD. \n
  *                              It could be 0 ~ 2 for PE. \n
  *                              It could be 0 ~ 5 for PF.
  *

@@ -5,6 +5,7 @@
  *           Show how to use I2C Signle byte API Read and Write data to Slave
  *           Needs to work with I2C_Slave sample code.
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>

@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series UART driver header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 #ifndef __UART_H__
@@ -464,7 +465,33 @@ __STATIC_INLINE void UART_SET_RTS(UART_T *psUART)
  */
 #define UART_RS485_GET_ADDR_FLAG(psUART)    (((psUART)->FIFOSTS  & UART_FIFOSTS_ADDRDETF_Msk) >> UART_FIFOSTS_ADDRDETF_Pos)
 
+/**
+ *    @brief        Enable specified UART PDMA function
+ *
+ *    @param[in]    uart        The pointer of the specified UART module
+ *    @param[in]    u32FuncSel  Combination of following functions
+ *                             - \ref UART_INTEN_TXPDMAEN_Msk
+ *                             - \ref UART_INTEN_RXPDMAEN_Msk
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define UART_PDMA_ENABLE(uart, u32FuncSel)    ((uart)->INTEN |= (u32FuncSel))
 
+/**
+ *    @brief        Disable specified UART PDMA function
+ *
+ *    @param[in]    uart        The pointer of the specified UART module
+ *    @param[in]    u32FuncSel  Combination of following functions
+ *                             - \ref UART_INTEN_TXPDMAEN_Msk
+ *                             - \ref UART_INTEN_RXPDMAEN_Msk
+ *
+ *    @return       None
+ *
+ *    \hideinitializer
+ */
+#define UART_PDMA_DISABLE(uart, u32FuncSel)    ((uart)->INTEN &= ~(u32FuncSel))
 
 void UART_ClearIntFlag(UART_T *psUART, uint32_t u32InterruptFlag);
 void UART_Close(UART_T *psUART);

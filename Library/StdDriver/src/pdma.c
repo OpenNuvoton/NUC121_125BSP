@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series PDMA driver source file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
 *****************************************************************************/
 #include "NuMicro.h"
@@ -151,27 +152,27 @@ void PDMA_SetTransferMode(uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32Sc
 
     switch (u32Ch)
     {
-    case 0:
-        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC0_Msk) | u32Peripheral;
-        break;
+        case 0:
+            PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC0_Msk) | u32Peripheral;
+            break;
 
-    case 1:
-        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC1_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC1_Pos);
-        break;
+        case 1:
+            PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC1_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC1_Pos);
+            break;
 
-    case 2:
-        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC2_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC2_Pos);
-        break;
+        case 2:
+            PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC2_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC2_Pos);
+            break;
 
-    case 3:
-        PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC3_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC3_Pos);
-        break;
+        case 3:
+            PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC3_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC3_Pos);
+            break;
 
-    case 4:
-        PDMA->REQSEL4 = (PDMA->REQSEL4 & ~PDMA_REQSEL4_REQSRC4_Msk) | u32Peripheral;
+        case 4:
+            PDMA->REQSEL4 = (PDMA->REQSEL4 & ~PDMA_REQSEL4_REQSRC4_Msk) | u32Peripheral;
 
-    default:
-        ;
+        default:
+            ;
     }
 
     if (u32ScatterEn)
@@ -257,16 +258,16 @@ void PDMA_SetTimeOut(uint32_t u32Ch, uint32_t u32OnOff, uint32_t u32TimeOutCnt)
 {
     switch (u32Ch)
     {
-    case 0:
-        PDMA->TOC0_1 = (PDMA->TOC0_1 & ~PDMA_TOC0_1_TOC0_Msk) | u32TimeOutCnt;
-        break;
+        case 0:
+            PDMA->TOC0_1 = (PDMA->TOC0_1 & ~PDMA_TOC0_1_TOC0_Msk) | u32TimeOutCnt;
+            break;
 
-    case 1:
-        PDMA->TOC0_1 = (PDMA->TOC0_1 & ~PDMA_TOC0_1_TOC1_Msk) | (u32TimeOutCnt << PDMA_TOC0_1_TOC1_Pos);
-        break;
+        case 1:
+            PDMA->TOC0_1 = (PDMA->TOC0_1 & ~PDMA_TOC0_1_TOC1_Msk) | (u32TimeOutCnt << PDMA_TOC0_1_TOC1_Pos);
+            break;
 
-    default:
-        ;
+        default:
+            ;
     }
 
     if (u32OnOff)
@@ -308,20 +309,20 @@ void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask)
 {
     switch (u32Mask)
     {
-    case PDMA_INT_TRANS_DONE:
-        PDMA->INTEN |= (1 << u32Ch);
-        break;
+        case PDMA_INT_TRANS_DONE:
+            PDMA->INTEN |= (1 << u32Ch);
+            break;
 
-    case PDMA_INT_TEMPTY:
-        PDMA->DSCT[u32Ch].CTL &= ~PDMA_DSCT_CTL_TBINTDIS_Msk;
-        break;
+        case PDMA_INT_TEMPTY:
+            PDMA->DSCT[u32Ch].CTL &= ~PDMA_DSCT_CTL_TBINTDIS_Msk;
+            break;
 
-    case PDMA_INT_TIMEOUT:
-        PDMA->TOUTIEN |= (1 << u32Ch);
-        break;
+        case PDMA_INT_TIMEOUT:
+            PDMA->TOUTIEN |= (1 << u32Ch);
+            break;
 
-    default:
-        ;
+        default:
+            ;
     }
 }
 
@@ -344,20 +345,20 @@ void PDMA_DisableInt(uint32_t u32Ch, uint32_t u32Mask)
 {
     switch (u32Mask)
     {
-    case PDMA_INT_TRANS_DONE:
-        PDMA->INTEN &= ~(1 << u32Ch);
-        break;
+        case PDMA_INT_TRANS_DONE:
+            PDMA->INTEN &= ~(1 << u32Ch);
+            break;
 
-    case PDMA_INT_TEMPTY:
-        PDMA->DSCT[u32Ch].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
-        break;
+        case PDMA_INT_TEMPTY:
+            PDMA->DSCT[u32Ch].CTL |= PDMA_DSCT_CTL_TBINTDIS_Msk;
+            break;
 
-    case PDMA_INT_TIMEOUT:
-        PDMA->TOUTIEN &= ~(1 << u32Ch);
-        break;
+        case PDMA_INT_TIMEOUT:
+            PDMA->TOUTIEN &= ~(1 << u32Ch);
+            break;
 
-    default:
-        ;
+        default:
+            ;
     }
 }
 

@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NUC121 series SYS driver header file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __SYS_H__
@@ -675,8 +676,7 @@ __STATIC_INLINE void SYS_UnlockReg(void)
         SYS->REGLCTL = 0x59;
         SYS->REGLCTL = 0x16;
         SYS->REGLCTL = 0x88;
-    }
-    while (SYS->REGLCTL == 0);
+    } while (SYS->REGLCTL == 0);
 }
 
 /**

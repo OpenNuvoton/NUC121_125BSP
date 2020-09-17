@@ -3,6 +3,7 @@
  * @version  V3.00
  * @brief    NuMicro series USBD driver source file
  *
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 /*!<Includes */
@@ -12,30 +13,27 @@
 
 /*----------------------------------------------------------------------------*/
 /*!<USB Device Descriptor */
-const uint8_t gu8DeviceDescriptor[] =
-{
-    LEN_DEVICE,     /* bLength */
-    DESC_DEVICE,    /* bDescriptorType */
+const uint8_t gu8DeviceDescriptor[] = {
+    LEN_DEVICE,  /* bLength */
+    DESC_DEVICE, /* bDescriptorType */
 #ifdef SUPPORT_LPM
-    0x01, 0x02,     /* bcdUSB => 0x0201 to support LPM */
+    0x01, 0x02, /* bcdUSB => 0x0201 to support LPM */
 #else
-    0x10, 0x01,     /* bcdUSB */
+    0x10, 0x01, /* bcdUSB */
 #endif
-    0x00,           /* bDeviceClass */
-    0x00,           /* bDeviceSubClass */
-    0x00,           /* bDeviceProtocol */
-    EP0_MAX_PKT_SIZE,   /* bMaxPacketSize0 */
+    0x00,             /* bDeviceClass */
+    0x00,             /* bDeviceSubClass */
+    0x00,             /* bDeviceProtocol */
+    EP0_MAX_PKT_SIZE, /* bMaxPacketSize0 */
     /* idVendor */
-    USBD_VID & 0x00FF,
-    (USBD_VID & 0xFF00) >> 8,
-                        /* idProduct */
-                        USBD_PID & 0x00FF,
-                        (USBD_PID & 0xFF00) >> 8,
-                        0x00, 0x01,     /* bcdDevice */
-                        0x01,           /* iManufacture */
-                        0x02,           /* iProduct */
-                        0x03,           /* iSerialNumber */
-                        0x01            /* bNumConfigurations */
+    USBD_VID & 0x00FF, (USBD_VID & 0xFF00) >> 8,
+    /* idProduct */
+    USBD_PID & 0x00FF, (USBD_PID & 0xFF00) >> 8,
+    0x00, 0x01, /* bcdDevice */
+    0x01,       /* iManufacture */
+    0x02,       /* iProduct */
+    0x03,       /* iSerialNumber */
+    0x01 /* bNumConfigurations */
 };
 
 const uint8_t gu8KeyboardReportDesc[63] =
@@ -135,16 +133,15 @@ const uint8_t gu8TransferReportDesc[27] =
 
 
 /*!<USB Configure Descriptor */
-const uint8_t gu8ConfigDescriptor[] =
-{
-    LEN_CONFIG,     /* bLength */
-    DESC_CONFIG,    /* bDescriptorType */
-    0x14, 0x01,     /* wTotalLength */
-    0x06,           /* bNumInterfaces */
-    0x01,           /* bConfigurationValue */
-    0x00,           /* iConfiguration */
-    0x80,           /* bmAttributes */
-    0x20,           /* Max power */
+const uint8_t gu8ConfigDescriptor[] = {
+    LEN_CONFIG,  /* bLength */
+    DESC_CONFIG, /* bDescriptorType */
+    0x14, 0x01,  /* wTotalLength */
+    0x06,        /* bNumInterfaces */
+    0x01,        /* bConfigurationValue */
+    0x00,        /* iConfiguration */
+    0x80,        /* bmAttributes */
+    0x20,        /* Max power */
 
     /* Standard AC inteface */
     LEN_INTERFACE,  /* bLength */
@@ -158,26 +155,26 @@ const uint8_t gu8ConfigDescriptor[] =
     0x00,           /* iInterface */
 
     /* Class-spec AC interface descriptor */
-    0x0A,           /* bLength */
-    0x24,           /* bDescriptorType:CS_INTERFACE */
-    0x01,           /* bDescriptorSubType:HEADER */
-    0x00, 0x01,     /* bcdADC:1.0 */
-    0x48, 0x00,     /* wTotalLength */
-    0x02,           /* bInCollection */
-    0x01,           /* baInterfaceNr(1) */
-    0x02,           /* baInterfaceNr(n) */
+    0x0A,       /* bLength */
+    0x24,       /* bDescriptorType:CS_INTERFACE */
+    0x01,       /* bDescriptorSubType:HEADER */
+    0x00, 0x01, /* bcdADC:1.0 */
+    0x48, 0x00, /* wTotalLength */
+    0x02,       /* bInCollection */
+    0x01,       /* baInterfaceNr(1) */
+    0x02,       /* baInterfaceNr(n) */
 
     /* TID 1: Input for usb streaming */
-    0x0C,               /* bLength */
-    0x24,               /* bDescriptorType:CS_INTERFACE */
-    0x02,               /* bDescriptorSubType:INPUT_TERMINAL */
-    0x01,               /* bTerminalID */
-    0x01, 0x01,         /* wTerminalType: 0x0101 usb streaming */
-    0x00,               /* bAssocTerminal */
-    PLAY_CHANNELS,      /* bNrChannels */
-    PLAY_CH_CFG, 0x00,  /* wChannelConfig */
-    0x00,               /* iChannelNames */
-    0x00,               /* iTerminal */
+    0x0C,              /* bLength */
+    0x24,              /* bDescriptorType:CS_INTERFACE */
+    0x02,              /* bDescriptorSubType:INPUT_TERMINAL */
+    0x01,              /* bTerminalID */
+    0x01, 0x01,        /* wTerminalType: 0x0101 usb streaming */
+    0x00,              /* bAssocTerminal */
+    PLAY_CHANNELS,     /* bNrChannels */
+    PLAY_CH_CFG, 0x00, /* wChannelConfig */
+    0x00,              /* iChannelNames */
+    0x00,              /* iTerminal */
 
     /* UNIT ID 5: Feature Unit */
     0x0A,               /* bLength */
@@ -202,38 +199,38 @@ const uint8_t gu8ConfigDescriptor[] =
     0x00,               /* iTerminal */
 
     /* UNIT ID 6: Feature Unit */
-    0x0A,               /* bLength */
-    0x24,               /* bDescriptorType */
-    0x06,               /* bDescriptorSubType */
+    0x0A,                /* bLength */
+    0x24,                /* bDescriptorType */
+    0x06,                /* bDescriptorSubType */
     PLAY_FEATURE_UNITID, /* bUnitID */
-    0x01,               /* bSourceID */
-    0x01,               /* bControlSize */
-    0x01,               /* bmaControls(0) */
-    0x02,               /* bmaControls(0) */
-    0x02,               /* bmaControls(0) */
-    0x00,               /* iFeature */
+    0x01,                /* bSourceID */
+    0x01,                /* bControlSize */
+    0x01,                /* bmaControls(0) */
+    0x02,                /* bmaControls(0) */
+    0x02,                /* bmaControls(0) */
+    0x00,                /* iFeature */
 
     /* TID 3: Output for speaker */
-    0x09,           /* bLength*/
-    0x24,           /* bDescriptorType:CS_INTERFACE*/
-    0x03,           /* bDescriptorSubType:OUTPUT_TERMINAL*/
-    0x03,           /* bTerminalID*/
-    0x01, 0x03,     /* wTerminalType: 0x0301 speaker*/
-    0x00,           /* bAssocTerminal*/
-    0x06, /* bSourceID*/
-    0x00,           /* iTerminal*/
+    0x09,       /* bLength*/
+    0x24,       /* bDescriptorType:CS_INTERFACE*/
+    0x03,       /* bDescriptorSubType:OUTPUT_TERMINAL*/
+    0x03,       /* bTerminalID*/
+    0x01, 0x03, /* wTerminalType: 0x0301 speaker*/
+    0x00,       /* bAssocTerminal*/
+    0x06,       /* bSourceID*/
+    0x00,       /* iTerminal*/
 
     /* TID 4: Input Terminal for microphone */
-    0x0C,               /* bLength */
-    0x24,               /* bDescriptorType:CS_INTERFACE */
-    0x02,               /* bDescriptorSubType:INPUT_TERMINAL*/
-    0x04,               /* bTerminalID*/
-    0x01, 0x02,         /* wTerminalType: 0x0201 microphone*/
-    0x00,               /* bAssocTerminal*/
-    REC_CHANNELS,       /* bNrChannels*/
-    REC_CH_CFG, 0x00,   /* wChannelConfig*/
-    0x00,               /* iChannelNames*/
-    0x00,               /* iTerminal*/
+    0x0C,             /* bLength */
+    0x24,             /* bDescriptorType:CS_INTERFACE */
+    0x02,             /* bDescriptorSubType:INPUT_TERMINAL*/
+    0x04,             /* bTerminalID*/
+    0x01, 0x02,       /* wTerminalType: 0x0201 microphone*/
+    0x00,             /* bAssocTerminal*/
+    REC_CHANNELS,     /* bNrChannels*/
+    REC_CH_CFG, 0x00, /* wChannelConfig*/
+    0x00,             /* iChannelNames*/
+    0x00,             /* iTerminal*/
 
     /* Standard AS interface 1, alternate 0 */
     LEN_INTERFACE,  /* bLength */
@@ -258,43 +255,42 @@ const uint8_t gu8ConfigDescriptor[] =
     0x00,           /* iInterface */
 
     /* Class-spec AS interface, this interface's endpoint connect to TID 0x02 */
-    0x07,           /* bLength */
-    0x24,           /* bDescriptorType:CS_INTERFACE */
-    0x01,           /* bDescriptorSubType:AS_GENERAL */
-    0x02,           /* bTernimalLink */
-    0x01,           /* bDelay */
-    0x01, 0x00,     /* wFormatTag:0x0001 PCM */
+    0x07,       /* bLength */
+    0x24,       /* bDescriptorType:CS_INTERFACE */
+    0x01,       /* bDescriptorSubType:AS_GENERAL */
+    0x02,       /* bTernimalLink */
+    0x01,       /* bDelay */
+    0x01, 0x00, /* wFormatTag:0x0001 PCM */
 
     /* Type I format type Descriptor */
-    0x0B,           /* bLength */
-    0x24,           /* bDescriptorType:CS_INTERFACE */
-    0x02,           /* bDescriptorSubType:FORMAT_TYPE */
-    0x01,           /* bFormatType:FORMAT_TYPE_I */
-    REC_CHANNELS,   /* bNrChannels */
-    0x02,           /* bSubFrameSize */
-    0x10,           /* bBitResolution */
-    0x01,           /* bSamFreqType : 0 continuous; 1 discrete */
-    REC_RATE_LO,
-    REC_RATE_MD,
-    REC_RATE_HI,    /* Sample Frequency */
+    0x0B,         /* bLength */
+    0x24,         /* bDescriptorType:CS_INTERFACE */
+    0x02,         /* bDescriptorSubType:FORMAT_TYPE */
+    0x01,         /* bFormatType:FORMAT_TYPE_I */
+    REC_CHANNELS, /* bNrChannels */
+    0x02,         /* bSubFrameSize */
+    0x10,         /* bBitResolution */
+    0x01,         /* bSamFreqType : 0 continuous; 1 discrete */
+    REC_RATE_LO, REC_RATE_MD, REC_RATE_HI, /* Sample Frequency */
 
     /* Standard AS ISO Audio Data Endpoint */
-    0x09,                       /* bLength */
-    0x05,                       /* bDescriptorType */
-    ISO_IN_EP_NUM | EP_INPUT,   /* bEndpointAddress */
-    0x0d,                       /* bmAttributes */
-    (ISO_IN_MAX_PKT_SIZE & 0xFF), ((ISO_IN_MAX_PKT_SIZE >> 8) & 0xFF), /* wMaxPacketSize*/
-    0x01,                       /* bInterval*/
-    0x00,                       /* bRefresh*/
-    0x00,                       /* bSynchAddress*/
+    0x09,                     /* bLength */
+    0x05,                     /* bDescriptorType */
+    ISO_IN_EP_NUM | EP_INPUT, /* bEndpointAddress */
+    0x0d,                     /* bmAttributes */
+    (ISO_IN_MAX_PKT_SIZE & 0xFF),
+    ((ISO_IN_MAX_PKT_SIZE >> 8) & 0xFF), /* wMaxPacketSize*/
+    0x01,                                /* bInterval*/
+    0x00,                                /* bRefresh*/
+    0x00,                                /* bSynchAddress*/
 
     /* Class-spec AS ISO Audio Data endpoint Descriptor */
-    0x07,           /* bLength */
-    0x25,           /* bDescriptorType:CS_ENDPOINT */
-    0x01,           /* bDescriptorSubType:EP_GENERAL */
-    0x00,           /* bmAttributes */
-    0x00,           /* bLockDelayUnits */
-    0x00, 0x00,     /* wLockDelay */
+    0x07,       /* bLength */
+    0x25,       /* bDescriptorType:CS_ENDPOINT */
+    0x01,       /* bDescriptorSubType:EP_GENERAL */
+    0x00,       /* bmAttributes */
+    0x00,       /* bLockDelayUnits */
+    0x00, 0x00, /* wLockDelay */
 
     /* Standard AS interface 2, alternate 0 */
     LEN_INTERFACE,  /* bLength */
@@ -319,46 +315,45 @@ const uint8_t gu8ConfigDescriptor[] =
     0x00,           /* iInterface */
 
     /* Class-spec AS inf this interface's endpoint connect to TID 0x01 */
-    0x07,           /* bLength */
-    0x24,           /* bDescriptorType:CS_INTERFACE */
-    0x01,           /* bDescriptorSubType:AS_GENERAL */
-    0x01,           /* bTernimalLink */
-    0x01,           /* bDelay */
-    0x01, 0x00,     /* wFormatTag:0x0001 PCM */
+    0x07,       /* bLength */
+    0x24,       /* bDescriptorType:CS_INTERFACE */
+    0x01,       /* bDescriptorSubType:AS_GENERAL */
+    0x01,       /* bTernimalLink */
+    0x01,       /* bDelay */
+    0x01, 0x00, /* wFormatTag:0x0001 PCM */
 
     /* Type I format type Descriptor */
-    0x0B,           /* bLength */
-    0x24,           /* bDescriptorType:CS_INTERFACE */
-    0x02,           /* bDescriptorSubType:FORMAT_TYPE */
-    0x01,           /* bFormatType:FORMAT_TYPE_I */
-    PLAY_CHANNELS,  /* bNrChannels */
-    0x02,           /* bSubFrameSize */
-    0x10,           /* bBitResolution */
-    0x01,           /* bSamFreqType : 0 continuous; 1 discrete */
-    PLAY_RATE_LO,
-    PLAY_RATE_MD,
-    PLAY_RATE_HI,   /* Sample Frequency */
+    0x0B,          /* bLength */
+    0x24,          /* bDescriptorType:CS_INTERFACE */
+    0x02,          /* bDescriptorSubType:FORMAT_TYPE */
+    0x01,          /* bFormatType:FORMAT_TYPE_I */
+    PLAY_CHANNELS, /* bNrChannels */
+    0x02,          /* bSubFrameSize */
+    0x10,          /* bBitResolution */
+    0x01,          /* bSamFreqType : 0 continuous; 1 discrete */
+    PLAY_RATE_LO, PLAY_RATE_MD, PLAY_RATE_HI, /* Sample Frequency */
 
     /* Standard AS ISO Audio Data Endpoint, output, addtess 2, Max 0x40 */
     0x09,                       /* bLength */
     0x05,                       /* bDescriptorType */
     ISO_OUT_EP_NUM | EP_OUTPUT, /* bEndpointAddress */
     0x0d,                       /* bmAttributes */
-    (ISO_OUT_MAX_PKT_SIZE & 0xFF), ((ISO_OUT_MAX_PKT_SIZE >> 8) & 0xFF), /* wMaxPacketSize*/
-    0x01,                       /* bInterval */
-    0x00,                       /* bRefresh */
-    0x00,                       /* bSynchAddress */
+    (ISO_OUT_MAX_PKT_SIZE & 0xFF),
+    ((ISO_OUT_MAX_PKT_SIZE >> 8) & 0xFF), /* wMaxPacketSize*/
+    0x01,                                 /* bInterval */
+    0x00,                                 /* bRefresh */
+    0x00,                                 /* bSynchAddress */
 
     /* Class-spec AS ISO Audio Data endpoint Descriptor */
-    0x07,           /* bLength */
-    0x25,           /* bDescriptorType:CS_ENDPOINT */
-    0x01,           /* bDescriptorSubType:EP_GENERAL */
-    0x80,           /* bmAttributes */
-    0x00,           /* bLockDelayUnits */
-    0x00, 0x00,     /* wLockDelay */
+    0x07,       /* bLength */
+    0x25,       /* bDescriptorType:CS_ENDPOINT */
+    0x01,       /* bDescriptorSubType:EP_GENERAL */
+    0x80,       /* bmAttributes */
+    0x00,       /* bLockDelayUnits */
+    0x00, 0x00, /* wLockDelay */
 
     //------------------------------------------------------------------------
-    /* I/F descr: HID Trnasfer */
+    /* I/F descr: HID Transfer */
     LEN_INTERFACE,  /* bLength */
     DESC_INTERFACE, /* bDescriptorType */
     0x03,           /* bInterfaceNumber */
@@ -370,104 +365,100 @@ const uint8_t gu8ConfigDescriptor[] =
     0x00,           /* iInterface */
 
     /* HID Descriptor */
-    LEN_HID,        /* Size of this descriptor in UINT8s. */
-    DESC_HID,       /* HID descriptor type. */
-    0x10, 0x01,     /* HID Class Spec. release number. */
-    0x00,           /* H/W target country. */
-    0x01,           /* Number of HID class descriptors to follow. */
-    DESC_HID_RPT,   /* Descriptor type. */
+    LEN_HID,      /* Size of this descriptor in UINT8s. */
+    DESC_HID,     /* HID descriptor type. */
+    0x10, 0x01,   /* HID Class Spec. release number. */
+    0x00,         /* H/W target country. */
+    0x01,         /* Number of HID class descriptors to follow. */
+    DESC_HID_RPT, /* Descriptor type. */
     /* Total length of report descriptor. */
     sizeof(gu8TransferReportDesc) & 0x00FF,
     (sizeof(gu8TransferReportDesc) & 0xFF00) >> 8,
 
-            /* EP Descriptor: interrupt in. */
-            LEN_ENDPOINT,   /* bLength */
-            DESC_ENDPOINT,  /* bDescriptorType */
-            (HID_TRANS_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
-            EP_INT,         /* bmAttributes */
-            /* wMaxPacketSize */
-            HID_TRANS_IN_MAX_PKT_SIZE & 0x00FF,
-            (HID_TRANS_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
-            1,        /* bInterval */
+    /* EP Descriptor: interrupt in. */
+    LEN_ENDPOINT,                     /* bLength */
+    DESC_ENDPOINT,                    /* bDescriptorType */
+    (HID_TRANS_IN_EP_NUM | EP_INPUT), /* bEndpointAddress */
+    EP_INT,                           /* bmAttributes */
+    /* wMaxPacketSize */
+    HID_TRANS_IN_MAX_PKT_SIZE & 0x00FF,
+    (HID_TRANS_IN_MAX_PKT_SIZE & 0xFF00) >> 8, 1, /* bInterval */
 
-            /* EP Descriptor: interrupt out. */
-            LEN_ENDPOINT,   /* bLength */
-            DESC_ENDPOINT,  /* bDescriptorType */
-            (HID_TRANS_OUT_EP_NUM | EP_OUTPUT),   /* bEndpointAddress */
-            EP_INT,         /* bmAttributes */
-            /* wMaxPacketSize */
-            HID_TRANS_OUT_MAX_PKT_SIZE & 0x00FF,
-            (HID_TRANS_OUT_MAX_PKT_SIZE & 0xFF00) >> 8,
-            1,     /* bInterval */
+    /* EP Descriptor: interrupt out. */
+    LEN_ENDPOINT,                       /* bLength */
+    DESC_ENDPOINT,                      /* bDescriptorType */
+    (HID_TRANS_OUT_EP_NUM | EP_OUTPUT), /* bEndpointAddress */
+    EP_INT,                             /* bmAttributes */
+    /* wMaxPacketSize */
+    HID_TRANS_OUT_MAX_PKT_SIZE & 0x00FF,
+    (HID_TRANS_OUT_MAX_PKT_SIZE & 0xFF00) >> 8, 1, /* bInterval */
 
-            //------------------------------------------------------------------------
-            /* I/F descr: HID Keyboard*/
-            LEN_INTERFACE,  // bLength
-            DESC_INTERFACE, // bDescriptorType
-            0x04,           // bInterfaceNumber
-            0x00,           // bAlternateSetting
-            0x01,           // bNumEndpoints
-            0x03,           // bInterfaceClass
-            0x01,           // bInterfaceSubClass
-            0x01,           // bInterfaceProtocol
-            0x00,           // iInterface
+    //------------------------------------------------------------------------
+    /* I/F descr: HID Keyboard*/
+    LEN_INTERFACE,  // bLength
+    DESC_INTERFACE, // bDescriptorType
+    0x04,           // bInterfaceNumber
+    0x00,           // bAlternateSetting
+    0x01,           // bNumEndpoints
+    0x03,           // bInterfaceClass
+    0x01,           // bInterfaceSubClass
+    0x01,           // bInterfaceProtocol
+    0x00,           // iInterface
 
-            // HID Descriptor
-            LEN_HID,        // Size of this descriptor in UINT8s.
-            DESC_HID,       // HID descriptor type.
-            0x10, 0x01,     // HID Class Spec. release number.
-            0x00,           // H/W target country.
-            0x01,           // Number of HID class descriptors to follow.
-            DESC_HID_RPT,   // Dscriptor type.
+    // HID Descriptor
+    LEN_HID,      // Size of this descriptor in UINT8s.
+    DESC_HID,     // HID descriptor type.
+    0x10, 0x01,   // HID Class Spec. release number.
+    0x00,         // H/W target country.
+    0x01,         // Number of HID class descriptors to follow.
+    DESC_HID_RPT, // Descriptor type.
 
-            /* Total length of report descriptor */
-            sizeof(gu8KeyboardReportDesc) & 0x00FF,
-            (sizeof(gu8KeyboardReportDesc) & 0xFF00) >> 8,
+    /* Total length of report descriptor */
+    sizeof(gu8KeyboardReportDesc) & 0x00FF,
+    (sizeof(gu8KeyboardReportDesc) & 0xFF00) >> 8,
 
-            /* EP Descriptor: interrupt in */
-            LEN_ENDPOINT,   // bLength
-            DESC_ENDPOINT,  // bDescriptorType
-            (HID_KEY_IN_EP_NUM | EP_INPUT),         // bEndpointAddress
-            EP_INT,         // bmAttributes
-            // wMaxPacketSize
-            HID_KEY_IN_MAX_PKT_SIZE & 0x00FF,
-            (HID_KEY_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
-            10,              // bInterval
+    /* EP Descriptor: interrupt in */
+    LEN_ENDPOINT,                   // bLength
+    DESC_ENDPOINT,                  // bDescriptorType
+    (HID_KEY_IN_EP_NUM | EP_INPUT), // bEndpointAddress
+    EP_INT,                         // bmAttributes
+    // wMaxPacketSize
+    HID_KEY_IN_MAX_PKT_SIZE & 0x00FF, (HID_KEY_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
+    10, // bInterval
 
-            //------------------------------------------------------------------------
-            /* I/F descr: HID Media Key*/
-            LEN_INTERFACE,  // bLength
-            DESC_INTERFACE, // bDescriptorType
-            0x05,           // bInterfaceNumber
-            0x00,           // bAlternateSetting
-            0x01,           // bNumEndpoints
-            0x03,           // bInterfaceClass
-            0x01,           // bInterfaceSubClass
-            0x01,           // bInterfaceProtocol
-            0x00,           // iInterface
+    //------------------------------------------------------------------------
+    /* I/F descr: HID Media Key*/
+    LEN_INTERFACE,  // bLength
+    DESC_INTERFACE, // bDescriptorType
+    0x05,           // bInterfaceNumber
+    0x00,           // bAlternateSetting
+    0x01,           // bNumEndpoints
+    0x03,           // bInterfaceClass
+    0x01,           // bInterfaceSubClass
+    0x01,           // bInterfaceProtocol
+    0x00,           // iInterface
 
-            // HID Descriptor
-            LEN_HID,        // Size of this descriptor in UINT8s.
-            DESC_HID,       // HID descriptor type.
-            0x10, 0x01,     // HID Class Spec. release number.
-            0x00,           // H/W target country.
-            0x01,           // Number of HID class descriptors to follow.
-            DESC_HID_RPT,   // Dscriptor type.
+    // HID Descriptor
+    LEN_HID,      // Size of this descriptor in UINT8s.
+    DESC_HID,     // HID descriptor type.
+    0x10, 0x01,   // HID Class Spec. release number.
+    0x00,         // H/W target country.
+    0x01,         // Number of HID class descriptors to follow.
+    DESC_HID_RPT, // Descriptor type.
 
-            /* Total length of report descriptor */
-            sizeof(gu8MediaKeyReportDesc) & 0x00FF,
-            (sizeof(gu8MediaKeyReportDesc) & 0xFF00) >> 8,
+    /* Total length of report descriptor */
+    sizeof(gu8MediaKeyReportDesc) & 0x00FF,
+    (sizeof(gu8MediaKeyReportDesc) & 0xFF00) >> 8,
 
-            /* EP Descriptor: interrupt in */
-            LEN_ENDPOINT,   // bLength
-            DESC_ENDPOINT,  // bDescriptorType
-            (HID_MEDIA_IN_EP_NUM | EP_INPUT),         // bEndpointAddress
-            EP_INT,         // bmAttributes
-            // wMaxPacketSize
-            HID_MEDIA_IN_MAX_PKT_SIZE & 0x00FF,
-            (HID_MEDIA_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
-            10              // bInterval
-
+    /* EP Descriptor: interrupt in */
+    LEN_ENDPOINT,                     // bLength
+    DESC_ENDPOINT,                    // bDescriptorType
+    (HID_MEDIA_IN_EP_NUM | EP_INPUT), // bEndpointAddress
+    EP_INT,                           // bmAttributes
+    // wMaxPacketSize
+    HID_MEDIA_IN_MAX_PKT_SIZE & 0x00FF,
+    (HID_MEDIA_IN_MAX_PKT_SIZE & 0xFF00) >> 8,
+    10 // bInterval
 
 };
 
@@ -488,7 +479,7 @@ const uint8_t gu8BosDescriptor[] =
     /* bit 1 : 1 to support LPM.                                         */
     /* bit 2 : 1 to support BSL & Alternat HIRD                          */
     /* bit 3 : 1 to recommend Baseline BESL                              */
-    /* bit 4 : 1 to recommand Deep BESL                                  */
+    /* bit 4 : 1 to recommend Deep BESL                                  */
     /* bit 11:8 : Recommend Baseline BESL value. Ignore by bit3 is zero. */
     /* bit 15:12 : Recommend Deep BESL value. Ignore by bit4 is zero.    */
     /* bit 31:16 : Reserved. Must 0.                                     */
