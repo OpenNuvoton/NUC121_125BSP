@@ -53,7 +53,7 @@ This BSP folder
 	A project template for NUC121/NUC125 series MCU.
 
 
-# Licene
+# License
 
 **SPDX-License-Identifier: Apache-2.0**
 
