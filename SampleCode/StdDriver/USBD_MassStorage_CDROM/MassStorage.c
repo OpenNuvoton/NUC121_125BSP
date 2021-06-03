@@ -671,7 +671,7 @@ void MSC_GetConfiguration(uint32_t len, uint8_t *buff)
         u32index = 8;
 
         // find current features
-        while (u32index < sizeof(g_au8GetConfiguration))
+        while (u32index < (sizeof(g_au8GetConfiguration) - u32index))
         {
             u32feature_len = g_au8GetConfiguration[u32index + 3] + 4;
 
@@ -761,8 +761,6 @@ void MSC_ReadFormatCapacity(void)
 
 void MSC_Read(void)
 {
-    uint32_t u32Len;
-
     if (USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
         USBD_SET_EP_BUF_ADDR(EP2, g_u32BulkBuf0);
     else
@@ -793,7 +791,7 @@ void MSC_Read(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
 
             if (u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
@@ -821,8 +819,6 @@ void MSC_Read(void)
 
 void MSC_ReadTrig(void)
 {
-    uint32_t u32Len;
-
     if (g_u32Length)
     {
         if (g_u32BytesInStorageBuf)
@@ -842,15 +838,17 @@ void MSC_ReadTrig(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
+            if (g_u32LbaAddress <= (16 * CDROM_BLOCK_SIZE))  /* Logical Block Address > 32KB */
+            {
+                if (u32Len > STORAGE_BUFFER_SIZE)
+                    u32Len = STORAGE_BUFFER_SIZE;
 
-            if (u32Len > STORAGE_BUFFER_SIZE)
-                u32Len = STORAGE_BUFFER_SIZE;
-
+                g_u32Address = STORAGE_DATA_BUF;
+            }
             MSC_ReadMedia(g_u32LbaAddress, u32Len, (uint8_t *)STORAGE_DATA_BUF);
             g_u32BytesInStorageBuf = u32Len;
             g_u32LbaAddress += u32Len;
-            g_u32Address = STORAGE_DATA_BUF;
 
             /* Prepare next data packet */
             g_u8Size = EP2_MAX_PKT_SIZE;
@@ -1721,10 +1719,5 @@ void MSC_AckCmd(void)
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
 {
 }
-
-void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
-{
-}
-
 
 

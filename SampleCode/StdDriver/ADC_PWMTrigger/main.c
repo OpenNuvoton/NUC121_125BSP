@@ -156,7 +156,7 @@ void ADC_PWMTrigTest_SingleOpMode(void)
     /* Clear the ADC interrupt flag */
     ADC_CLR_INT_FLAG(ADC, ADC_ADF_INT);
 
-    printf("Channel 2: 0x%X\n", ADC_GET_CONVERSION_DATA(ADC, 2));
+    printf("Channel 2: 0x%X\n", (uint32_t)ADC_GET_CONVERSION_DATA(ADC, 2));
 
     /* Disable ADC */
     ADC_POWER_DOWN(ADC);
@@ -184,7 +184,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* ADC hardware trigger test */
     ADC_PWMTrigTest_SingleOpMode();

@@ -111,7 +111,7 @@ uint32_t GetAVDDVoltage(void)
     u64MvAVDD = (VBG_VOLTAGE << 12) / (uint64_t)u32ConversionResult;
 
     printf("Typical band-gap voltage: %d mV\n", VBG_VOLTAGE);
-    printf("Band-gap conversion result: 0x%X (%d)\n", u32ConversionResult, u32ConversionResult);
+    printf("Band-gap conversion result: 0x%X (%u)\n", u32ConversionResult, u32ConversionResult);
 
     return (uint32_t)u64MvAVDD;
 }
@@ -130,7 +130,7 @@ uint32_t GetAVDDVoltage(void)
 /*---------------------------------------------------------------------------------------------------------*/
 uint32_t GetAVDDCodeByADC(void)
 {
-    uint32_t u32Count, u32Sum, u32Data;
+    uint32_t u32Count, u32Sum;
 
     /* Configure ADC: single-end input, single scan mode, enable ADC analog circuit. */
     /*                analog input source of channel 29 as internal band-gap voltage */
@@ -156,6 +156,8 @@ uint32_t GetAVDDCodeByADC(void)
     /* sample times are according to ADC_SAMPLE_COUNT definition */
     for (u32Count = 0; u32Count < ADC_SAMPLE_COUNT; u32Count++)
     {
+        uint32_t u32Data;
+
         /* Delay for band-gap voltage stability */
         CLK_SysTickDelay(100);
 
@@ -228,7 +230,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz\n", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz\n", SystemCoreClock);
 
     printf("+----------------------------------------------------------------------+\n");
     printf("|                 ADC for AVDD Measurement sample code                 |\n");
@@ -262,7 +264,7 @@ int main(void)
 
     /* Measure AVDD */
     u32AVDDVoltage = GetAVDDVoltage();
-    printf("AVDD voltage should be %dmV\n", u32AVDDVoltage);
+    printf("AVDD voltage should be %umV\n", u32AVDDVoltage);
 
     /* Disable ADC module */
     SYS->IPRST1 |= SYS_IPRST1_ADCRST_Msk;

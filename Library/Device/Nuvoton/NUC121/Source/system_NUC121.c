@@ -145,7 +145,7 @@ void SystemInit(void)
 void AssertError(uint8_t *file, uint32_t line)
 {
 
-    printf("[%s] line %d : wrong parameters.\r\n", file, line);
+    printf("[%s] line %u : wrong parameters.\r\n", file, line);
 
     /* Infinite loop */
     while (1) ;

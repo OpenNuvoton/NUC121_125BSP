@@ -122,7 +122,6 @@ void UART0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_TEST_HANDLE()
 {
-    uint8_t u8InChar = 0xFF;
     uint32_t u32IntSts = UART0->INTSTS;
 
     if ((u32IntSts & UART_INTSTS_RDAINT_Msk) || (u32IntSts & UART_INTSTS_RXTOINT_Msk))
@@ -133,7 +132,7 @@ void UART_TEST_HANDLE()
         while (UART_GET_RX_EMPTY(UART0) == 0)
         {
             /* Get the character from UART Buffer */
-            u8InChar = UART0->DAT;
+           uint32_t u8InChar = UART0->DAT;
 
             printf("%c ", u8InChar);
 
@@ -162,7 +161,7 @@ void UART_TEST_HANDLE()
 
         if (g_u32comRhead != tmp)
         {
-            u8InChar = g_u8RecData[g_u32comRhead];
+           uint32_t u8InChar = g_u8RecData[g_u32comRhead];
 
             while (UART_IS_TX_FULL(UART0)); /* Wait Tx is not full to transmit data */
 

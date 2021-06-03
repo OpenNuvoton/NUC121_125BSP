@@ -194,7 +194,7 @@ void AutoFlow_FunctionRxTest()
     /* Set RTS Trigger Level as 8 bytes */
     UART0->FIFO = (UART0->FIFO & (~UART_FIFO_RTSTRGLV_Msk)) | UART_FIFO_RTSTRGLV_8BYTES;
 
-    /* Set RX Trigger Level as 1 bytes */
+    /* Set RX Trigger Level as 8 bytes */
     UART0->FIFO = (UART0->FIFO & (~UART_FIFO_RFITL_Msk)) | UART_FIFO_RFITL_8BYTES;
 
     /* Set Timeout time 0x3E bit-time and time-out counter enable */
@@ -202,6 +202,9 @@ void AutoFlow_FunctionRxTest()
 
     /* Enable RDA and RTO Interrupt */
     UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_RXTOIEN_Msk));
+
+    /* Enable NVIC UART0 IRQ */
+    NVIC_EnableIRQ(UART0_IRQn);
 
     printf("\n Starting to receive data...\n");
 
@@ -220,8 +223,10 @@ void AutoFlow_FunctionRxTest()
     }
 
     printf("\n Receive OK & Check OK\n");
-
+    
+    /* Disable NVIC UART IRQ */
+    NVIC_DisableIRQ(UART0_IRQn);
     /* Disable RDA and RTO Interrupt */
     UART_DisableInt(UART0, UART_INTEN_RDAIEN_Msk);
-
+  
 }

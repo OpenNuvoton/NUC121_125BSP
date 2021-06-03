@@ -330,7 +330,7 @@ int32_t main(void)
         if (au8TxBuf[u32Index] != au8rDataBuf[u32Index])
         {
             u8Err = 1;
-            printf("Data compare fail... R[%d] Data: 0x%X\n", u32Index, au8rDataBuf[u32Index]);
+            printf("Data compare fail... R[%u] Data: 0x%X\n", u32Index, au8rDataBuf[u32Index]);
         }
     }
 

@@ -170,12 +170,13 @@ int32_t main(void)
 void UART0_IRQHandler(void)
 {
     uint32_t u32IntSts = UART0->INTSTS;
-    uint32_t u32WkSts = UART0->WKSTS;
     uint32_t u32Data;
 
     if (u32IntSts & UART_INTSTS_WKINT_Msk)              /* UART wake-up interrupt flag */
     {
-        UART0->WKSTS = (UART0->WKSTS);
+        uint32_t u32WkSts = UART0->WKSTS;
+
+        UART0->WKSTS = u32WkSts;
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
     }
@@ -257,7 +258,7 @@ void UART_RS485WakeUp(void)
     UART0->TOUT = (UART0->TOUT & (~UART_TOUT_TOIC_Msk)) | (40);
 
     printf("System enter to Power-down mode.\n");
-    printf("Send RS485 address byte 0x%X with baud rate 9600bps to UART0 to wake-up system.\n\n", RS485_ADDRESS);
+    printf("Send RS485 address byte 0x%X with baud rate 9600bps to UART0 to wake-up system.\n\n", (uint32_t)RS485_ADDRESS);
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

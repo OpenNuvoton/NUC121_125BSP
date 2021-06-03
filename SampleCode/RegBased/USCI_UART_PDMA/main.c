@@ -171,8 +171,11 @@ void PDMA_IRQHandler(void)
 
     if (status & PDMA_INTSTS_ABTIF_Msk)   /* Target Abort */
     {
+        uint32_t u32AbSts;
+
         IsTestOver = 2;
-        PDMA->ABTSTS = (PDMA->ABTSTS);
+        u32AbSts = PDMA->ABTSTS;
+        PDMA->ABTSTS = u32AbSts;
     }
     else if (status & PDMA_INTSTS_TDIF_Msk)     /* Transfer Done */
     {

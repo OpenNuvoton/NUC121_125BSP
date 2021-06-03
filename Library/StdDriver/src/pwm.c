@@ -566,8 +566,10 @@ void PWM_ClearCaptureIntFlag(PWM_T *pwm, uint32_t u32ChannelNum, uint32_t u32Edg
  */
 uint32_t PWM_GetCaptureIntFlag(PWM_T *pwm, uint32_t u32ChannelNum)
 {
-    return (((((pwm)->CAPIF & (PWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1 : 0) << 1) | \
-            (((pwm)->CAPIF & (PWM_CAPIF_CRLIF0_Msk << u32ChannelNum)) ? 1 : 0));
+    uint32_t u32CapFFlag = 0UL, u32CapRFlag = 0UL;
+    u32CapFFlag = (((pwm)->CAPIF & (PWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) ;
+    u32CapRFlag = (((pwm)->CAPIF & (PWM_CAPIF_CRLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) ;
+    return ((u32CapFFlag << 1UL) | u32CapRFlag);
 }
 /**
  * @brief Enable duty interrupt of selected channel

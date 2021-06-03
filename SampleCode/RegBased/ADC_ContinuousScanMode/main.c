@@ -123,11 +123,10 @@ static __INLINE uint32_t ADC_GetConversionRate()
 /*---------------------------------------------------------------------------------------------------------*/
 void AdcContScanModeTest(void)
 {
-    uint8_t  u8Option;
     uint32_t u32ChannelCount;
     int32_t  i32ConversionData;
 
-    printf("\n\nConversion rate: %d samples/second\n", ADC_GetConversionRate());
+    printf("\n\nConversion rate: %u samples/second\n", ADC_GetConversionRate());
     printf("\n");
     printf("+----------------------------------------------------------------------+\n");
     printf("|                 ADC continuous scan mode sample code                 |\n");
@@ -137,6 +136,8 @@ void AdcContScanModeTest(void)
 
     while (1)
     {
+        uint8_t  u8Option;
+
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (input channel pair 0 and 1)\n");
@@ -171,7 +172,7 @@ void AdcContScanModeTest(void)
             {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
-                printf("Conversion result of channel %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of channel %u: 0x%X (%i)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
 
             /* Wait conversion done */
@@ -184,7 +185,7 @@ void AdcContScanModeTest(void)
             {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
-                printf("Conversion result of channel %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of channel %u: 0x%X (%i)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
 
             /* Clear the A/D interrupt flag for safe */
@@ -218,7 +219,7 @@ void AdcContScanModeTest(void)
             {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount * 2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
-                printf("Conversion result of differential input pair %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of differential input pair %u: 0x%X (%i)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
 
             /* Wait conversion done */
@@ -231,7 +232,7 @@ void AdcContScanModeTest(void)
             {
                 i32ConversionData = (ADC->ADDR[u32ChannelCount * 2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
-                printf("Conversion result of differential input pair %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of differential input pair %u: 0x%X (%i)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
 
             /* Clear the A/D interrupt flag for safe */
@@ -265,7 +266,7 @@ int main(void)
     /* SAMPLE CODE                                                                                             */
     /*---------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* Continuous scan mode test */
     AdcContScanModeTest();

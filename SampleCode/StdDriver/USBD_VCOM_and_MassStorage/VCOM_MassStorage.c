@@ -189,6 +189,7 @@ void USBD_IRQHandler(void)
     //------------------------------------------------------------------
     if (u32IntSts & USBD_INTSTS_USB)
     {
+        extern uint8_t g_USBD_au8SetupPacket[];
 
         // EP events
         if (u32IntSts & USBD_INTSTS_EP0)
@@ -206,6 +207,13 @@ void USBD_IRQHandler(void)
 
             // control OUT
             USBD_CtrlOut();
+
+            // In ACK of SET_LINE_CODE
+            if (g_USBD_au8SetupPacket[1] == SET_LINE_CODE)
+            {
+                if (g_USBD_au8SetupPacket[4] == 0) /* VCOM-1 */
+                    VCOM_LineCoding(0); /* Apply UART settings */
+            }
         }
 
         if (u32IntSts & USBD_INTSTS_EP2)
@@ -480,10 +488,6 @@ void VCOM_MSC_ClassRequest(void)
                 USBD_SET_DATA1(EP0);
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
 
-                /* UART setting */
-                if (buf[4] == 0) /* VCOM-1 */
-                    VCOM_LineCoding(0);
-
                 break;
             }
 
@@ -537,11 +541,12 @@ void VCOM_MSC_ClassRequest(void)
 
 void VCOM_LineCoding(uint8_t port)
 {
-    uint32_t u32Reg;
-    uint32_t u32Baud_Div = 0;
 
     if (port == 0)
     {
+        uint32_t u32Reg;
+        uint32_t u32Baud_Div = 0;
+
         NVIC_DisableIRQ(UART0_IRQn);
 
         // Reset software FIFO
@@ -680,8 +685,6 @@ void MSC_ReadFormatCapacity(void)
 
 void MSC_Read(void)
 {
-    uint32_t u32Len;
-
     if (USBD_GET_EP_BUF_ADDR(EP7) == g_u32BulkBuf1)
         USBD_SET_EP_BUF_ADDR(EP7, g_u32BulkBuf0);
     else
@@ -712,7 +715,7 @@ void MSC_Read(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
 
             if (u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
@@ -740,8 +743,6 @@ void MSC_Read(void)
 
 void MSC_ReadTrig(void)
 {
-    uint32_t u32Len;
-
     if (g_u32Length)
     {
         if (g_u32BytesInStorageBuf)
@@ -761,7 +762,7 @@ void MSC_ReadTrig(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
 
             if (u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
@@ -927,8 +928,6 @@ void MSC_ModeSense10(void)
 
 void MSC_Write(void)
 {
-    uint32_t lba, len;
-
     if (g_u32OutSkip == 0)
     {
         if (g_u32Length > EP6_MAX_PKT_SIZE)
@@ -971,10 +970,9 @@ void MSC_Write(void)
 
             if ((g_sCBW.u8OPCode == UFI_WRITE_10) || (g_sCBW.u8OPCode == UFI_WRITE_12))
             {
-                lba = get_be32(&g_sCBW.au8Data[0]);
-                len = g_sCBW.dCBWDataTransferLength;
+                uint32_t lba = get_be32(&g_sCBW.au8Data[0]);
 
-                len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
+                uint32_t len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
 
                 if (len)
                 {
@@ -990,16 +988,14 @@ void MSC_Write(void)
 
 void MSC_ProcessCmd(void)
 {
-    uint8_t u8Len;
-    int32_t i;
-
     if (g_u8EP6Ready)
     {
         g_u8EP6Ready = 0;
 
         if (g_u8BulkState == BULK_CBW)
         {
-            u8Len = USBD_GET_PAYLOAD_LEN(EP6);
+            int32_t i;
+            uint8_t u8Len = USBD_GET_PAYLOAD_LEN(EP6);
 
             if (u8Len > 31) u8Len = 31;
 
@@ -1416,8 +1412,6 @@ void MSC_ProcessCmd(void)
 void MSC_AckCmd(void)
 {
     /* Bulk IN */
-    int32_t volatile idx;
-
     if (g_u8BulkState == BULK_CSW)
     {
         /* Prepare to receive the CBW */
@@ -1561,10 +1555,6 @@ void MSC_AckCmd(void)
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
 {
     DataFlashRead(addr, size, (uint32_t)buffer);
-}
-
-void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
-{
 }
 
 void MSC_SetConfig(void)

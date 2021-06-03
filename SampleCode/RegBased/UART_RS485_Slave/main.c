@@ -73,14 +73,14 @@ void RS485_HANDLE()
     else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))      /* Rx Ready */
     {
         /* Handle received data */
-        printf("%d,", UART0->DAT);
+        printf("%u,", UART0->DAT);
     }
     else if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RXTOINT_Msk))      /* Time-out INT */
     {
         /* Handle received data */
         do
         {
-            printf("%d,", UART0->DAT);
+            printf("%u,", UART0->DAT);
         } while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
     }
     else if (u32IntSts & UART_INTSTS_BUFERRINT_Msk)     /* Buffer Error INT */

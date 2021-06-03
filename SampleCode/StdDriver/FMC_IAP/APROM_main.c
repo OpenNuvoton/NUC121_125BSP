@@ -73,7 +73,6 @@ void UART_Init()
 
 static int SetIAPBoot(void)
 {
-    uint32_t  au32Config[2];
     uint32_t u32CBS;
 
     /* Read current boot mode */
@@ -81,6 +80,8 @@ static int SetIAPBoot(void)
 
     if (u32CBS & 1)
     {
+        uint32_t  au32Config[2];
+
         /* Modify User Configuration when it is not in IAP mode */
 
         FMC_ReadConfig(au32Config, 2);

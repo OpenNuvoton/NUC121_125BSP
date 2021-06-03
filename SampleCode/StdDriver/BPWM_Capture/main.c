@@ -48,9 +48,7 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     /* Clear Capture Falling Indicator (Time B)*/
     BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH);
 
-    u32i = 0;
-
-    while (u32i < 4)
+    for (u32i = 0 ; u32i < 4 ;)
     {
         /* Wait for Capture Falling Indicator */
         while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2);

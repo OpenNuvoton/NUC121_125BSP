@@ -244,12 +244,13 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
 int32_t UI2C_ReadWriteSlave(uint8_t u8SlvAddr)
 {
     uint32_t u32Index;
-    uint8_t u8Tmp;
 
     g_u8DeviceAddr = u8SlvAddr;
 
     for (u32Index = 0; u32Index < 0x100; u32Index++)
     {
+        uint8_t u8Tmp;
+        
         g_au8MstTxData[0] = (uint8_t)((u32Index & 0xFF00) >> 8);
         g_au8MstTxData[1] = (uint8_t)(u32Index & 0x00FF);
         g_au8MstTxData[2] = (uint8_t)(g_au8MstTxData[1] + 3);

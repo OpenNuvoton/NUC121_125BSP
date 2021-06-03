@@ -214,7 +214,6 @@ void PDMA_ConfigReload()
 /*----------------------------------------------------------------------------------------------------------*/
 void AdcSingleCycleScanModePDMATest(void)
 {
-    uint8_t  u8Option;
     uint32_t u32DataCount;
     uint32_t u32ErrorCount;
 
@@ -228,6 +227,8 @@ void AdcSingleCycleScanModePDMATest(void)
 
     while (1)
     {
+        uint8_t  u8Option;
+
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (input channel pair 0 and 1)\n");
@@ -268,12 +269,13 @@ void AdcSingleCycleScanModePDMATest(void)
 
             while (1)
             {
-                uint32_t u32Ch;
 
                 if (ADC->ADSR0 & ADC_ADF_INT)
                 {
                     /* Clear the ADC interrupt flag */
                     ADC->ADSR0 = ADC_ADF_INT;
+
+                    uint32_t u32Ch;
 
                     for (u32Ch = 0; u32Ch < 4; u32Ch++)
                     {
@@ -299,7 +301,7 @@ void AdcSingleCycleScanModePDMATest(void)
             {
                 if (au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF))
                 {
-                    printf("*** Count %d, conversion result: 0x%X, PDMA result: 0x%X.\n",
+                    printf("*** Count %u, conversion result: 0x%X, PDMA result: 0x%X.\n",
                            u32DataCount, au32AdcData[u32DataCount], g_au32RxPDMADestination[u32DataCount]);
                     u32ErrorCount++;
                 }
@@ -344,12 +346,13 @@ void AdcSingleCycleScanModePDMATest(void)
 
             while (1)
             {
-                uint32_t u32Ch;
 
                 if (ADC->ADSR0 & ADC_ADF_INT)
                 {
                     /* Clear the ADC interrupt flag */
                     ADC->ADSR0 = ADC_ADF_INT;
+
+                    uint32_t u32Ch;
 
                     for (u32Ch = 0; u32Ch < 4; u32Ch += 2)
                     {
@@ -375,7 +378,7 @@ void AdcSingleCycleScanModePDMATest(void)
             {
                 if (au32AdcData[u32DataCount] != (g_au32RxPDMADestination[u32DataCount] & 0xFFF))
                 {
-                    printf("*** Count %d, conversion result: 0x%X, PDMA result: 0x%X.\n",
+                    printf("*** Count %u, conversion result: 0x%X, PDMA result: 0x%X.\n",
                            u32DataCount, au32AdcData[u32DataCount], g_au32RxPDMADestination[u32DataCount]);
                     u32ErrorCount++;
                 }
@@ -413,7 +416,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* Single cycle scan mode test */
     AdcSingleCycleScanModePDMATest();

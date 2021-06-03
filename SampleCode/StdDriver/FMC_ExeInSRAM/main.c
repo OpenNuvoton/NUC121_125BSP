@@ -66,7 +66,6 @@ void UART0_Init()
 
 int main()
 {
-    uint32_t u32Data, u32RData;
     uint32_t u32Addr;
     uint32_t i;
 
@@ -102,14 +101,15 @@ int main()
     {
 
         /* Write Demo */
-        u32Data = i + 0x12345678;
+        uint32_t u32Data = i + 0x12345678;
+
         FMC_Write(u32Addr + i, u32Data);
 
         if ((i & 0xf) == 0)
             printf(".");
 
         /* Read Demo */
-        u32RData = FMC_Read(u32Addr + i);
+        uint32_t u32RData = FMC_Read(u32Addr + i);
 
         if (u32Data != u32RData)
         {

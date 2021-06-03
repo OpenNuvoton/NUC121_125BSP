@@ -19,11 +19,18 @@
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-__ALIGNED(4) uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
-__ALIGNED(4) uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
-__ALIGNED(4) uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
-__ALIGNED(4) uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
-
+#ifdef __ICCARM__
+#pragma data_alignment=4
+ uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
+ uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
+ uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
+ uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
+#else
+__attribute__((aligned(4))) uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
+__attribute__((aligned(4))) uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
+__attribute__((aligned(4))) uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
+__attribute__((aligned(4))) uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
+#endif
 volatile uint32_t PDMA_DONE = 0;
 volatile uint8_t g_u8DeviceAddr = 0x16;
 volatile uint8_t g_u8EndFlag = 0;
@@ -214,11 +221,6 @@ void I2C_PDMA_SlaveTx(uint32_t u32Status)
     }
     else if (u32Status == 0xC0)                 /* Data byte or last data in I2CDAT has been transmitted
                                                    Not ACK has been received */
-    {
-        I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
-    }
-    else if (u32Status == 0x88)                 /* Previously addressed with own SLA address; NOT ACK has
-                                                   been returned */
     {
         I2C_SET_CONTROL_REG(I2C1, I2C_CTL_SI_AA);
     }

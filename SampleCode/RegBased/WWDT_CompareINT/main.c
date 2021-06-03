@@ -42,7 +42,7 @@ void WDT_IRQHandler(void)
             WWDT_RELOAD_COUNTER();
         }
 
-        printf("WWDT compare match interrupt occurred. (%d)\n", g_u32WWDTINTCount);
+        printf("WWDT compare match interrupt occurred. (%u)\n", g_u32WWDTINTCount);
     }
 }
 
@@ -118,7 +118,7 @@ int main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("CPU @ %d Hz\n", SystemCoreClock);
+    printf("CPU @ %u Hz\n", SystemCoreClock);
     printf("+------------------------------------------------+\n");
     printf("|    WWDT Compare March Interrupt Sample Code    |\n");
     printf("+------------------------------------------------+\n\n");
@@ -135,7 +135,7 @@ int main(void)
     dPeriodTime = (((double)(1000000 * 2048) / (double)SystemCoreClock) * 1024) * 32;
 
     printf("# WWDT Settings: \n");
-    printf("    - Clock source is HCLK/2048 (%d Hz)    \n", SystemCoreClock / 2048);
+    printf("    - Clock source is HCLK/2048 (%u Hz)    \n", SystemCoreClock / 2048);
     printf("    - WWDT counter prescale period is 1024, \n");
     printf("        and max WWDT time-out period is 1024 * (64 * WWDT_CLK)\n");
     printf("    - Interrupt enable                      \n");

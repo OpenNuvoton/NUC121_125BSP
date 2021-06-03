@@ -25,7 +25,7 @@ uint16_t g_u16CtrlSignal = 0;     /* BIT0: DTR(Data Terminal Ready) , BIT1: RTS(
 #define RXBUFSIZE           512 /* RX buffer size */
 #define TXBUFSIZE           512 /* RX buffer size */
 
-#define TX_FIFO_SIZE        64  /* TX Hardware FIFO size */
+#define TX_FIFO_SIZE        16  /* TX Hardware FIFO size */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -130,7 +130,6 @@ void UART0_IRQHandler(void)
 {
     uint32_t u32IntStatus;
     uint8_t bInChar;
-    int32_t size;
 
     u32IntStatus = UART0->INTSTS;
 
@@ -165,10 +164,10 @@ void UART0_IRQHandler(void)
     if (u32IntStatus & UART_INTSTS_THREIF_Msk)
     {
 
-        if (g_u16ComTbytes)
+        if (g_u16ComTbytes && (UART0->INTEN & UART_INTEN_THREIEN_Msk))
         {
             /* Fill the Tx FIFO */
-            size = g_u16ComTbytes;
+            int32_t size = g_u16ComTbytes;
 
             if (size >= TX_FIFO_SIZE)
             {
@@ -177,11 +176,11 @@ void UART0_IRQHandler(void)
 
             while (size)
             {
-                bInChar = g_u8ComTbuf[g_u16ComThead++];
-                UART0->DAT = bInChar;
-
                 if (g_u16ComThead >= TXBUFSIZE)
                     g_u16ComThead = 0;
+
+                bInChar = g_u8ComTbuf[g_u16ComThead++];
+                UART0->DAT = bInChar;
 
                 g_u16ComTbytes--;
                 size--;
@@ -198,11 +197,13 @@ void UART0_IRQHandler(void)
 
 void VCOM_TransferData(void)
 {
-    int32_t i, i32Len;
+    int32_t i;
 
     /* Check whether USB is ready for next packet or not */
     if (gu32TxSize == 0)
     {
+        int32_t i32Len;
+
         /* Check whether we have new COM Rx data to send to USB or not */
         if (g_u16ComRbytes)
         {
@@ -213,10 +214,10 @@ void VCOM_TransferData(void)
 
             for (i = 0; i < i32Len; i++)
             {
-                gRxBuf[i] = g_au8ComRbuf[g_u16ComRhead++];
-
                 if (g_u16ComRhead >= RXBUFSIZE)
                     g_u16ComRhead = 0;
+
+                gRxBuf[i] = g_au8ComRbuf[g_u16ComRhead++];
             }
 
             __set_PRIMASK(1);
@@ -266,15 +267,15 @@ void VCOM_TransferData(void)
         /* Check if Tx is working */
         if ((UART0->INTEN & UART_INTEN_THREIEN_Msk) == 0)
         {
+            if (g_u16ComThead >= TXBUFSIZE)
+            {
+                g_u16ComThead = 0;
+            }
+
             /* Send one bytes out */
             UART0->DAT = g_u8ComTbuf[g_u16ComThead++];
-
-            if (g_u16ComThead >= TXBUFSIZE)
-                g_u16ComThead = 0;
-
-            __set_PRIMASK(1);
+            
             g_u16ComTbytes--;
-            __set_PRIMASK(0);
 
             /* Enable Tx Empty Interrupt. (Trigger first one) */
             UART0->INTEN |= UART_INTEN_THREIEN_Msk;

@@ -288,7 +288,7 @@ int32_t main(void)
             u32Reg = ch - '0';
             ch = getchar();
             u32Reg = u32Reg * 10 + (ch - '0');
-            printf("%d\n", u32Reg);
+            printf("%u\n", u32Reg);
 
             // Get data
             ch = getchar();
@@ -314,14 +314,13 @@ void HID_UpdateKbData(void)
 {
     int32_t i;
     uint8_t *buf;
-    uint32_t key = 0xF;
     static uint32_t preKey;
-    int32_t n;
-
-    n = 8;
+    int32_t n = 8;
 
     if (g_u32EP4Ready)
     {
+        uint32_t key;
+
         buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP4));
 
         // PC5, play/pause

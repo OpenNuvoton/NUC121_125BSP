@@ -256,7 +256,7 @@ uint8_t I2C_ReadByteTwoRegs(I2C_T *i2c, uint8_t u8SlaveAddr, uint16_t u16DataAdd
 int32_t main(void)
 {
     uint32_t u32Index;
-    uint8_t u8Data, u8Tmp, u8Err;
+    uint8_t u8Err;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -297,6 +297,8 @@ int32_t main(void)
 
     for (u32Index = 0; u32Index < 256; u32Index++)
     {
+        uint8_t u8Data, u8Tmp;
+        
         u8Tmp = (uint8_t)u32Index + 3;
 
         /* Single Byte Write (Two Registers) */
@@ -308,7 +310,7 @@ int32_t main(void)
         if (u8Data != u8Tmp)
         {
             u8Err = 1;
-            printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", u32Index, u8Tmp, u8Data);
+            printf("%03u: Single byte write data fail,  W(0x%X)/R(0x%X) \n", u32Index, u8Tmp, u8Data);
         }
     }
 

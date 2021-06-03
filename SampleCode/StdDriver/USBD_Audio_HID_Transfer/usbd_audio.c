@@ -332,7 +332,6 @@ void ISO_OUT_HANDLER(void)
     int32_t i;
     uint8_t *pu8Buf;
     uint8_t *pu8Src;
-    uint32_t u32Idx;
 
     /* Get the address in USB buffer */
     pu8Src = (uint8_t *)((uint32_t)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(ISO_OUT_EP));
@@ -362,7 +361,7 @@ void ISO_OUT_HANDLER(void)
     for (i = 0; i < u32Len; i++)
     {
         /* Check ring buffer turn around */
-        u32Idx = g_u32PlayPos_In + 1;
+        uint32_t u32Idx = g_u32PlayPos_In + 1;
 
         if (u32Idx >= BUF_LEN)
             u32Idx = 0;
@@ -951,12 +950,12 @@ void WAU8822_Setup(void)
 void SPI0_IRQHandler(void)
 {
     uint32_t u32I2SIntFlag;
-    uint32_t i, u32Idx;
 
     u32I2SIntFlag = SPI0->I2SSTS;
 
     if (u32I2SIntFlag & SPI_I2SSTS_TXTHIF_Msk)
     {
+        uint32_t i;
 
         /* Fill 2 word data when it is TX threshold interrupt */
         for (i = 0; i < 2; i++)
@@ -964,9 +963,8 @@ void SPI0_IRQHandler(void)
             /* Check buffer empty */
             if ((g_u32PlayPos_Out != g_u32PlayPos_In) && g_u8PlayEn)
             {
-
                 /* Check ring buffer trun around */
-                u32Idx = g_u32PlayPos_Out + 1;
+                uint32_t u32Idx = g_u32PlayPos_Out + 1;
 
                 if (u32Idx >= BUF_LEN)
                     u32Idx = 0;
@@ -1017,7 +1015,6 @@ void UAC_SendRecData(void)
 {
     uint8_t *pu8Buf;
     uint32_t u32Size;
-    int32_t i;
 
     /* Get the address in USB buffer */
     pu8Buf = (uint8_t *)((uint32_t)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(ISO_IN_EP));
@@ -1038,6 +1035,8 @@ void UAC_SendRecData(void)
 
     if (g_u32RecPos)
     {
+        int32_t i;
+
         for (i = 0; i < g_u32RecPos; i++)
             g_au32PcmRecBuf[i] = g_au32PcmRecBuf[i + u32Size / 4];
     }
@@ -1056,15 +1055,15 @@ void UAC_DeviceEnable(uint8_t u8Object)
 {
     if (u8Object == UAC_MICROPHONE)
     {
-        /* Enable record hardware */
-        g_u8RecEn = 1;
-
         if (g_u8RecEn == 0)
         {
             /* Reset record buffer */
             memset(g_au32PcmRecBuf, 0, sizeof(g_au32PcmRecBuf));
             g_u32RecPos = 0;
         }
+
+        /* Enable record hardware */
+        g_u8RecEn = 1;
 
         I2S_CLR_RX_FIFO(SPI0);
         I2S_EnableInt(SPI0, I2S_FIFO_RXTH_INT_MASK);
@@ -1073,8 +1072,6 @@ void UAC_DeviceEnable(uint8_t u8Object)
     }
     else
     {
-        /* Eanble play hardware */
-
         /* Reset Play buffer */
         if (g_u8PlayEn == 0)
         {
@@ -1082,8 +1079,10 @@ void UAC_DeviceEnable(uint8_t u8Object)
             memset(g_au32PcmPlayBuf, 0, sizeof(g_au32PcmPlayBuf));
             g_u32PlayPos_In = BUF_LEN / 2;
             g_u32PlayPos_Out = 0;
-            g_u8PlayEn = 1;
         }
+
+        /* Eanble play hardware */
+        g_u8PlayEn = 1;
 
         I2S_CLR_TX_FIFO(SPI0);
         I2S_EnableInt(SPI0, I2S_FIFO_TXTH_INT_MASK);
@@ -1207,7 +1206,7 @@ void AdjFreq(void)
     if (i32PreFlag != g_i32AdjFlag || (i32Cnt++ > 40000))
     {
         i32PreFlag = g_i32AdjFlag;
-        DBG_PRINTF("%d %d %d %d %d\n", g_i32AdjFlag, u32Size, g_usbd_PlayVolumeL, g_usbd_RecVolumeL, gCmd.u8Cmd);
+        DBG_PRINTF("%d %u %i %i %u\n", g_i32AdjFlag, u32Size, g_usbd_PlayVolumeL, g_usbd_RecVolumeL, gCmd.u8Cmd);
         i32Cnt = 0;
     }
 
@@ -1355,7 +1354,6 @@ void HidTransferIn(void)
     uint32_t u32StartPage;
     uint32_t u32TotalPages;
     uint32_t u32PageCnt;
-    uint8_t *ptr;
     uint8_t u8Cmd;
 
     u8Cmd        = gCmd.u8Cmd;
@@ -1375,11 +1373,13 @@ void HidTransferIn(void)
         }
         else
         {
+            uint8_t *ptr;
+
             if (g_u32BytesInPageBuf == 0)
             {
                 /* The previous page has sent out. Read new page to page buffer */
                 /* TODO: We should update new page data here. (0xFF is used in this sample code) */
-                printf("Reading page %d\n", u32StartPage + u32PageCnt);
+                printf("Reading page %u\n", u32StartPage + u32PageCnt);
                 memcpy(g_u8PageBuff, g_u8TestPages + u32PageCnt * PAGE_SIZE, sizeof(g_u8PageBuff));
 
                 g_u32BytesInPageBuf = PAGE_SIZE;
@@ -1410,7 +1410,7 @@ int32_t HID_CmdEraseSectors(CMD_T *pCmd)
     u32StartSector = pCmd->u32Arg1 - START_SECTOR;
     u32Sectors = pCmd->u32Arg2;
 
-    DBG_PRINTF("0: Erase command - Sector: %d   Sector Cnt: %d\n", u32StartSector, u32Sectors);
+    DBG_PRINTF("0: Erase command - Sector: %u   Sector Cnt: %u\n", u32StartSector, u32Sectors);
 
     /* TODO: To erase the sector of storage */
     memset(g_u8TestPages + u32StartSector * SECTOR_SIZE, 0xFF, sizeof(uint8_t) * u32Sectors * SECTOR_SIZE);
@@ -1431,7 +1431,7 @@ int32_t HID_CmdReadPages(CMD_T *pCmd)
     u32StartPage = pCmd->u32Arg1;
     u32Pages     = pCmd->u32Arg2;
 
-    DBG_PRINTF("1: Read command - Start page: %d    Pages Numbers: %d\n", u32StartPage, u32Pages);
+    DBG_PRINTF("1: Read command - Start page: %u    Pages Numbers: %u\n", u32StartPage, u32Pages);
 
     if (u32Pages)
     {
@@ -1461,7 +1461,7 @@ int32_t HID_CmdWritePages(CMD_T *pCmd)
     u32StartPage = pCmd->u32Arg1;
     u32Pages     = pCmd->u32Arg2;
 
-    DBG_PRINTF("2: Write command - Start page: %d    Pages Numbers: %d\n", u32StartPage, u32Pages);
+    DBG_PRINTF("2: Write command - Start page: %u    Pages Numbers: %u\n", u32StartPage, u32Pages);
     g_u32BytesInPageBuf = 0;
 
     /* The signature is used to page counter */
@@ -1598,7 +1598,7 @@ void HidTransferOut(uint8_t *pu8EpBuf, uint32_t u32Size)
         /* The HOST must make sure the data is PAGE_SIZE alignment */
         if (g_u32BytesInPageBuf >= PAGE_SIZE)
         {
-            DBG_PRINTF("3: Writing page %d\n", u32StartPage + u32PageCnt);
+            DBG_PRINTF("3: Writing page %u\n", u32StartPage + u32PageCnt);
             /* TODO: We should program received data to storage here */
             memcpy(g_u8TestPages + u32PageCnt * PAGE_SIZE, g_u8PageBuff, sizeof(g_u8PageBuff));
             u32PageCnt++;

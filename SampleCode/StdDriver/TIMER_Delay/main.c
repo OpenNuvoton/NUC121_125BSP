@@ -104,7 +104,7 @@ int main(void)
 
     /* timer clk = 100000HZ = 100 times/ms */
     u32DelayTime = TIMER_GetCounter(TIMER1) / 100;
-    printf("    Check DelayTime-1 is %d ms .... ", u32DelayTime);
+    printf("    Check DelayTime-1 is %u ms .... ", u32DelayTime);
 
     if (u32DelayTime == 100)
         printf("PASS.\n");
@@ -118,7 +118,7 @@ int main(void)
     TIMER_Delay(TIMER0, 200000);
     TIMER_Stop(TIMER1);
     u32DelayTime = TIMER_GetCounter(TIMER1) / 100;
-    printf("    Check DelayTime-2 is %d ms .... ", u32DelayTime);
+    printf("    Check DelayTime-2 is %u ms .... ", u32DelayTime);
 
     if (u32DelayTime == 200)
         printf("PASS.\n");
@@ -132,7 +132,7 @@ int main(void)
     TIMER_Delay(TIMER0, 300000);
     TIMER_Stop(TIMER1);
     u32DelayTime = TIMER_GetCounter(TIMER1) / 100;
-    printf("    Check DelayTime-3 is %d ms .... ", u32DelayTime);
+    printf("    Check DelayTime-3 is %u ms .... ", u32DelayTime);
 
     if (u32DelayTime == 300)
         printf("PASS.\n");
@@ -146,7 +146,7 @@ int main(void)
     TIMER_Delay(TIMER0, 400000);
     TIMER_Stop(TIMER1);
     u32DelayTime = TIMER_GetCounter(TIMER1) / 100;
-    printf("    Check DelayTime-4 is %d ms .... ", u32DelayTime);
+    printf("    Check DelayTime-4 is %u ms .... ", u32DelayTime);
 
     if (u32DelayTime == 400)
         printf("PASS.\n");
@@ -160,7 +160,7 @@ int main(void)
     TIMER_Delay(TIMER0, 500000);
     TIMER_Stop(TIMER1);
     u32DelayTime = TIMER_GetCounter(TIMER1) / 100;
-    printf("    Check DelayTime-5 is %d ms .... ", u32DelayTime);
+    printf("    Check DelayTime-5 is %u ms .... ", u32DelayTime);
 
     if (u32DelayTime == 500)
         printf("PASS.\n");

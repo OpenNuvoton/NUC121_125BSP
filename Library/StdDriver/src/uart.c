@@ -42,21 +42,30 @@ void UART_ClearIntFlag(UART_T *psUART, uint32_t u32InterruptFlag)
 {
 
     if (u32InterruptFlag & UART_INTSTS_RLSINT_Msk)      /* Clear Receive Line Status Interrupt */
-        psUART->FIFOSTS = UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_FEF_Msk | UART_FIFOSTS_ADDRDETF_Msk;
-
+    {
+       psUART->FIFOSTS = UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | 
+                         UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_ADDRDETF_Msk;
+    }
     if (u32InterruptFlag & UART_INTSTS_MODEMINT_Msk)    /* Clear Modem Status Interrupt */
-        psUART->MODEMSTS |= UART_MODEMSTS_CTSDETF_Msk;
-
+    {
+       psUART->MODEMSTS |= UART_MODEMSTS_CTSDETF_Msk;
+    }
     if (u32InterruptFlag & UART_INTSTS_BUFERRINT_Msk)   /* Clear Buffer Error Interrupt */
-        psUART->FIFOSTS = UART_FIFOSTS_RXOVIF_Msk | UART_FIFOSTS_TXOVIF_Msk;
-
+    {        
+       psUART->FIFOSTS = UART_FIFOSTS_RXOVIF_Msk | UART_FIFOSTS_TXOVIF_Msk;
+    }
     if (u32InterruptFlag & UART_INTSTS_WKINT_Msk)       /* Clear Wake-up Interrupt */
-        psUART->WKSTS = psUART->WKSTS;
-
+    {
+       psUART->WKSTS = UART_WKSTS_CTSWKF_Msk  | UART_WKSTS_DATWKF_Msk  |
+                       UART_WKSTS_RFRTWKF_Msk | UART_WKSTS_RS485WKF_Msk |
+                       UART_WKSTS_TOUTWKF_Msk;
+    }
     if (u32InterruptFlag & UART_INTSTS_LININT_Msk)      /* Clear LIN Bus Interrupt */
     {
         psUART->INTSTS = UART_INTSTS_LINIF_Msk;
-        psUART->LINSTS = psUART->LINSTS;
+        psUART->LINSTS = UART_LINSTS_BITEF_Msk    | UART_LINSTS_BRKDETF_Msk  |
+                         UART_LINSTS_SLVSYNCF_Msk | UART_LINSTS_SLVIDPEF_Msk |
+                         UART_LINSTS_SLVHEF_Msk   | UART_LINSTS_SLVHDETF_Msk ;
     }
 
 }
@@ -110,16 +119,12 @@ void UART_DisableFlowCtrl(UART_T *psUART)
  *
  *    @return       None
  *
- *    @details      The function is used to disable UART specified interrupt and disable NVIC UART IRQ.
+ *    @details      The function is used to disable UART specified interrupt.
  */
 void UART_DisableInt(UART_T  *psUART, uint32_t u32InterruptFlag)
 {
     /* Disable UART specified interrupt */
     UART_DISABLE_INT(psUART, u32InterruptFlag);
-
-    /* Disable NVIC UART IRQ */
-    NVIC_DisableIRQ(UART0_IRQn);
-
 }
 
 /**
@@ -162,16 +167,12 @@ void UART_EnableFlowCtrl(UART_T *psUART)
  *
  *    @return       None
  *
- *    @details      The function is used to enable UART specified interrupt and enable NVIC UART IRQ.
+ *    @details      The function is used to enable UART specified interrupt.
  */
 void UART_EnableInt(UART_T  *psUART, uint32_t u32InterruptFlag)
 {
-
     /* Enable UART specified interrupt */
     UART_ENABLE_INT(psUART, u32InterruptFlag);
-
-    /* Enable NVIC UART IRQ */
-    NVIC_EnableIRQ(UART0_IRQn);
 
 }
 
@@ -190,7 +191,7 @@ void UART_Open(UART_T *psUART, uint32_t u32Baudrate)
 {
     uint8_t u8UartClkSrcSel, u8UartClkDivNum;
     uint32_t au32ClkTbl[4] = {__HXT, 0, __LXT, __HIRC_DIV2};
-    uint32_t u32BaudDiv = 0;
+
 
     /* Get UART clock source selection */
     u8UartClkSrcSel = (CLK->CLKSEL1 & CLK_CLKSEL1_UARTSEL_Msk) >> CLK_CLKSEL1_UARTSEL_Pos;
@@ -214,6 +215,8 @@ void UART_Open(UART_T *psUART, uint32_t u32Baudrate)
     /* Set UART baud rate */
     if (u32Baudrate != 0)
     {
+        uint32_t u32BaudDiv;
+
         u32BaudDiv = UART_BAUD_MODE2_DIVIDER((au32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1), u32Baudrate);
 
         if (u32BaudDiv > 0xFFFF)
@@ -237,11 +240,11 @@ void UART_Open(UART_T *psUART, uint32_t u32Baudrate)
  */
 uint32_t UART_Read(UART_T *psUART, uint8_t *pu8RxBuf, uint32_t u32ReadBytes)
 {
-    uint32_t  u32Count, u32Delayno;
+    uint32_t  u32Count;
 
     for (u32Count = 0; u32Count < u32ReadBytes; u32Count++)
     {
-        u32Delayno = 0;
+        uint32_t  u32Delayno = 0;
 
         while (psUART->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk)   /* Check RX empty => failed */
         {
@@ -289,7 +292,7 @@ void UART_SetLine_Config(UART_T *psUART, uint32_t u32Baudrate, uint32_t u32DataW
 {
     uint8_t u8UartClkSrcSel, u8UartClkDivNum;
     uint32_t au32ClkTbl[4] = {__HXT, 0, __LXT, __HIRC_DIV2};
-    uint32_t u32Baud_Div = 0;
+
 
     /* Get UART clock source selection */
     u8UartClkSrcSel = (CLK->CLKSEL1 & CLK_CLKSEL1_UARTSEL_Msk) >> CLK_CLKSEL1_UARTSEL_Pos;
@@ -304,6 +307,8 @@ void UART_SetLine_Config(UART_T *psUART, uint32_t u32Baudrate, uint32_t u32DataW
     /* Set UART baud rate */
     if (u32Baudrate != 0)
     {
+        uint32_t u32Baud_Div;
+
         u32Baud_Div = UART_BAUD_MODE2_DIVIDER((au32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1), u32Baudrate);
 
         if (u32Baud_Div > 0xFFFF)
@@ -354,7 +359,6 @@ void UART_SelectIrDAMode(UART_T *psUART, uint32_t u32Buadrate, uint32_t u32Direc
 {
     uint8_t u8UartClkSrcSel, u8UartClkDivNum;
     uint32_t au32ClkTbl[4] = {__HXT, 0, __LXT, __HIRC_DIV2};
-    uint32_t u32Baud_Div;
 
     /* Select IrDA function mode */
     psUART->FUNCSEL = UART_FUNCSEL_IrDA;
@@ -372,6 +376,8 @@ void UART_SelectIrDAMode(UART_T *psUART, uint32_t u32Buadrate, uint32_t u32Direc
     /* Set UART IrDA baud rate in mode 0 */
     if (u32Buadrate != 0)
     {
+        uint32_t u32Baud_Div;
+
         u32Baud_Div = UART_BAUD_MODE0_DIVIDER((au32ClkTbl[u8UartClkSrcSel]) / (u8UartClkDivNum + 1), u32Buadrate);
 
         if (u32Baud_Div < 0xFFFF)
@@ -455,11 +461,11 @@ void UART_SelectLINMode(UART_T *psUART, uint32_t u32Mode, uint32_t u32BreakLengt
  */
 uint32_t UART_Write(UART_T *psUART, uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
 {
-    uint32_t  u32Count, u32Delayno;
+    uint32_t  u32Count;
 
     for (u32Count = 0; u32Count != u32WriteBytes; u32Count++)
     {
-        u32Delayno = 0;
+        uint32_t u32Delayno = 0;
 
         while (psUART->FIFOSTS & UART_FIFOSTS_TXFULL_Msk)  /* Check Tx Full */
         {

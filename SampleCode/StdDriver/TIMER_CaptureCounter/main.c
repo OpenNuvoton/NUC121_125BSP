@@ -191,11 +191,11 @@ int main(void)
             au32CAPValue[u32InitCount] = TIMER_GetCaptureData(TIMER2);
 
             if (u32InitCount ==  0)
-                printf("    [%2d]: %4d. (1st captured value)\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount]);
+                printf("    [%2u]: %4u. (1st captured value)\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount]);
             else
             {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
-                printf("    [%2d]: %4d. Diff: %d.\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount], u32CAPDiff);
+                printf("    [%2u]: %4u. Diff: %u.\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount], u32CAPDiff);
 
                 if (u32CAPDiff != 500)
                 {
@@ -247,11 +247,11 @@ int main(void)
             au32CAPValue[u32InitCount] = TIMER_GetCaptureData(TIMER2);
 
             if (u32InitCount ==  0)
-                printf("    [%2d]: %4d. (1st captured value)\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount]);
+                printf("    [%2u]: %4u. (1st captured value)\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount]);
             else
             {
                 u32CAPDiff = au32CAPValue[u32InitCount] - au32CAPValue[u32InitCount - 1];
-                printf("    [%2d]: %4d. Diff: %d.\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount], u32CAPDiff);
+                printf("    [%2u]: %4u. Diff: %u.\n", g_au32TMRINTCount[2], au32CAPValue[u32InitCount], u32CAPDiff);
 
                 if (u32CAPDiff != 500)
                 {

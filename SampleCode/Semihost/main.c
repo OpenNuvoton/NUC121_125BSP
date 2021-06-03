@@ -19,8 +19,6 @@
 
 int32_t main()
 {
-    int8_t item;
-
     /*
         To enable semihost, user must define "DEBUG_ENABLE_SEMIHOST" constant when buildind sample code.
         This sample code is used to show how to print message/getchar on IDE debug environment.
@@ -40,8 +38,9 @@ int32_t main()
 
     while (1)
     {
+
         /* Get input character */
-        item = getchar();
+        int8_t item = getchar();
 
         /* Print input character back */
         printf("%c\n", item);

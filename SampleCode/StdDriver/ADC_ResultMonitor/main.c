@@ -206,7 +206,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* Result monitor test */
     AdcResultMonitorTest();

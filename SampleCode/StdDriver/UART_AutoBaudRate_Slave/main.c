@@ -200,7 +200,7 @@ void AutoBaudRate_RxTest()
     {
         /* Clear auto baud rate detect finished flag */
         UART0->FIFOSTS = UART_FIFOSTS_ABRDIF_Msk;
-        printf("Baud rate is %dbps.\n", GetUartBaudrate(UART0));
+        printf("Baud rate is %ubps.\n", GetUartBaudrate(UART0));
     }
     else if (UART0->FIFOSTS & UART_FIFOSTS_ABRDTOIF_Msk)
     {

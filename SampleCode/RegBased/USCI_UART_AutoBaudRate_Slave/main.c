@@ -198,7 +198,7 @@ void AutoBaudRate_RxTest()
     {
         /* Clear auto baud rate detect finished flag */
         UUART0->PROTSTS = UUART_PROTSTS_ABRDETIF_Msk;
-        printf("Baud rate is %dbps.\n", GetUuartBaudrate(UUART0));
+        printf("Baud rate is %ubps.\n", GetUuartBaudrate(UUART0));
     }
     else if (UUART0->PROTSTS & UUART_PROTSTS_ABERRSTS_Msk)
     {

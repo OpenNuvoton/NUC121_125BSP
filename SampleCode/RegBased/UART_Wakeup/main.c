@@ -151,12 +151,13 @@ int32_t main(void)
 void UART0_IRQHandler(void)
 {
     uint32_t u32IntSts = UART0->INTSTS;
-    uint32_t u32WkSts = UART0->WKSTS;
     uint32_t u32Data;
 
     if (u32IntSts & UART_INTSTS_WKINT_Msk)              /* UART wake-up interrupt flag */
     {
-        UART0->WKSTS = (UART0->WKSTS);
+        uint32_t u32WkSts = UART0->WKSTS;
+
+        UART0->WKSTS = u32WkSts;
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
     }

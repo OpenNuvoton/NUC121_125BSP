@@ -27,8 +27,8 @@ uint16_t g_u16CtrlSignal1 = 0;     /* BIT0: DTR(Data Terminal Ready) , BIT1: RTS
 #define RXBUFSIZE           512 /* RX buffer size */
 #define TXBUFSIZE           512 /* RX buffer size */
 
-#define TX_FIFO_SIZE_0      64  /* UART: TX Hardware FIFO size */
-#define TX_FIFO_SIZE_1      64  /* USCI_UART(UUART): TX Hardware FIFO size */
+#define TX_FIFO_SIZE_0      16  /* UART: TX Hardware FIFO size */
+#define TX_FIFO_SIZE_1      1  /* USCI_UART(UUART): TX Hardware FIFO size */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -167,7 +167,6 @@ void UART0_IRQHandler(void)
 {
     uint32_t u32IntStatus;
     uint8_t bInChar;
-    int32_t size;
 
     u32IntStatus = UART0->INTSTS;
 
@@ -202,10 +201,10 @@ void UART0_IRQHandler(void)
     if (u32IntStatus & UART_INTSTS_THREIF_Msk)
     {
 
-        if (g_u16ComTbytes0)
+        if (g_u16ComTbytes0 && (UART0->INTEN & UART_INTEN_THREIEN_Msk))
         {
             /* Fill the Tx FIFO */
-            size = g_u16ComTbytes0;
+            int32_t size = g_u16ComTbytes0;
 
             if (size >= TX_FIFO_SIZE_0)
             {
@@ -214,11 +213,11 @@ void UART0_IRQHandler(void)
 
             while (size)
             {
-                bInChar = g_au8ComTbuf0[g_u16ComThead0++];
-                UART0->DAT = bInChar;
-
                 if (g_u16ComThead0 >= TXBUFSIZE)
                     g_u16ComThead0 = 0;
+
+                bInChar = g_au8ComTbuf0[g_u16ComThead0++];
+                UART0->DAT = bInChar;
 
                 g_u16ComTbytes0--;
                 size--;
@@ -243,7 +242,6 @@ void UART0_IRQHandler(void)
 void USCI_IRQHandler(void)
 {
     uint32_t u32IntStatus;
-    uint8_t bInChar;
 
     u32IntStatus = UUART0->PROTSTS;
 
@@ -256,7 +254,7 @@ void USCI_IRQHandler(void)
         while (!UUART_IS_RX_EMPTY(UUART0))
         {
             /* Get the character from UART Buffer */
-            bInChar = UUART_READ(UUART0);
+            uint8_t bInChar = UUART_READ(UUART0);
 
             /* Check if buffer full */
             if (g_u16ComRbytes1 < RXBUFSIZE)
@@ -295,10 +293,10 @@ void VCOM_TransferData(void)
 
             for (i = 0; i < i32Len; i++)
             {
-                g_au8RxBuf0[i] = g_au8ComRbuf0[g_u16ComRhead0++];
-
                 if (g_u16ComRhead0 >= RXBUFSIZE)
                     g_u16ComRhead0 = 0;
+
+                g_au8RxBuf0[i] = g_au8ComRbuf0[g_u16ComRhead0++];
             }
 
             __set_PRIMASK(1);
@@ -333,10 +331,10 @@ void VCOM_TransferData(void)
 
             for (i = 0; i < i32Len; i++)
             {
-                g_au8RxBuf1[i] = g_au8ComRbuf1[g_u16ComRhead1++];
-
                 if (g_u16ComRhead1 >= RXBUFSIZE)
                     g_u16ComRhead1 = 0;
+
+                g_au8RxBuf1[i] = g_au8ComRbuf1[g_u16ComRhead1++];
             }
 
             __set_PRIMASK(1);
@@ -390,9 +388,9 @@ void VCOM_TransferData(void)
                 g_u16ComTtail1 = 0;
         }
 
-        __set_PRIMASK(1);
+        //__set_PRIMASK(1);//no need protection in the same thread
         g_u16ComTbytes1 += g_u32RxSize1;
-        __set_PRIMASK(0);
+        //__set_PRIMASK(0);
 
         g_u32RxSize1 = 0;
         g_i8BulkOutReady1 = 0; /* Clear bulk out ready flag */
@@ -407,15 +405,15 @@ void VCOM_TransferData(void)
         /* Check if Tx is working */
         if ((UART0->INTEN & UART_INTEN_THREIEN_Msk) == 0)
         {
+            if (g_u16ComThead0 >= TXBUFSIZE)
+            {
+                g_u16ComThead0 = 0;
+            }
+
             /* Send one bytes out */
             UART0->DAT = g_au8ComTbuf0[g_u16ComThead0++];
 
-            if (g_u16ComThead0 >= TXBUFSIZE)
-                g_u16ComThead0 = 0;
-
-            __set_PRIMASK(1);
             g_u16ComTbytes0--;
-            __set_PRIMASK(0);
 
             /* Enable Tx Empty Interrupt. (Trigger first one) */
             UART0->INTEN |= UART_INTEN_THREIEN_Msk;
@@ -428,12 +426,13 @@ void VCOM_TransferData(void)
     if (g_u16ComTbytes1)
     {
         uint32_t size;
-        uint8_t bInChar;
 
         size = g_u16ComTbytes1;
 
         while (size--)
         {
+            uint8_t bInChar;
+            
             while (UUART_IS_TX_FULL(UUART0)); /* Wait Tx is not full to transmit data */
 
             /* Send one bytes out */
@@ -443,9 +442,9 @@ void VCOM_TransferData(void)
             if (g_u16ComThead1 >= TXBUFSIZE)
                 g_u16ComThead1 = 0;
 
-            __set_PRIMASK(1);
+            //__set_PRIMASK(1);//no need protection in the same thread
             g_u16ComTbytes1--;
-            __set_PRIMASK(0);
+            //__set_PRIMASK(0);
         }
     }
 

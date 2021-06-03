@@ -60,7 +60,7 @@ void UART0_Init()
 int32_t main(void)
 {
 
-    char *tmp = 0;
+    char *tmp = (char *)4UL;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

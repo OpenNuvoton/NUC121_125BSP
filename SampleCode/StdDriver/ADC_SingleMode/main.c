@@ -98,7 +98,6 @@ void UART0_Init()
 /*----------------------------------------------------------------------------------------------------------*/
 void AdcSingleModeTest(void)
 {
-    uint8_t  u8Option;
     int32_t  i32ConversionData;
 
     printf("\n");
@@ -108,6 +107,8 @@ void AdcSingleModeTest(void)
 
     while (1)
     {
+        uint8_t  u8Option;
+
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
@@ -212,7 +213,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* Single Mode test */
     AdcSingleModeTest();

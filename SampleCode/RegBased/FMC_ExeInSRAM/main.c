@@ -68,7 +68,6 @@ void UART0_Init()
 
 int main()
 {
-    uint32_t u32Data, u32RData;
     uint32_t u32Addr;
     uint32_t i;
 
@@ -110,6 +109,7 @@ int main()
 
     for (i = 0; i < 0x100; i += 4)
     {
+        uint32_t u32Data;
 
         /* Write Demo */
         u32Data = i + 0x12345678;
@@ -133,7 +133,7 @@ int main()
 
         while (FMC->ISPTRG);
 
-        u32RData = FMC->ISPDAT;
+        uint32_t u32RData = FMC->ISPDAT;
 
         if (u32Data != u32RData)
         {

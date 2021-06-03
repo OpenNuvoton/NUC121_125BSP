@@ -290,7 +290,6 @@ void EP3_Handler(void)
     int32_t i;
     uint8_t *pu8Buf;
     uint8_t *pu8Src;
-    uint32_t u32Idx;
 
 
     /* Get the address in USB buffer */
@@ -324,7 +323,7 @@ void EP3_Handler(void)
     for (i = 0; i < u32Len; i++)
     {
         /* Check ring buffer turn around */
-        u32Idx = g_u32PlayPos_In + 1;
+        uint32_t u32Idx = g_u32PlayPos_In + 1;
 
         if (u32Idx >= BUF_LEN)
             u32Idx = 0;
@@ -801,20 +800,20 @@ void WAU8822_Setup(void)
 void SPI0_IRQHandler(void)
 {
     uint32_t u32I2SIntFlag;
-    uint32_t i, u32Idx;
     u32I2SIntFlag = SPI0->I2SSTS;
 
     if (u32I2SIntFlag & SPI_I2SSTS_TXTHIF_Msk)
     {
+        uint32_t i;
+
         /* Fill 2 word data when it is TX threshold interrupt */
         for (i = 0; i < 2; i++)
         {
             /* Check buffer empty */
             if ((g_u32PlayPos_Out != g_u32PlayPos_In) && g_u8PlayEn)
             {
-
                 /* Check ring buffer trun around */
-                u32Idx = g_u32PlayPos_Out + 1;
+                uint32_t u32Idx = g_u32PlayPos_Out + 1;
 
                 if (u32Idx >= BUF_LEN)
                     u32Idx = 0;
@@ -851,10 +850,8 @@ void SPI0_IRQHandler(void)
             /*16-Bit*/
             I2S_READ_RX_FIFO(SPI0);
             I2S_READ_RX_FIFO(SPI0);
-
         }
     }
-
 }
 
 
@@ -868,9 +865,6 @@ void UAC_SendRecData(void)
 {
     uint8_t *pu8Buf;
     uint32_t u32Size;
-
-    //16 Bit mode
-    uint32_t i;
 
     /* Get the address in USB buffer */
     pu8Buf = (uint8_t *)((uint32_t)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
@@ -892,6 +886,8 @@ void UAC_SendRecData(void)
     /*Remained data to be transferred*/
     if (g_u32RecPos)
     {
+        uint32_t i;
+        
         for (i = 0; i < g_u32RecPos; i++)
             g_au32PcmRecBuf[i] = g_au32PcmRecBuf[i + u32Size / 4];
     }
@@ -910,15 +906,15 @@ void UAC_DeviceEnable(uint8_t u8Object)
 {
     if (u8Object == UAC_MICROPHONE)
     {
-        /* Enable record hardware */
-        g_u8RecEn = 1;
-
         if (g_u8RecEn == 0)
         {
             /* Reset record buffer */
             memset(g_au32PcmRecBuf, 0, sizeof(g_au32PcmRecBuf));
             g_u32RecPos = 0;
         }
+
+        /* Enable record hardware */
+        g_u8RecEn = 1;
 
         I2S_CLR_RX_FIFO(SPI0);
         I2S_EnableInt(SPI0, I2S_FIFO_RXTH_INT_MASK);
@@ -1061,7 +1057,7 @@ void AdjFreq(void)
     if ((i32PreFlag != g_i32AdjFlag) || (i32Cnt++ > 40000))
     {
         i32PreFlag = g_i32AdjFlag;
-        printf("%d %d %d %d\n", g_i32AdjFlag, u32Size, g_usbd_PlayVolumeL, g_usbd_RecVolumeL);
+        printf("%d %u %d %d\n", g_i32AdjFlag, u32Size, g_usbd_PlayVolumeL, g_usbd_RecVolumeL);
         i32Cnt = 0;
     }
 

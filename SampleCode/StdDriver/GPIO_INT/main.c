@@ -28,9 +28,13 @@ void GPAB_IRQHandler(void)
     }
     else
     {
+        uint32_t u32Status;
+
         /* Un-expected interrupt. Just clear all PORTA, PORTB interrupts */
-        PA->INTSRC = (PA->INTSRC);
-        PB->INTSRC = (PB->INTSRC);
+        u32Status =  PA->INTSRC;
+        PA->INTSRC = u32Status;
+        u32Status =  PB->INTSRC;
+        PB->INTSRC = u32Status;
         printf("Un-expected interrupts.\n");
     }
 }
@@ -54,11 +58,17 @@ void GPCDEF_IRQHandler(void)
     }
     else
     {
+        uint32_t u32Status;
+
         /* Un-expected interrupt. Just clear all PORTC, PORTD, PORTE and PORTF interrupts */
-        PC->INTSRC = (PC->INTSRC);
-        PD->INTSRC = (PD->INTSRC);
-        PE->INTSRC = (PE->INTSRC);
-        PF->INTSRC = (PF->INTSRC);
+        u32Status =  PC->INTSRC;
+        PC->INTSRC = u32Status;
+        u32Status =  PD->INTSRC;
+        PD->INTSRC = u32Status;
+        u32Status =  PE->INTSRC;
+        PE->INTSRC = u32Status;
+        u32Status =  PF->INTSRC;
+        PF->INTSRC = u32Status;
         printf("Un-expected interrupts.\n");
     }
 }

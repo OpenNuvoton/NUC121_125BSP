@@ -214,11 +214,6 @@ int ParseCmd(unsigned char *buffer, uint8_t len)
         StartAddress -= LastDataLen;
         TotalLen += LastDataLen;
 
-        if ((StartAddress & 0xFFE00) >= Config0)
-        {
-            goto out;
-        }
-
         ReadData(StartAddress & 0xFFE00, StartAddress, (uint32_t *)aprom_buf);
         FMC_Erase_User(StartAddress & 0xFFE00);
         WriteData(StartAddress & 0xFFE00, StartAddress, (uint32_t *)aprom_buf);

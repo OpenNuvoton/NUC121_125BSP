@@ -613,13 +613,13 @@ void USBD_PrepareCtrlOut(uint8_t *pu8Buf, uint32_t u32Size)
   */
 void USBD_CtrlOut(void)
 {
-    uint32_t u32Size;
 
     DBG_PRINTF("Ctrl Out Ack %d\n", g_usbd_CtrlOutSize);
 
     if (g_usbd_CtrlOutSize < g_usbd_CtrlOutSizeLimit)
     {
-        u32Size = USBD_GET_PAYLOAD_LEN(EP1);
+        uint32_t u32Size = USBD_GET_PAYLOAD_LEN(EP1);
+
         USBD_MemCopy((uint8_t *)g_usbd_CtrlOutPointer, (uint8_t *)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP1), u32Size);
         g_usbd_CtrlOutPointer += u32Size;
         g_usbd_CtrlOutSize += u32Size;

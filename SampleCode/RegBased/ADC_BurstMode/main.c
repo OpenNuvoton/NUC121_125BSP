@@ -101,7 +101,6 @@ void UART0_Init()
 /*----------------------------------------------------------------------------------------------------------*/
 void AdcBurstModeTest(void)
 {
-    uint8_t  u8Option;
     uint32_t u32ConversionCount;
     int32_t  i32ConversionData;
 
@@ -112,6 +111,8 @@ void AdcBurstModeTest(void)
 
     while (1)
     {
+        uint8_t  u8Option;
+
         printf("Select input mode:\n");
         printf("  [1] Single end input (channel 2 only)\n");
         printf("  [2] Differential input (channel pair 1 only)\n");
@@ -151,7 +152,7 @@ void AdcBurstModeTest(void)
             {
                 i32ConversionData = (ADC->ADDR[0] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
-                printf("Conversion result of channel 2 count %d: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of channel 2 count %u: 0x%X (%i)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
             }
 
             /* Stop burst mode conversion */
@@ -200,7 +201,7 @@ void AdcBurstModeTest(void)
             {
                 i32ConversionData = (ADC->ADDR[0] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos;
 
-                printf("Conversion result of channel pair 1 count %d: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of channel pair 1 count %u: 0x%X (%d)\n", u32ConversionCount, i32ConversionData, i32ConversionData);
             }
 
             /* Stop burst mode conversion */
@@ -252,7 +253,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* Burst Mode test */
     AdcBurstModeTest();

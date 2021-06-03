@@ -90,7 +90,6 @@ void UART0_Init()
 /*----------------------------------------------------------------------------------------------------------*/
 void AdcSingleCycleScanModeTest(void)
 {
-    uint8_t  u8Option;
     uint32_t u32ChannelCount;
     int32_t  i32ConversionData;
 
@@ -101,6 +100,8 @@ void AdcSingleCycleScanModeTest(void)
 
     while (1)
     {
+        uint8_t  u8Option;
+
         printf("\n\nSelect input mode:\n");
         printf("  [1] Single end input (channel 0, 1, 2 and 3)\n");
         printf("  [2] Differential input (input channel pair 0 and 1)\n");
@@ -128,7 +129,7 @@ void AdcSingleCycleScanModeTest(void)
             for (u32ChannelCount = 0; u32ChannelCount < 4; u32ChannelCount++)
             {
                 i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, u32ChannelCount);
-                printf("Conversion result of channel %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of channel %u: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
         }
         else if (u8Option == '2')
@@ -152,7 +153,7 @@ void AdcSingleCycleScanModeTest(void)
             for (u32ChannelCount = 0; u32ChannelCount < 2; u32ChannelCount++)
             {
                 i32ConversionData = ADC_GET_CONVERSION_DATA(ADC, u32ChannelCount * 2);
-                printf("Conversion result of differential input pair %d: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
+                printf("Conversion result of differential input pair %u: 0x%X (%d)\n", u32ChannelCount, i32ConversionData, i32ConversionData);
             }
         }
         else
@@ -182,7 +183,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* Single cycle scan mode test */
     AdcSingleCycleScanModeTest();

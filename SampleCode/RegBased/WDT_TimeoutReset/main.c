@@ -120,7 +120,7 @@ int main(void)
         while (1);
     }
 
-    printf("CPU @ %d Hz\n", SystemCoreClock);
+    printf("CPU @ %u Hz\n", SystemCoreClock);
     printf("+---------------------------------------------+\n");
     printf("|    WDT Time-out Reset System Sample Code    |\n");
     printf("+---------------------------------------------+\n\n");

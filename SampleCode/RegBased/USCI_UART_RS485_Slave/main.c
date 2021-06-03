@@ -46,10 +46,12 @@ void RS485_HANDLE()
 {
     volatile uint32_t u32ProtSts = UUART0->PROTSTS;
     volatile uint32_t u32BufSts = UUART0->BUFSTS;
-    volatile uint32_t u32Data;
+
 
     if (u32ProtSts & UUART_PROTSTS_RXENDIF_Msk)     /* Receive end interrupt */
     {
+        uint32_t u32Data;
+
         /* Handle received data */
         UUART_CLR_PROT_INT_FLAG(UUART0, UUART_PROTSTS_RXENDIF_Msk);
         u32Data = UUART0->RXDAT;

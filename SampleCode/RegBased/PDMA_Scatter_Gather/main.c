@@ -9,10 +9,19 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-uint32_t PDMA_TEST_LENGTH = 64;
+#ifdef __ICCARM__
+#pragma data_alignment=4
 uint8_t au8SrcArray[256];
 uint8_t au8DestArray0[256];
 uint8_t au8DestArray1[256];
+#else
+__attribute__((aligned(4))) uint8_t au8SrcArray[256];
+__attribute__((aligned(4))) uint8_t au8DestArray0[256];
+__attribute__((aligned(4))) uint8_t au8DestArray1[256];
+#endif
+
+uint32_t PDMA_TEST_LENGTH = 64;
+
 
 
 PDMA_DSCT_T DMA_DESC[2]; /* Descriptor table */

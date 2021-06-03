@@ -9,10 +9,11 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-uint32_t PDMA_TEST_COUNT = 50;
 uint32_t g_au32SrcArray0[1] = {0x55555555};
 uint32_t g_au32SrcArray1[1] = {0xAAAAAAAA};
 uint32_t g_au32DestArray[1];
+
+uint32_t PDMA_TEST_COUNT = 50;
 uint32_t volatile g_u32IsTestOver = 0;
 uint32_t volatile g_u32TransferredCount = 0;
 uint32_t g_u32DMAConfig = 0;
@@ -62,9 +63,7 @@ void PDMA_IRQHandler(void)
         }
         else
         {
-
-            /* Un expected channel transfer done */
-            while (1);
+            printf("Unexpected channel transfer done !!\n");
         }
 
     }
@@ -98,30 +97,18 @@ void PDMA_IRQHandler(void)
                 /* Not transfer over but PDMA fetch the IDLE scatter-gather table */
                 PDMA_CLR_EMPTY_FLAG(PDMA_SCATSTS_TEMPTYF4_Msk);
 
-                while (1);
+                printf("Not transfer over but PDMA fetch the IDLE scatter-gather table !!\n");
             }
 
         }
         else
         {
-            /* Un-expected channel sets assert scatter-table empty event. */
-            while (1);
+            printf("Unexpected channel sets assert scatter-table empty event !!\n");
         }
-    }
-    else if (u32Intsts & PDMA_INTSTS_ABTIF_Msk)
-    {
-
-        /*
-            This flag indicates which PDMA controller has target abort error or transfer source and destination
-            address not alignment.
-        */
-        while (1);
-
     }
     else
     {
-        /*unknown handler state: should not happen*/
-        while (1);
+        printf("unknown interrupt !!\n");
     }
 }
 
@@ -328,7 +315,7 @@ int main(void)
     NVIC_EnableIRQ(PDMA_IRQn);
     g_u32IsTestOver = 0;
 
-    /* Start PDMA operatin */
+    /* Start PDMA operation */
     PDMA->SWREQ = BIT4;
 
     while (1)
@@ -340,8 +327,8 @@ int main(void)
         }
     }
 
-    /* Close channel 4 */
-    //PDMA->CHCTL &= ~BIT4;
+    /* Close Channel 4 */
+    PDMA->CHCTL = 0;
 
     while (1);
 }

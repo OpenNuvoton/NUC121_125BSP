@@ -97,6 +97,8 @@ void USBD_IRQHandler(void)
     //------------------------------------------------------------------
     if (u32IntSts & USBD_INTSTS_USB)
     {
+        extern uint8_t g_USBD_au8SetupPacket[];
+
         // USB event
         if (u32IntSts & USBD_INTSTS_SETUP)
         {
@@ -127,6 +129,13 @@ void USBD_IRQHandler(void)
 
             // control OUT
             USBD_CtrlOut();
+
+            // In ACK of SET_LINE_CODE
+            if (g_USBD_au8SetupPacket[1] == SET_LINE_CODE)
+            {
+                if (g_USBD_au8SetupPacket[4] == 0) /* VCOM-1 */
+                    VCOM_LineCoding(0); /* Apply UART settings */
+            }
         }
 
         if (u32IntSts & USBD_INTSTS_EP2)
@@ -317,10 +326,6 @@ void HID_ClassRequest(void)
                 USBD_SET_DATA1(EP0);
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
 
-                /* UART setting */
-                if (buf[4] == 0) /* VCOM-1 */
-                    VCOM_LineCoding(0);
-
                 break;
             }
 
@@ -370,11 +375,12 @@ void HID_ClassRequest(void)
 
 void VCOM_LineCoding(uint8_t port)
 {
-    uint32_t u32Reg;
-    uint32_t u32Baud_Div = 0;
 
     if (port == 0)
     {
+        uint32_t u32Reg;
+        uint32_t u32Baud_Div;
+
         NVIC_DisableIRQ(UART0_IRQn);
 
         // Reset software FIFO
@@ -444,20 +450,18 @@ void VCOM_LineCoding(uint8_t port)
 
 void HID_UpdateKbData(void)
 {
-    int32_t i;
-    uint8_t *pu8Buf;
-    uint32_t u32Key = 0xF;
-    static uint32_t s_u32PreKey;
 
     if (g_u8EP5Ready)
     {
-        pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5));
-
         /* If PB.15 = 0, just report it is key 'a' */
-        u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;
+        uint32_t u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;
+        uint8_t * pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5));
+        static uint32_t s_u32PreKey;
 
         if (u32Key == 0)
         {
+            int32_t i;
+
             for (i = 0; i < 8; i++)
             {
                 pu8Buf[i] = 0;

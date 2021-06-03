@@ -481,6 +481,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\Library\StdDriver\src\usci_uart.c</FilePath>
             </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Library\StdDriver\src\uart.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

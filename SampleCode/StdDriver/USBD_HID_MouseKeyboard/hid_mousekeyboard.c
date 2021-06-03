@@ -337,20 +337,17 @@ void HID_UpdateMouseData(void)
 
 void HID_UpdateKbData(void)
 {
-    int32_t i;
-    uint8_t *buf;
-    uint32_t key = 0xF;
-    static uint32_t preKey;
-
     if (g_u8EP3Ready)
     {
-        buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
-
         /* If PB.15 = 0, just report it is key 'a' */
-        key = (PB->PIN & (1 << 15)) ? 0 : 1;
+        uint32_t key = (PB->PIN & (1 << 15)) ? 0 : 1;
+        static uint32_t preKey;
+        uint8_t* buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
 
         if (key == 0)
         {
+            int32_t i;
+
             for (i = 0; i < 8; i++)
             {
                 buf[i] = 0;

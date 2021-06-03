@@ -372,7 +372,6 @@ void __initialize_args(int *p_argc, char ***p_argv)
     static char *argv_buf[ARGV_BUF_ARRAY_SIZE];
 
     int argc = 0;
-    int isInArgument = 0;
 
     CommandLineBlock cmdBlock;
     cmdBlock.pCommandLine = args_buf;
@@ -392,6 +391,7 @@ void __initialize_args(int *p_argc, char ***p_argv)
 
         int delim = '\0';
         int ch;
+        int isInArgument = 0;
 
         while ((ch = *p) != '\0')
         {

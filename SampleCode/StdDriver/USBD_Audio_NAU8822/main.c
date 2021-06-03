@@ -153,7 +153,7 @@ int32_t main(void)
     clk_I2S = I2S_Open(SPI0, I2S_MODE_SLAVE, PLAY_RATE, I2S_DATABIT_16, I2S_STEREO, I2S_FORMAT_I2S);
 
 
-    printf("I2S freq:  %d\n", clk_I2S);
+    printf("I2S freq:  %u\n", clk_I2S);
     printf("Codec Data Rate: %d Hz\n", PLAY_RATE);
     printf("Data Length 16-Bit\n");
 
@@ -250,7 +250,7 @@ int32_t main(void)
             u32Reg = ch - '0';
             ch = getchar();
             u32Reg = u32Reg * 10 + (ch - '0');
-            printf("%d\n", u32Reg);
+            printf("%u\n", u32Reg);
 
             // Get data
             ch = getchar();

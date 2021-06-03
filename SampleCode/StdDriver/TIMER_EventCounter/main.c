@@ -103,8 +103,6 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    volatile uint32_t u32InitCount;
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 

@@ -432,9 +432,12 @@ void BPWM_ClearCaptureIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32
  */
 uint32_t BPWM_GetCaptureIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum)
 {
-    return (((((bpwm)->CAPIF & (BPWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1 : 0) << 1) | \
-            (((bpwm)->CAPIF & (BPWM_CAPIF_CRLIF0_Msk << u32ChannelNum)) ? 1 : 0));
+    uint32_t u32CapFFlag = 0UL, u32CapRFlag = 0UL;
+    u32CapFFlag = (((bpwm)->CAPIF & (BPWM_CAPIF_CFLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) ;
+    u32CapRFlag = (((bpwm)->CAPIF & (BPWM_CAPIF_CRLIF0_Msk << u32ChannelNum)) ? 1UL : 0UL) ;
+    return ((u32CapFFlag << 1UL) | u32CapRFlag);
 }
+
 /**
  * @brief Enable duty interrupt of selected channel
  * @param[in] bpwm The pointer of the specified BPWM module

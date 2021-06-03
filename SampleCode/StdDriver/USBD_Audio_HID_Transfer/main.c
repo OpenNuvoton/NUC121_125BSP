@@ -302,7 +302,7 @@ int32_t main(void)
             u32Reg = ch - '0';
             ch = getchar();
             u32Reg = u32Reg * 10 + (ch - '0');
-            printf("%d\n", u32Reg);
+            printf("%u\n", u32Reg);
 
             // Get data
             ch = getchar();
@@ -406,7 +406,7 @@ void HID_UpdateKbData(void)
                 // PF2, Previous
                 // PD8, Vol+
                 // PC8, Vol-
-                key = !PC5 | (!PD11 << 1) | (!PF2 << 1) | (!PD8 << 1) | (!PC8 << 1);
+                key = (!PC5) | (!PD11 << 1) | (!PF2 << 1) | (!PD8 << 1) | (!PC8 << 1);
 
                 if (key == 0)
                 {

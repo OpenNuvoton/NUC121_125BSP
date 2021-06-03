@@ -108,7 +108,7 @@ int main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("CPU @ %d Hz\n", SystemCoreClock);
+    printf("CPU @ %u Hz\n", SystemCoreClock);
     printf("+------------------------------------------+\n");
     printf("|    WDT Time-out Interrupt Sample Code    |\n");
     printf("+------------------------------------------+\n\n");
@@ -148,7 +148,7 @@ int main(void)
         g_u8IsWDTTimeoutINT = 0;
         PA12 ^= 1;
 
-        printf("WDT time-out interrupt occurred. INT counts: %d      \r", ++u32IntCnts);
+        printf("WDT time-out interrupt occurred. INT counts: %u      \r", ++u32IntCnts);
         fflush(stdout);
 
     }

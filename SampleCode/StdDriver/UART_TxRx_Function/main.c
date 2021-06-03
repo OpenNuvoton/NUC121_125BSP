@@ -127,7 +127,7 @@ void UART0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_TEST_HANDLE()
 {
-    uint8_t u8InChar = 0xFF;
+
     uint32_t u32IntSts = UART0->INTSTS;
 
     if ((u32IntSts & UART_INTSTS_RDAINT_Msk) || (u32IntSts & UART_INTSTS_RXTOINT_Msk))
@@ -137,8 +137,9 @@ void UART_TEST_HANDLE()
         /* Get all the input characters */
         while (UART_GET_RX_EMPTY(UART0) == 0)
         {
+
             /* Get the character from UART Buffer */
-            u8InChar = UART_READ(UART0);
+            uint8_t u8InChar = UART_READ(UART0);
 
             printf("%c ", u8InChar);
 
@@ -167,7 +168,7 @@ void UART_TEST_HANDLE()
 
         if (g_u32comRhead != tmp)
         {
-            u8InChar = g_au8RecData[g_u32comRhead];
+            uint8_t u8InChar = g_au8RecData[g_u32comRhead];
 
             while (UART_IS_TX_FULL(UART0)); /* Wait Tx is not full to transmit data */
 
@@ -211,9 +212,13 @@ void UART_FunctionTest()
 
     /* Enable UART RDA and THRE interrupt */
     UART_EnableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
+    /*Enable UART0 IRQ*/
+    NVIC_EnableIRQ(UART0_IRQn);
 
     while (g_bWait);
 
+    /*Disable UART0 IRQ*/
+    NVIC_DisableIRQ(UART0_IRQn);
     /* Disable UART RDA and THRE interrupt */
     UART_DisableInt(UART0, (UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk));
 

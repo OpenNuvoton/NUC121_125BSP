@@ -128,7 +128,7 @@ void SYS_PLL_Test(void)
 
 
         /*Clock output is SystemCoreClock/2/4 */
-        printf("  Change system clock to %d Hz. Clock Output= %d Hz\n", SystemCoreClock, SystemCoreClock / 4);
+        printf("  Change system clock to %u Hz. Clock Output = %u Hz\n", SystemCoreClock, SystemCoreClock / 4);
 
         /* Output selected clock to CKO, CKO Clock = HCLK / 2^(1 + 1) */
         CLK_EnableCKO(CLK_CLKSEL2_CLKOSEL_HCLK, 1, 0);
@@ -221,7 +221,7 @@ int32_t main(void)
     /* Init UART0 for printf */
     UART0_Init();
 
-    printf("\n\nCPU @ %dHz\n", SystemCoreClock);
+    printf("\n\nCPU @ %u Hz\n", SystemCoreClock);
     printf("+----------------------------------------+\n");
     printf("|     NUC121 System Driver Sample Code    |\n");
     printf("+----------------------------------------+\n");

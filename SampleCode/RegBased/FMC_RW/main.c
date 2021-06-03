@@ -73,7 +73,7 @@ void UART_Init()
 
 static int  SetDataFlashBase(uint32_t u32DFBA)
 {
-    uint32_t au32Config[2], u32Data, i;
+    uint32_t au32Config[2], i;
 
     /* Read current User Configuration */
     FMC->ISPCMD = FMC_ISPCMD_READ;
@@ -125,7 +125,7 @@ static int  SetDataFlashBase(uint32_t u32DFBA)
 
         while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
 
-        u32Data = FMC->ISPDAT;
+        uint32_t u32Data = FMC->ISPDAT;
 
         if (u32Data != au32Config[i])
             return -1;
@@ -162,7 +162,6 @@ int32_t FillDataPattern(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32
 int32_t  VerifyData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32Pattern)
 {
     uint32_t    u32Addr;
-    uint32_t    u32Data;
 
     for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4)
     {
@@ -174,7 +173,7 @@ int32_t  VerifyData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32Patt
 
         while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
 
-        u32Data = FMC->ISPDAT;
+        uint32_t u32Data = FMC->ISPDAT;
 
         if (u32Data != u32Pattern)
         {
@@ -318,7 +317,7 @@ int main()
         while (FMC->ISPTRG);
 
         u32Data = FMC->ISPDAT;
-        printf("  Unique ID %d ........................... [0x%08x]\n", i, u32Data);
+        printf("  Unique ID %u ........................... [0x%08x]\n", i, u32Data);
     }
 
     for (i = 0; i < 4; i++)
@@ -331,7 +330,7 @@ int main()
         while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
 
         u32Data = FMC->ISPDAT;
-        printf("  Unique Customer ID %d .................. [0x%08x]\n", i, u32Data);
+        printf("  Unique Customer ID %u .................. [0x%08x]\n", i, u32Data);
     }
 
     /* Read User Configuration */

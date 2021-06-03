@@ -120,11 +120,10 @@ int32_t FillDataPattern(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32
 int32_t  VerifyData(uint32_t u32StartAddr, uint32_t u32EndAddr, uint32_t u32Pattern)
 {
     uint32_t    u32Addr;
-    uint32_t    u32Data;
 
     for (u32Addr = u32StartAddr; u32Addr < u32EndAddr; u32Addr += 4)
     {
-        u32Data = FMC_Read(u32Addr);
+        uint32_t u32Data = FMC_Read(u32Addr);
 
         if (u32Data != u32Pattern)
         {
@@ -233,13 +232,13 @@ int main()
     for (i = 0; i < 3; i++)
     {
         u32Data = FMC_ReadUID(i);
-        printf("  Unique ID %d ........................... [0x%08x]\n", i, u32Data);
+        printf("  Unique ID %u ........................... [0x%08x]\n", i, u32Data);
     }
 
     for (i = 0; i < 4; i++)
     {
         u32Data = FMC_ReadUCID(i);
-        printf("  Unique Customer ID %d .................. [0x%08x]\n", i, u32Data);
+        printf("  Unique Customer ID %u .................. [0x%08x]\n", i, u32Data);
     }
 
     /* Read User Configuration */

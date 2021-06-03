@@ -266,7 +266,7 @@ uint8_t UI2C_ReadByteTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16Data
 int main()
 {
     uint32_t u32Index;
-    uint8_t u8Data, u8Tmp, u8Err;
+    uint8_t u8Err;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -311,6 +311,8 @@ int main()
 
     for (u32Index = 0; u32Index < 256; u32Index++)
     {
+        uint8_t u8Data, u8Tmp;
+        
         u8Tmp = (uint8_t)u32Index + 3;
 
         /* Single Byte Write (Two Registers) */
@@ -322,7 +324,7 @@ int main()
         if (u8Data != u8Tmp)
         {
             u8Err = 1;
-            printf("%03d: Single byte write data fail,  W(0x%X)/R(0x%X) \n", u32Index, u8Tmp, u8Data);
+            printf("%03u: Single byte write data fail,  W(0x%X)/R(0x%X) \n", u32Index, u8Tmp, u8Data);
         }
     }
 

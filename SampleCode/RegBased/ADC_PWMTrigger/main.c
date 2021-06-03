@@ -175,7 +175,7 @@ void ADC_PWMTrigTest_SingleOpMode(void)
     /* Clear the ADC interrupt flag */
     ADC->ADSR0 = ADC_ADF_INT;
 
-    printf("Channel 2: 0x%X\n", (ADC->ADDR[2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos);
+    printf("Channel 2: 0x%X\n", (uint32_t)(ADC->ADDR[2] & ADC_ADDR_RSLT_Msk) >> ADC_ADDR_RSLT_Pos);
 
     /* Disable ADC */
     ADC->ADCR &= (~ADC_ADCR_ADEN_Msk);
@@ -203,7 +203,7 @@ int main(void)
     /* SAMPLE CODE                                                                                          */
     /*------------------------------------------------------------------------------------------------------*/
 
-    printf("\nSystem clock rate: %d Hz", SystemCoreClock);
+    printf("\nSystem clock rate: %u Hz", SystemCoreClock);
 
     /* ADC hardware trigger test */
     ADC_PWMTrigTest_SingleOpMode();

@@ -503,8 +503,6 @@ void MSC_ReadFormatCapacity(void)
 
 void MSC_Read(void)
 {
-    uint32_t u32Len;
-
     if (USBD_GET_EP_BUF_ADDR(EP2) == g_u32BulkBuf1)
         USBD_SET_EP_BUF_ADDR(EP2, g_u32BulkBuf0);
     else
@@ -535,7 +533,7 @@ void MSC_Read(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
 
             if (u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
@@ -563,8 +561,6 @@ void MSC_Read(void)
 
 void MSC_ReadTrig(void)
 {
-    uint32_t u32Len;
-
     if (g_u32Length)
     {
         if (g_u32BytesInStorageBuf)
@@ -584,7 +580,7 @@ void MSC_ReadTrig(void)
         }
         else
         {
-            u32Len = g_u32Length;
+            uint32_t u32Len = g_u32Length;
 
             if (u32Len > STORAGE_BUFFER_SIZE)
                 u32Len = STORAGE_BUFFER_SIZE;
@@ -748,8 +744,6 @@ void MSC_ModeSense10(void)
 
 void MSC_Write(void)
 {
-    uint32_t lba, len;
-
     if (g_u32OutSkip == 0)
     {
         if (g_u32Length > EP3_MAX_PKT_SIZE)
@@ -792,10 +786,8 @@ void MSC_Write(void)
 
             if ((g_sCBW.u8OPCode == UFI_WRITE_10) || (g_sCBW.u8OPCode == UFI_WRITE_12))
             {
-                lba = get_be32(&g_sCBW.au8Data[0]);
-                len = g_sCBW.dCBWDataTransferLength;
-
-                len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
+                uint32_t lba = get_be32(&g_sCBW.au8Data[0]);
+                uint32_t len = lba * UDC_SECTOR_SIZE + g_sCBW.dCBWDataTransferLength - g_u32DataFlashStartAddr;
 
                 if (len)
                 {
@@ -811,17 +803,15 @@ void MSC_Write(void)
 
 void MSC_ProcessCmd(void)
 {
-    uint8_t u8Len;
-    int32_t i;
-    uint32_t Hcount, Dcount;
-
     if (g_u8EP3Ready)
     {
         g_u8EP3Ready = 0;
 
         if (g_u8BulkState == BULK_CBW)
         {
-            u8Len = USBD_GET_PAYLOAD_LEN(EP3);
+            uint32_t Hcount, Dcount;
+            uint8_t u8Len = USBD_GET_PAYLOAD_LEN(EP3);
+            int32_t i;
 
             /* Check Signature & length of CBW */
             /* Bulk Out buffer */
@@ -1387,10 +1377,6 @@ void MSC_AckCmd(void)
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
 {
     DataFlashRead(addr, size, (uint32_t)buffer);
-}
-
-void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
-{
 }
 
 void MSC_SetConfig(void)

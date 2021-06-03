@@ -366,12 +366,11 @@ void CLK_SetHCLK(uint32_t u32ClkSrc, uint32_t u32ClkDiv)
   */
 void CLK_SetModuleClock(uint32_t u32ModuleIdx, uint32_t u32ClkSrc, uint32_t u32ClkDiv)
 {
-    uint32_t u32sel = 0, u32div = 0;
-    uint32_t u32SelTbl[] = {0x0, 0x4, 0xC, 0x24};
-    uint32_t u32DivTbl[] = {0x0};
-
     if (MODULE_CLKDIV_Msk(u32ModuleIdx) != MODULE_NoMsk)
     {
+        uint32_t u32div;
+        const uint32_t u32DivTbl[] = {0x0};
+
         /* Get clock divider control register address */
         u32div = (uint32_t)&CLK->CLKDIV0 + (u32DivTbl[MODULE_CLKDIV(u32ModuleIdx)]);
         /* Apply new divider */
@@ -380,6 +379,9 @@ void CLK_SetModuleClock(uint32_t u32ModuleIdx, uint32_t u32ClkSrc, uint32_t u32C
 
     if (MODULE_CLKSEL_Msk(u32ModuleIdx) != MODULE_NoMsk)
     {
+        uint32_t u32sel;
+        const uint32_t u32SelTbl[] = {0x0, 0x4, 0xC, 0x24};
+
         /* Get clock select control register address */
         u32sel = (uint32_t)&CLK->CLKSEL0 + (u32SelTbl[MODULE_CLKSEL(u32ModuleIdx)]);
         /* Set new clock selection setting */
@@ -478,7 +480,7 @@ void CLK_DisableXtalRC(uint32_t u32ClkMask)
   */
 void CLK_EnableModuleClock(uint32_t u32ModuleIdx)
 {
-    uint32_t u32ClkTbl[3] = {0x0, 0x4, 0x2C};
+    const uint32_t u32ClkTbl[3] = {0x0, 0x4, 0x2C};
 
     *(volatile uint32_t *)((uint32_t)&CLK->AHBCLK + (u32ClkTbl[MODULE_APBCLK(u32ModuleIdx)]))  |= 1 << MODULE_IP_EN_Pos(u32ModuleIdx);
 }
@@ -517,7 +519,7 @@ void CLK_EnableModuleClock(uint32_t u32ModuleIdx)
   */
 void CLK_DisableModuleClock(uint32_t u32ModuleIdx)
 {
-    uint32_t u32ClkTbl[3] = {0x0, 0x4, 0x2C};
+    const uint32_t u32ClkTbl[3] = {0x0, 0x4, 0x2C};
 
     *(volatile uint32_t *)((uint32_t)&CLK->AHBCLK + (u32ClkTbl[MODULE_APBCLK(u32ModuleIdx)]))  &= ~(1 << MODULE_IP_EN_Pos(u32ModuleIdx));
 }

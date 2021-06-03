@@ -67,6 +67,7 @@ enum { r0, r1, r2, r3, r12, lr, pc, psr};
  */
 static void stackDump(uint32_t stack[])
 {
+ /*
     printf("r0  = 0x%x\n", stack[r0]);
     printf("r1  = 0x%x\n", stack[r1]);
     printf("r2  = 0x%x\n", stack[r2]);
@@ -75,6 +76,7 @@ static void stackDump(uint32_t stack[])
     printf("lr  = 0x%x\n", stack[lr]);
     printf("pc  = 0x%x\n", stack[pc]);
     printf("psr = 0x%x\n", stack[psr]);
+ */
 }
 
 /**
@@ -392,7 +394,6 @@ __attribute__((weak))
 void ProcessHardFault(uint32_t lr, uint32_t msp, uint32_t psp)
 {
     uint32_t *sp;
-    uint32_t inst;
 
     /* Check the used stack */
 
@@ -528,7 +529,7 @@ void SendChar_ToUART(int ch)
                 i32Head = i32Tmp;
             }
         }
-				
+		
         i32Tmp = i32Head + 1;
 
         if (i32Tmp > BUF_SIZE) i32Tmp = 0;
@@ -537,7 +538,7 @@ void SendChar_ToUART(int ch)
         {
             u8Buf[i32Head] = ch;
             i32Head = i32Tmp;
-        }				
+        }		
     }
     else
     {
@@ -599,15 +600,7 @@ void SendChar(int ch)
     }
 
 #else
-
-#if defined ( __GNUC__ )
-    char *ch0;
-    *ch0 = (char)ch;
-    _write(0, ch0, 1);
-#else
     SendChar_ToUART(ch);
-#endif /* ( __GNUC__ ) */
-
 #endif
 }
 
@@ -727,6 +720,7 @@ void _ttywrch(int ch)
 
 int fputc(int ch, FILE *stream)
 {
+    (void) stream;
     SendChar(ch);
     return ch;
 }
@@ -738,6 +732,8 @@ int fputc(int ch, FILE *stream)
 int _write(int fd, char *ptr, int len)
 {
     int i = len;
+
+    (void) fd;
 
     while (i--)
     {
@@ -758,6 +754,9 @@ int _write(int fd, char *ptr, int len)
 
 int _read(int fd, char *ptr, int len)
 {
+    (void) fd;
+    (void) len;
+
     while ((DEBUG_PORT->BUFSTS & UUART_BUFSTS_RXEMPTY_Msk) != 0);
 
     *ptr = DEBUG_PORT->RXDAT;
@@ -833,8 +832,3 @@ label:
 }
 # endif
 #endif
-
-
-
-
-
