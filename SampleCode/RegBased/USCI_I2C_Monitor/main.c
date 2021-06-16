@@ -291,6 +291,12 @@ void SYS_Init(void)
     /* Set PA multi-function pins for I2C1 SDA and SCL */
     SYS->GPA_MFPH &= ~(SYS_GPA_MFPH_PA10MFP_Msk | SYS_GPA_MFPH_PA11MFP_Msk);
     SYS->GPA_MFPH |= (SYS_GPA_MFPH_PA10MFP_I2C1_SDA | SYS_GPA_MFPH_PA11MFP_I2C1_SCL);
+
+    /* I2C clock pin enable schmitt trigger */
+    PA->SMTEN |= GPIO_SMTEN_SMTEN10_Msk| GPIO_SMTEN_SMTEN11_Msk;
+    PC->SMTEN |= GPIO_SMTEN_SMTEN0_Msk | GPIO_SMTEN_SMTEN3_Msk;
+    PC->SMTEN |= GPIO_SMTEN_SMTEN11_Msk| GPIO_SMTEN_SMTEN12_Msk;
+
 }
 
 void UI2C_7bit_Monitor(uint32_t u32Status)

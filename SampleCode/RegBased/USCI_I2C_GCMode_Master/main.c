@@ -142,6 +142,10 @@ void SYS_Init(void)
     /* Set UI2C0 PC multi-function pins */
     SYS->GPC_MFPL &= ~(SYS_GPC_MFPL_PC3MFP_Msk | SYS_GPC_MFPL_PC0MFP_Msk);
     SYS->GPC_MFPL |= (SYS_GPC_MFPL_PC3MFP_USCI0_DAT0 | SYS_GPC_MFPL_PC0MFP_USCI0_CLK);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= GPIO_SMTEN_SMTEN0_Msk | GPIO_SMTEN_SMTEN3_Msk;
+
 }
 
 void UART0_Init(void)

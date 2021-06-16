@@ -170,6 +170,10 @@ void SYS_Init(void)
     /* Set I2C PC multi-function pins */
     SYS->GPC_MFPH &= ~(SYS_GPC_MFPH_PC11MFP_Msk | SYS_GPC_MFPH_PC12MFP_Msk);
     SYS->GPC_MFPH |= (SYS_GPC_MFPH_PC11MFP_I2C0_SDA | SYS_GPC_MFPH_PC12MFP_I2C0_SCL);
+
+    /* I2C pins enable schmitt trigger */
+    PC->SMTEN |= GPIO_SMTEN_SMTEN11_Msk | GPIO_SMTEN_SMTEN12_Msk;
+
 }
 
 void UART0_Init(void)
