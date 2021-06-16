@@ -13,7 +13,13 @@
 #include "hid_mouse.h"
 
 #define CRYSTAL_LESS    1
-#define TRIM_INIT           (SYS_BASE+0x110)
+#define HIRC_AUTO_TRIM  (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);   /* Use USB signal to fine tune HIRC 48MHz */
+#define TRIM_INIT       (SYS_BASE+0x110)
+#define TRIM_THRESHOLD  16      /* Each value is 0.125%, max 2% */
+
+#if CRYSTAL_LESS
+static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
+#endif
 
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
@@ -90,9 +96,6 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-#if CRYSTAL_LESS
-    uint32_t u32TrimInit;
-#endif
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -117,7 +120,8 @@ int32_t main(void)
 
 #if CRYSTAL_LESS
     /* Backup default trim value */
-    u32TrimInit = M32(TRIM_INIT);
+    s_u32DefaultTrim = M32(TRIM_INIT);
+    s_u32LastTrim = s_u32DefaultTrim;
 
     /* Clear SOF */
     USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
@@ -137,15 +141,15 @@ int32_t main(void)
                 USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
 
                 /* Enable USB clock trim function */
-                SYS->IRCTCTL |= (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);
+                SYS->IRCTCTL = HIRC_AUTO_TRIM;
             }
         }
 
         /* Disable USB Trim when any error found */
         if (SYS->IRCTISTS & (SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk))
         {
-            /* Init TRIM */
-            M32(TRIM_INIT) = u32TrimInit;
+            /* Last TRIM */
+            M32(TRIM_INIT) = s_u32LastTrim;
 
             /* Disable USB clock trim function */
             SYS->IRCTCTL = 0;
@@ -158,6 +162,17 @@ int32_t main(void)
 
         }
 
+        /* Check trim value whether it is over the threshold */
+        if((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
+        {
+            /* Write updated value */
+            M32(TRIM_INIT) = s_u32LastTrim;
+        }
+        else
+        {
+            /* Backup trim value */
+            s_u32LastTrim =  M32(TRIM_INIT);
+        }
 #endif
 
         HID_UpdateMouseData();
