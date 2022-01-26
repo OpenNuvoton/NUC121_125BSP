@@ -13,7 +13,7 @@
     ALIGN   4
         
 loaderImage1Base
-    INCBIN ./obj/FMC_LDROM_IAP.bin
+    INCBIN ./FMC_IAP_LDROM.bin
 loaderImage1Limit
 
     END

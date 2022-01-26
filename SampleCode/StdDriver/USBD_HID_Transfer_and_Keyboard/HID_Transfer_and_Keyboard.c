@@ -642,7 +642,7 @@ void HID_UpdateKbData(void)
     if (g_u8EP4Ready)
     {
         static uint32_t u32PreKey;
-        uint8_t * pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP4));
+        uint8_t *pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP4));
 
         /* If PB.15 = 0, just report it is key 'a' */
         uint32_t u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;

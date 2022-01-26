@@ -166,7 +166,7 @@ void PDMA_IRQHandler(void)
     if (status & PDMA_INTSTS_ABTIF_Msk)   /* Target Abort */
     {
         uint32_t u32AbSts;
-        
+
         IsTestOver = 2;
         u32AbSts = PDMA->ABTSTS;
         PDMA->ABTSTS = u32AbSts;
@@ -237,7 +237,7 @@ void UART0_IRQHandler(void)
     if (u32IntSts & UART_INTSTS_HWRLSIF_Msk)
     {
         uint32_t u32DAT;
-        
+
         if (UART0->FIFOSTS & UART_FIFOSTS_BIF_Msk)
             printf("\n BIF \n");
 

@@ -18,7 +18,7 @@
 #define TRIM_THRESHOLD      16      /* Each value is 0.125%, max 2% */
 
 #if CRYSTAL_LESS
-static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
+    static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
 #endif
 
 /*--------------------------------------------------------------------------*/
@@ -98,7 +98,7 @@ void HID_UpdateKbData(void)
     if (g_u8EP2Ready)
     {
         static uint32_t u32PreKey;
-        uint8_t * pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
+        uint8_t *pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
 
         /* If PB.15 = 0, just report it is key 'a' */
         uint32_t u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;
@@ -200,7 +200,7 @@ int32_t main(void)
         }
 
         /* Check trim value whether it is over the threshold */
-        if((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
+        if ((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
         {
             /* Write updated value */
             M32(TRIM_INIT) = s_u32LastTrim;
@@ -210,6 +210,7 @@ int32_t main(void)
             /* Backup trim value */
             s_u32LastTrim =  M32(TRIM_INIT);
         }
+
 #endif
         HID_UpdateKbData();
     }

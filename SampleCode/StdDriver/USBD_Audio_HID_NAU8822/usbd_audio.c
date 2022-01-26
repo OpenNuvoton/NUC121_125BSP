@@ -844,7 +844,7 @@ void SPI0_IRQHandler(void)
     if (u32I2SIntFlag & SPI_I2SSTS_TXTHIF_Msk)
     {
         uint32_t i;
-        
+
         /* Fill 2 word data when it is TX threshold interrupt */
         for (i = 0; i < 2; i++)
         {
@@ -927,7 +927,7 @@ void UAC_SendRecData(void)
     if (g_u32RecPos)
     {
         int32_t i;
-        
+
         for (i = 0; i < g_u32RecPos; i++)
             g_au32PcmRecBuf[i] = g_au32PcmRecBuf[i + u32Size / 4];
     }

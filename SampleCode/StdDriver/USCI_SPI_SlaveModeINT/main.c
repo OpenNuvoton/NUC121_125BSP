@@ -1,7 +1,7 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief   Configure USCI_SPI0 as Slave mode, demonstrate how to communicate with an off-chip SPI Master device 
+ * @brief   Configure USCI_SPI0 as Slave mode, demonstrate how to communicate with an off-chip SPI Master device
  *          and to trasmit and to receive data in the interrupt handler.
  *          This sample code needs to work with USCI_SPI_MasterMode sample code.
  *
@@ -39,8 +39,8 @@ void USCI_IRQHandler(void)
     {
         /* Write to TX Buffer */
         USPI_WRITE_TX(USPI0, g_au32SourceData[g_u32TxDataCount++]);
-    }    
-    
+    }
+
     /* Check RX EMPTY flag */
     while (USPI_GET_RX_EMPTY_FLAG(USPI0) == 0)
     {
@@ -188,8 +188,8 @@ int main()
 
     /* Disable TX end interrupt */
     USPI_DisableInt(USPI0, USPI_TXEND_INT_MASK);
-    NVIC_DisableIRQ(USCI_IRQn); 
-    
+    NVIC_DisableIRQ(USCI_IRQn);
+
     /* Print the received data */
     printf("Received data:\n");
 
@@ -197,7 +197,7 @@ int main()
     {
         printf("%d:\t0x%X\n", u32RxDataCount, g_au32DestinationData[u32RxDataCount]);
     }
-   
+
     printf("The data transfer was done.\n");
 
     printf("\n\nExit USCI_SPI driver sample code.\n");

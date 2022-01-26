@@ -24,7 +24,7 @@
 #define TRIM_THRESHOLD  16      /* Each value is 0.125%, max 2% */
 
 #if CRYSTAL_LESS
-static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
+    static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
 #endif
 
 /*--------------------------------------------------------------------------*/
@@ -285,7 +285,7 @@ void VCOM_TransferData(void)
 
             /* Send one bytes out */
             UART0->DAT = g_au8ComTbuf[g_u16ComThead++];
-            
+
             g_u16ComTbytes--;
 
             /* Enable Tx Empty Interrupt. (Trigger first one) */
@@ -365,7 +365,7 @@ int32_t main(void)
         }
 
         /* Check trim value whether it is over the threshold */
-        if((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
+        if ((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
         {
             /* Write updated value */
             M32(TRIM_INIT) = s_u32LastTrim;
@@ -375,6 +375,7 @@ int32_t main(void)
             /* Backup trim value */
             s_u32LastTrim =  M32(TRIM_INIT);
         }
+
 #endif
 
         VCOM_TransferData();

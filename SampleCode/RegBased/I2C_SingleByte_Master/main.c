@@ -95,15 +95,6 @@ void I2C0_Init(void)
     /* Get I2C0 Bus Clock */
     printf("I2C clock %d Hz\n", (SystemCoreClock / (((I2C0->CLKDIV) + 1) << 2)));
 
-    /* Set I2C0 4 Slave Addresses */
-    /* Slave Address : 0x15 */
-    I2C0->ADDR0 = (I2C0->ADDR0 & ~I2C_ADDR0_ADDR_Msk) | (0x15 << I2C_ADDR0_ADDR_Pos);
-    /* Slave Address : 0x35 */
-    I2C0->ADDR1 = (I2C0->ADDR1 & ~I2C_ADDR1_ADDR_Msk) | (0x35 << I2C_ADDR1_ADDR_Pos);
-    /* Slave Address : 0x55 */
-    I2C0->ADDR2 = (I2C0->ADDR2 & ~I2C_ADDR2_ADDR_Msk) | (0x55 << I2C_ADDR2_ADDR_Pos);
-    /* Slave Address : 0x75 */
-    I2C0->ADDR3 = (I2C0->ADDR3 & ~I2C_ADDR3_ADDR_Msk) | (0x75 << I2C_ADDR3_ADDR_Pos);
 }
 
 void I2C0_Close(void)
@@ -301,7 +292,7 @@ int32_t main(void)
     for (u32Index = 0; u32Index < 256; u32Index++)
     {
         uint8_t u8Data, u8Tmp;
-        
+
         u8Tmp = (uint8_t)u32Index + 3;
 
         /* Single Byte Write (Two Registers) */

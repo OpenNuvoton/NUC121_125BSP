@@ -330,7 +330,11 @@ extern "C"
                         MODULE_CLKSEL_ENC(NA)|MODULE_CLKSEL_Msk_ENC(NA)|MODULE_CLKSEL_Pos_ENC(NA)|\
                         MODULE_CLKDIV_ENC(NA)|MODULE_CLKDIV_Msk_ENC(NA)|MODULE_CLKDIV_Pos_ENC(NA))      /*!< USCI0 Module */
 
+#define CLK_TIMEOUT_ERR            (-1)     /*!< Clock timeout error value \hideinitializer */
+
 /*@}*/ /* end of group CLK_EXPORTED_CONSTANTS */
+
+extern int32_t g_CLK_i32ErrCode;
 
 /** @addtogroup CLK_EXPORTED_FUNCTIONS CLK Exported Functions
   @{

@@ -101,9 +101,6 @@ typedef struct
      * |[2]     |ISPCKEN   |Flash ISP Controller Clock Enable Bit
      * |        |          |0 = Flash ISP peripheral clock Disabled.
      * |        |          |1 = Flash ISP peripheral clock Enabled.
-     * |[15]    |FMCIDLE   |Flash Memory Controller Clock Enable Bit in IDLE Mode
-     * |        |          |0 = FMC peripheral clock Disabled when chip operating at IDLE mode.
-     * |        |          |1 = FMC peripheral clock Enabled when chip operating at IDLE mode.
      * |[16]    |GPIOACKEN |General Purpose I/O PA Group Clock Enable Bit
      * |        |          |0 = GPIO PA group clock Disabled.
      * |        |          |1 = GPIO PA group clock Enabled.
@@ -520,9 +517,6 @@ typedef struct
 
 #define CLK_AHBCLK_ISPCKEN_Pos           (2)                                               /*!< CLK_T::AHBCLK: ISPCKEN Position        */
 #define CLK_AHBCLK_ISPCKEN_Msk           (0x1ul << CLK_AHBCLK_ISPCKEN_Pos)                 /*!< CLK_T::AHBCLK: ISPCKEN Mask            */
-
-#define CLK_AHBCLK_FMCIDLE_Pos           (15)                                              /*!< CLK_T::AHBCLK: FMCIDLE Position        */
-#define CLK_AHBCLK_FMCIDLE_Msk           (0x1ul << CLK_AHBCLK_FMCIDLE_Pos)                 /*!< CLK_T::AHBCLK: FMCIDLE Mask            */
 
 #define CLK_AHBCLK_GPIOACKEN_Pos         (16)                                              /*!< CLK_T::AHBCLK: GPIOACKEN Position      */
 #define CLK_AHBCLK_GPIOACKEN_Msk         (0x1ul << CLK_AHBCLK_GPIOACKEN_Pos)               /*!< CLK_T::AHBCLK: GPIOACKEN Mask          */

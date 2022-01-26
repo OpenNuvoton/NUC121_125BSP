@@ -20,21 +20,20 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #ifdef __ICCARM__
-#pragma data_alignment=4
- uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
- uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
- uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
- uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
+    #pragma data_alignment=4
+    uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
+    uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
+    uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
+    uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
 #else
-__attribute__((aligned(4))) uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
-__attribute__((aligned(4))) uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
-__attribute__((aligned(4))) uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
-__attribute__((aligned(4))) uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
 #endif
 
 volatile uint32_t PDMA_DONE = 0;
 volatile uint8_t g_u8DeviceAddr = 0x16;
-volatile uint8_t g_u8EndFlag = 0;
 volatile uint8_t g_u8MasterDataLen = 0;
 volatile uint8_t g_u8SlaveDataLen = 0;
 volatile uint16_t g_u8SlaveBufferAddr = 0;
@@ -386,7 +385,7 @@ void SYS_Init(void)
 
     /* I2C pins enable schmitt trigger */
     PC->SMTEN |= GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk;
-    PC->SMTEN |= GPIO_SMTEN_SMTEN11_Msk| GPIO_SMTEN_SMTEN12_Msk;
+    PC->SMTEN |= GPIO_SMTEN_SMTEN11_Msk | GPIO_SMTEN_SMTEN12_Msk;
 
 }
 
@@ -421,16 +420,6 @@ void I2C0_Init(void)
 
     /* Get I2C0 Bus Clock */
     printf("I2C clock %d Hz\n", (SystemCoreClock / (((I2C0->CLKDIV) + 1) << 2)));
-
-    /* Set I2C0 4 Slave Addresses */
-    /* Slave Address : 0x15 */
-    I2C0->ADDR0 = (I2C0->ADDR0 & ~I2C_ADDR0_ADDR_Msk) | (0x15 << I2C_ADDR0_ADDR_Pos);
-    /* Slave Address : 0x35 */
-    I2C0->ADDR1 = (I2C0->ADDR1 & ~I2C_ADDR1_ADDR_Msk) | (0x35 << I2C_ADDR1_ADDR_Pos);
-    /* Slave Address : 0x55 */
-    I2C0->ADDR2 = (I2C0->ADDR2 & ~I2C_ADDR2_ADDR_Msk) | (0x55 << I2C_ADDR2_ADDR_Pos);
-    /* Slave Address : 0x75 */
-    I2C0->ADDR3 = (I2C0->ADDR3 & ~I2C_ADDR3_ADDR_Msk) | (0x75 << I2C_ADDR3_ADDR_Pos);
 
     I2C0->CTL |= I2C_CTL_INTEN_Msk;
     NVIC_EnableIRQ(I2C0_IRQn);

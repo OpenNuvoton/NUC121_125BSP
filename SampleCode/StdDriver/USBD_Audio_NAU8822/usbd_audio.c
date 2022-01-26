@@ -887,7 +887,7 @@ void UAC_SendRecData(void)
     if (g_u32RecPos)
     {
         uint32_t i;
-        
+
         for (i = 0; i < g_u32RecPos; i++)
             g_au32PcmRecBuf[i] = g_au32PcmRecBuf[i + u32Size / 4];
     }

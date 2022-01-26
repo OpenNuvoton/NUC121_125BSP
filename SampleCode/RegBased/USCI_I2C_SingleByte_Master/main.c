@@ -316,7 +316,7 @@ int main()
     for (u32Index = 0; u32Index < 256; u32Index++)
     {
         uint8_t u8Data, u8Tmp;
-        
+
         u8Tmp = (uint8_t)u32Index + 3;
 
         /* Single Byte Write (Two Registers) */

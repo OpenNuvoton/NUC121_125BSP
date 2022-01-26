@@ -38,20 +38,47 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
     uint16_t u16Count[4];
     uint32_t u32i;
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
+    uint32_t u32TimeOutCount;
 
     /* Clear Capture Rising Indicator (Time A) */
     BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_RISING_LATCH);
 
+    /* setup timeout */
+    u32TimeOutCount = SystemCoreClock;
+
     /* Wait for Capture Falling Indicator  */
-    while ((BPWM->CAPIF & BPWM_CAPIF_CFLIF2_Msk) == 0);
+    while ((BPWM->CAPIF & BPWM_CAPIF_CFLIF2_Msk) == 0)
+    {
+        if (u32TimeOutCount == 0)
+        {
+            printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+            while (1);
+        }
+
+        u32TimeOutCount--;
+    }
 
     /* Clear Capture Falling Indicator (Time B)*/
     BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH);
 
     for (u32i = 0 ; u32i < 4 ;)
     {
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait for Capture Falling Indicator */
-        while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2);
+        while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Clear Capture Falling and Rising Indicator */
         BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_FALLING_LATCH | BPWM_CAPTURE_INT_RISING_LATCH);
@@ -59,8 +86,21 @@ void CalPeriodTime(BPWM_T *BPWM, uint32_t u32Ch)
         /* Get Capture Falling Latch Counter Data */
         u16Count[u32i++] = BPWM_GET_CAPTURE_FALLING_DATA(BPWM, u32Ch);
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait for Capture Rising Indicator */
-        while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2);
+        while (BPWM_GetCaptureIntFlag(BPWM, u32Ch) < 2)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Clear Capture Rising Indicator */
         BPWM_ClearCaptureIntFlag(BPWM, u32Ch, BPWM_CAPTURE_INT_RISING_LATCH);
@@ -175,6 +215,8 @@ void UART0_Init()
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCount;
+
     /* Init System, IP clock and multi-function I/O
        In the end of SYS_Init() will issue SYS_LockReg()
        to lock protected register. If user want to write
@@ -194,8 +236,6 @@ int32_t main(void)
     UART0_Init();
 
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
-    printf("BPWM0 clock is from %s\n", (CLK->CLKSEL1 & CLK_CLKSEL1_BPWM0SEL_Msk) ? "CPU" : "PLL");
-    printf("BPWM1 clock is from %s\n", (CLK->CLKSEL1 & CLK_CLKSEL1_BPWM1SEL_Msk) ? "CPU" : "PLL");
     printf("+------------------------------------------------------------------------+\n");
     printf("|                          BPWM Driver Sample Code                       |\n");
     printf("+------------------------------------------------------------------------+\n");
@@ -264,8 +304,21 @@ int32_t main(void)
         /* Enable falling capture reload */
         BPWM1->CAPCTL |= BPWM_CAPCTL_FCRLDEN2_Msk;
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait until BPWM1 channel 2 Timer start to count */
-        while ((BPWM1->CNT) == 0);
+        while ((BPWM1->CNT) == 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Capture the Input Waveform Data */
         CalPeriodTime(BPWM1, 2);
@@ -277,8 +330,21 @@ int32_t main(void)
         /* Set BPWM0 channel 0 loaded value as 0 */
         BPWM_Stop(BPWM0, BPWM_CH_0_MASK);
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait until BPWM0 channel 0 Timer Stop */
-        while ((BPWM0->CNT & BPWM_CNT_CNT_Msk) != 0);
+        while ((BPWM0->CNT & BPWM_CNT_CNT_Msk) != 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Disable Timer for BPWM0 channel 0 */
         BPWM_ForceStop(BPWM0, BPWM_CH_0_MASK);
@@ -294,8 +360,21 @@ int32_t main(void)
         /* Set loaded value as 0 for BPWM1 channel 2 */
         BPWM_Stop(BPWM1, BPWM_CH_2_MASK);
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait until BPWM1 channel 2 current counter reach to 0 */
-        while ((BPWM1->CNT & BPWM_CNT_CNT_Msk) != 0);
+        while ((BPWM1->CNT & BPWM_CNT_CNT_Msk) != 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Disable Timer for BPWM1 channel 2 */
         BPWM_ForceStop(BPWM1, BPWM_CH_2_MASK);

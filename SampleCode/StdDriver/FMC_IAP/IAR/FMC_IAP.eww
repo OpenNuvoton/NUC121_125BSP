@@ -2,20 +2,20 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\FMC_APROM.ewp</path>
+    <path>$WS_DIR$\FMC_IAP_APROM.ewp</path>
   </project>
   <project>
-    <path>$WS_DIR$\FMC_LDROM_IAP.ewp</path>
+    <path>$WS_DIR$\FMC_IAP_LDROM.ewp</path>
   </project>
   <batchBuild>
     <batchDefinition>
       <name>BuildAll</name>
       <member>
-        <project>FMC_LDROM_IAP</project>
+        <project>FMC_IAP_LDROM</project>
         <configuration>Release</configuration>
       </member>
       <member>
-        <project>FMC_APROM</project>
+        <project>FMC_IAP_APROM</project>
         <configuration>Release</configuration>
       </member>
     </batchDefinition>

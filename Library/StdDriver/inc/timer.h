@@ -52,6 +52,8 @@ extern "C"
 #define TIMER_TRG_TO_ADC               (TIMER_CTL_TRGADC_Msk)             /*!< Timer trigger ADC */
 #define TIMER_TRG_TO_PDMA               (TIMER_CTL_TRGPDMA_Msk)             /*!< Timer trigger PDMA */
 
+#define TIMER_TIMEOUT_ERR                       (-1L)                             /*!< TIMER operation abort due to timeout error \hideinitializer */
+
 /*@}*/ /* end of group TIMER_EXPORTED_CONSTANTS */
 
 
@@ -423,7 +425,7 @@ static __INLINE uint32_t TIMER_GetCounter(TIMER_T *timer)
 
 uint32_t TIMER_Open(TIMER_T *timer, uint32_t u32Mode, uint32_t u32Freq);
 void TIMER_Close(TIMER_T *timer);
-void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec);
+int32_t TIMER_Delay(TIMER_T *timer, uint32_t u32Usec);
 void TIMER_EnableCapture(TIMER_T *timer, uint32_t u32CapMode, uint32_t u32Edge);
 void TIMER_DisableCapture(TIMER_T *timer);
 void TIMER_EnableEventCounter(TIMER_T *timer, uint32_t u32Edge);

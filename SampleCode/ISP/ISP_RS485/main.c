@@ -23,19 +23,26 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable HIRC clock (Internal RC 48MHz) */
-    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk);
+    CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
-    /* Wait for HIRC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+    /* Waiting for HIRC clock ready */
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
 
-    /* Select HCLK clock source as HIRC and HCLK source divider as 1 */
-    CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC, CLK_CLKDIV0_HCLK(1));
+    /* Select HCLK clock source as HIRC and and HCLK clock divider as 1 */
+    CLK->CLKSEL0 = (CLK->CLKSEL0 & ~CLK_CLKSEL0_HCLKSEL_Msk) | CLK_CLKSEL0_HCLKSEL_HIRC;
+    CLK->CLKDIV0 = (CLK->CLKDIV0 & ~CLK_CLKDIV0_HCLKDIV_Msk) | CLK_CLKDIV0_HCLK(1);
+
+    /* Update System Core Clock if core clock is from HIRC*/
+    PllClock        = 0;                 // PLL
+    SystemCoreClock = __HIRC / 1;        // HCLK
+    CyclesPerUs     = __HIRC / 1000000;  // For CLK_SysTickDelay()
 
     /* Enable UART module clock */
-    CLK_EnableModuleClock(UART0_MODULE);
+    CLK->APBCLK0 |= CLK_APBCLK0_UART0CKEN_Msk;
 
-    /* Select UART module clock source as HIRC/2 and UART module clock divider as 1 */
-    CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_HIRC_DIV2, CLK_CLKDIV0_UART(1));
+    /* Select UART module clock source as HIRC_DIV2 and UART module clock divider as 1 */
+    CLK->CLKSEL1 &= ~CLK_CLKSEL1_UARTSEL_Msk;
+    CLK->CLKSEL1 |= CLK_CLKSEL1_UARTSEL_HIRC_DIV2;
 
     /* Update core clock */
     SystemCoreClockUpdate();

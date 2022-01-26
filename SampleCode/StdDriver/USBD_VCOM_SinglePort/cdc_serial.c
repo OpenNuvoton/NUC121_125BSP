@@ -339,7 +339,7 @@ void VCOM_LineCoding(uint8_t port)
     {
         uint32_t u32Reg;
         uint32_t u32Baud_Div = 0;
-        
+
         NVIC_DisableIRQ(UART0_IRQn);
 
         // Reset software FIFO

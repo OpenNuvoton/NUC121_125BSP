@@ -20,16 +20,17 @@ void SYS_Init(void)
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable HIRC clock (Internal RC 48MHz) */
-    CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk);
+    CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
-    /* Wait for HIRC clock ready */
-    CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
+    /* Waiting for HIRC clock ready */
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
 
-    /* Select HCLK clock source as HIRC and HCLK source divider as 1 */
-    CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC, CLK_CLKDIV0_HCLK(1));
+    /* Select HCLK clock source as HIRC and and HCLK clock divider as 1 */
+    CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
+    CLK->CLKDIV0 = (CLK->CLKDIV0 & (~CLK_CLKDIV0_HCLKDIV_Msk)) | CLK_CLKDIV0_HCLK(1);
 
-    /* Enable I2C0 module clock */
-    CLK_EnableModuleClock(I2C0_MODULE);
+    /* Enable I2C controller */
+    CLK->APBCLK0 |= (CLK_APBCLK0_I2C0CKEN_Msk);
 
     /* Update core clock */
     SystemCoreClockUpdate();

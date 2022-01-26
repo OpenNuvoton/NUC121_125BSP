@@ -121,11 +121,11 @@ uint32_t TIMER_GetModuleClock(TIMER_T *timer)
     return u32Clk;
 }
 
-void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
+int32_t TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
 {
     uint32_t u32Clk = TIMER_GetModuleClock(timer);
-    uint32_t u32Prescale = 0, u32Delay = (SystemCoreClock / u32Clk) + 1;
-    uint32_t u32Cmpr, u32NsecPerTick;
+    uint32_t u32Prescale = 0UL, u32Delay;
+    uint32_t u32Cmpr, u32Cntr, u32NsecPerTick, i = 0UL;
 
     // Clear current timer configuration/
     timer->CTL = 0;
@@ -190,14 +190,32 @@ void TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
     timer->CMP = u32Cmpr;
     timer->CTL = TIMER_CTL_CNTEN_Msk | TIMER_ONESHOT_MODE | u32Prescale;
 
-    // When system clock is faster than timer clock, it is possible timer active bit cannot set in time while we check it.
-    // And the while loop below return immediately, so put a tiny delay here allowing timer start counting and raise active flag.
-    for (; u32Delay > 0; u32Delay--)
+    /* When system clock is faster than timer clock, it is possible timer active bit cannot set
+       in time while we check it. And the while loop below return immediately, so put a tiny
+       delay larger than 1 ECLK here allowing timer start counting and raise active flag. */
+    for (u32Delay = (SystemCoreClock / u32Clk) + 1UL; u32Delay > 0UL; u32Delay--)
     {
         __NOP();
     }
 
-    while (timer->CTL & TIMER_CTL_ACTSTS_Msk);
+    while (timer->CTL & TIMER_CTL_ACTSTS_Msk)
+    {
+        /* Bailed out if timer stop counting e.g. Some interrupt handler close timer clock source. */
+        if (u32Cntr == timer->CNT)
+        {
+            if (i++ > u32Delay)
+            {
+                return TIMER_TIMEOUT_ERR;
+            }
+        }
+        else
+        {
+            i = 0;
+            u32Cntr = timer->CNT;
+        }
+    }
+
+    return 0;
 }
 
 /*---------------------------------------------------------------------------------------------------------*/

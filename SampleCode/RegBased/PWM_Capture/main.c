@@ -37,12 +37,26 @@ void CalPeriodTime()
     uint16_t u16Count[4];
     uint32_t u32i;
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
+    uint32_t u32TimeOutCount;
 
     /* Clear Capture Rising Indicator (Time A) */
     PWM1->CAPIF = PWM_CAPIF_CRLIF2_Msk;
 
+    /* setup timeout */
+    u32TimeOutCount = SystemCoreClock;
+
     /* Wait for Capture Falling Indicator  */
-    while ((PWM1->CAPIF & PWM_CAPIF_CFLIF2_Msk) == 0);
+    while ((PWM1->CAPIF & PWM_CAPIF_CFLIF2_Msk) == 0)
+    {
+        if (u32TimeOutCount == 0)
+        {
+            printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+            while (1);
+        }
+
+        u32TimeOutCount--;
+    }
 
     /* Clear Capture Falling Indicator (Time B)*/
     PWM1->CAPIF = PWM_CAPIF_CFLIF2_Msk;
@@ -51,8 +65,21 @@ void CalPeriodTime()
 
     while (u32i < 4)
     {
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait for Capture Falling Indicator */
-        while ((PWM1->CAPIF & PWM_CAPIF_CFLIF2_Msk) == 0);
+        while ((PWM1->CAPIF & PWM_CAPIF_CFLIF2_Msk) == 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Clear Capture Falling and Rising Indicator */
         PWM1->CAPIF = PWM_CAPIF_CFLIF2_Msk | PWM_CAPIF_CRLIF2_Msk;
@@ -60,8 +87,21 @@ void CalPeriodTime()
         /* Get Capture Falling Latch Counter Data */
         u16Count[u32i++] = PWM_GET_CAPTURE_FALLING_DATA(PWM1, 2);
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait for Capture Rising Indicator */
-        while ((PWM1->CAPIF & PWM_CAPIF_CRLIF2_Msk) == 0);
+        while ((PWM1->CAPIF & PWM_CAPIF_CRLIF2_Msk) == 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Clear Capture Rising Indicator */
         PWM1->CAPIF = PWM_CAPIF_CRLIF2_Msk;
@@ -180,6 +220,8 @@ void UART0_Init()
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
+    uint32_t u32TimeOutCount;
+
     /* Init System, IP clock and multi-function I/O
        In the end of SYS_Init() will issue SYS_LockReg()
        to lock protected register. If user want to write
@@ -287,8 +329,21 @@ int32_t main(void)
         /* Start */
         PWM1->CNTEN |= PWM_CNTEN_CNTEN2_Msk;
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait until PWM1 channel 2 Timer start to count */
-        while ((PWM1->CNT[2]) == 0);
+        while ((PWM1->CNT[2]) == 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Enable capture input path for PWM1 channel 2 */
         PWM1->CAPINEN |= PWM_CAPINEN_CAPINEN2_Msk;
@@ -303,8 +358,21 @@ int32_t main(void)
         /* Set PWM1 channel 0 loaded value as 0 */
         PWM1->PERIOD[0] = 0;
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait until PWM1 channel 0 Timer Stop */
-        while ((PWM1->CNT[0] & PWM_CNT_CNT_Msk) != 0);
+        while ((PWM1->CNT[0] & PWM_CNT_CNT_Msk) != 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Disable Timer for PWM1 channel 0 */
         PWM1->CNTEN &= ~PWM_CNTEN_CNTEN0_Msk;
@@ -320,8 +388,21 @@ int32_t main(void)
         /* Set loaded value as 0 for PWM1 channel 2 */
         PWM1->PERIOD[2] = 0;
 
+        /* setup timeout */
+        u32TimeOutCount = SystemCoreClock;
+
         /* Wait until PWM1 channel 2 current counter reach to 0 */
-        while ((PWM1->CNT[2] & PWM_CNT_CNT_Msk) != 0);
+        while ((PWM1->CNT[2] & PWM_CNT_CNT_Msk) != 0)
+        {
+            if (u32TimeOutCount == 0)
+            {
+                printf("\nSomething is wrong, please check if pin connection is correct. \n");
+
+                while (1);
+            }
+
+            u32TimeOutCount--;
+        }
 
         /* Disable Timer for PWM1 channel 2 */
         PWM1->CNTEN &= ~PWM_CNTEN_CNTEN2_Msk;

@@ -212,16 +212,6 @@ void I2C0_Init(void)
     /* Get I2C0 Bus Clock */
     printf("I2C clock %d Hz\n", (SystemCoreClock / (((I2C0->CLKDIV) + 1) << 2)));
 
-    /* Set I2C0 4 Slave Addresses */
-    /* Slave Address : 0x15 */
-    I2C0->ADDR0 = (I2C0->ADDR0 & ~I2C_ADDR0_ADDR_Msk) | (0x15 << I2C_ADDR0_ADDR_Pos);
-    /* Slave Address : 0x35 */
-    I2C0->ADDR1 = (I2C0->ADDR1 & ~I2C_ADDR1_ADDR_Msk) | (0x35 << I2C_ADDR1_ADDR_Pos);
-    /* Slave Address : 0x55 */
-    I2C0->ADDR2 = (I2C0->ADDR2 & ~I2C_ADDR2_ADDR_Msk) | (0x55 << I2C_ADDR2_ADDR_Pos);
-    /* Slave Address : 0x75 */
-    I2C0->ADDR3 = (I2C0->ADDR3 & ~I2C_ADDR3_ADDR_Msk) | (0x75 << I2C_ADDR3_ADDR_Pos);
-
     /* Enable I2C0 interrupt and set corresponding NVIC bit */
     I2C0->CTL |= I2C_CTL_INTEN_Msk;
     NVIC_EnableIRQ(I2C0_IRQn);

@@ -223,10 +223,10 @@ void AutoFlow_FunctionRxTest()
     }
 
     printf("\n Receive OK & Check OK\n");
-    
+
     /* Disable NVIC UART IRQ */
     NVIC_DisableIRQ(UART0_IRQn);
     /* Disable RDA and RTO Interrupt */
     UART_DisableInt(UART0, UART_INTEN_RDAIEN_Msk);
-  
+
 }

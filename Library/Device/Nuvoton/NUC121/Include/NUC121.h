@@ -125,6 +125,7 @@ typedef enum IRQn
 /*@}*/ /* end of group MCU_CMSIS */
 
 
+#include <stdint.h>
 #include "core_cm0.h"                   /*!< Cortex-M0 processor and core peripherals             */
 #include "system_NUC121.h"              /*!< NUC121 System                                        */
 
@@ -291,9 +292,10 @@ extern void SystemInit(void);
 
 
 //=============================================================================
-typedef volatile unsigned char  vu8;
-typedef volatile unsigned long  vu32;
-typedef volatile unsigned short vu16;
+typedef volatile uint8_t  vu8;        ///< Define 8-bit unsigned volatile data type
+typedef volatile uint16_t vu16;       ///< Define 16-bit unsigned volatile data type
+typedef volatile uint32_t vu32;       ///< Define 32-bit unsigned volatile data type
+typedef volatile uint64_t vu64;       ///< Define 64-bit unsigned volatile data type
 
 #define M8(adr)  (*((vu8  *) (adr)))
 #define M16(adr) (*((vu16 *) (adr)))

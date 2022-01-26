@@ -168,7 +168,6 @@ int32_t main(void)
     UART0_Init();
 
     printf("\n\nCPU @ %dHz(PLL@ %dHz)\n", SystemCoreClock, PllClock);
-    printf("BPWM0 clock is from %s\n", (CLK->CLKSEL1 & CLK_CLKSEL1_BPWM0SEL_Msk) ? "CPU" : "PLL");
     printf("+------------------------------------------------------------------------+\n");
     printf("|                          BPWM Driver Sample Code                       |\n");
     printf("|                        Six channels use one counter                    |\n");

@@ -43,23 +43,27 @@ void UART_ClearIntFlag(UART_T *psUART, uint32_t u32InterruptFlag)
 
     if (u32InterruptFlag & UART_INTSTS_RLSINT_Msk)      /* Clear Receive Line Status Interrupt */
     {
-       psUART->FIFOSTS = UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk | 
-                         UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_ADDRDETF_Msk;
+        psUART->FIFOSTS = UART_FIFOSTS_BIF_Msk | UART_FIFOSTS_FEF_Msk |
+                          UART_FIFOSTS_PEF_Msk | UART_FIFOSTS_ADDRDETF_Msk;
     }
+
     if (u32InterruptFlag & UART_INTSTS_MODEMINT_Msk)    /* Clear Modem Status Interrupt */
     {
-       psUART->MODEMSTS |= UART_MODEMSTS_CTSDETF_Msk;
+        psUART->MODEMSTS |= UART_MODEMSTS_CTSDETF_Msk;
     }
+
     if (u32InterruptFlag & UART_INTSTS_BUFERRINT_Msk)   /* Clear Buffer Error Interrupt */
-    {        
-       psUART->FIFOSTS = UART_FIFOSTS_RXOVIF_Msk | UART_FIFOSTS_TXOVIF_Msk;
+    {
+        psUART->FIFOSTS = UART_FIFOSTS_RXOVIF_Msk | UART_FIFOSTS_TXOVIF_Msk;
     }
+
     if (u32InterruptFlag & UART_INTSTS_WKINT_Msk)       /* Clear Wake-up Interrupt */
     {
-       psUART->WKSTS = UART_WKSTS_CTSWKF_Msk  | UART_WKSTS_DATWKF_Msk  |
-                       UART_WKSTS_RFRTWKF_Msk | UART_WKSTS_RS485WKF_Msk |
-                       UART_WKSTS_TOUTWKF_Msk;
+        psUART->WKSTS = UART_WKSTS_CTSWKF_Msk  | UART_WKSTS_DATWKF_Msk  |
+                        UART_WKSTS_RFRTWKF_Msk | UART_WKSTS_RS485WKF_Msk |
+                        UART_WKSTS_TOUTWKF_Msk;
     }
+
     if (u32InterruptFlag & UART_INTSTS_LININT_Msk)      /* Clear LIN Bus Interrupt */
     {
         psUART->INTSTS = UART_INTSTS_LINIF_Msk;

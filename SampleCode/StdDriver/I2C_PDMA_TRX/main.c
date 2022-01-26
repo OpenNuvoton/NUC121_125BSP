@@ -20,20 +20,19 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #ifdef __ICCARM__
-#pragma data_alignment=4
- uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
- uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
- uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
- uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
+    #pragma data_alignment=4
+    uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
+    uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
+    uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
+    uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
 #else
-__attribute__((aligned(4))) uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
-__attribute__((aligned(4))) uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
-__attribute__((aligned(4))) uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
-__attribute__((aligned(4))) uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8MasterTx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8MasterRx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8SlaveTx_Buffer[PDMA_TEST_LENGTH];
+    __attribute__((aligned(4))) uint8_t g_u8SlaveRx_Buffer[PDMA_TEST_LENGTH];
 #endif
 volatile uint32_t PDMA_DONE = 0;
 volatile uint8_t g_u8DeviceAddr = 0x16;
-volatile uint8_t g_u8EndFlag = 0;
 volatile uint8_t g_u8MasterDataLen = 0;
 volatile uint8_t g_u8SlaveDataLen = 0;
 volatile uint16_t g_u8SlaveBufferAddr = 0;
@@ -385,7 +384,7 @@ void SYS_Init(void)
 
     /* I2C pins enable schmitt trigger */
     PC->SMTEN |= GPIO_SMTEN_SMTEN2_Msk | GPIO_SMTEN_SMTEN3_Msk;
-    PC->SMTEN |= GPIO_SMTEN_SMTEN11_Msk| GPIO_SMTEN_SMTEN12_Msk;
+    PC->SMTEN |= GPIO_SMTEN_SMTEN11_Msk | GPIO_SMTEN_SMTEN12_Msk;
 
 }
 
@@ -408,12 +407,6 @@ void I2C0_Init(void)
 
     /* Get I2C0 Bus Clock */
     printf("I2C0 clock %d Hz\n", I2C_GetBusClockFreq(I2C0));
-
-    /* Set I2C 4 Slave Addresses */
-    I2C_SetSlaveAddr(I2C0, 0, 0x15, 0);   /* Slave Address : 0x15 */
-    I2C_SetSlaveAddr(I2C0, 1, 0x35, 0);   /* Slave Address : 0x35 */
-    I2C_SetSlaveAddr(I2C0, 2, 0x55, 0);   /* Slave Address : 0x55 */
-    I2C_SetSlaveAddr(I2C0, 3, 0x75, 0);   /* Slave Address : 0x75 */
 
     /* Enable I2C interrupt */
     I2C_EnableInt(I2C0);

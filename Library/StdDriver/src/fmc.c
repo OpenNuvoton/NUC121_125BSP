@@ -21,6 +21,8 @@
   @{
 */
 
+int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
+
 /**
   * @brief      Set boot source from LDROM or APROM after next software reset
   *
@@ -262,6 +264,9 @@ int32_t FMC_ReadConfig(uint32_t *u32Config, uint32_t u32Count)
 
     for (i = 0; i < u32Count; i++)
         u32Config[i] = FMC_Read(FMC_CONFIG_BASE + i * 4);
+
+    if (g_FMC_i32ErrCode != 0)
+        return g_FMC_i32ErrCode;
 
     return 0;
 }

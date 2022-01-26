@@ -62,7 +62,16 @@ extern "C"
 #define FMC_ISPCMD_CHECKSUM     0x0D     /*!< ISP Command: Read Checksum            */
 #define FMC_ISPCMD_CAL_CHECKSUM 0x2D     /*!< ISP Command: Run Check Calculation    */
 
+#define FMC_TIMEOUT_READ        ((SystemCoreClock/10)*2) /*!< Read command time-out 100 ms         \hideinitializer */
+#define FMC_TIMEOUT_WRITE       ((SystemCoreClock/10)*2) /*!< Write command time-out 100 ms        \hideinitializer */
+#define FMC_TIMEOUT_ERASE       ((SystemCoreClock/10)*4) /*!< Erase command time-out 200 ms        \hideinitializer */
+#define FMC_TIMEOUT_CHKSUM      (SystemCoreClock*2)      /*!< Get checksum command time-out 2 s    \hideinitializer */
+#define FMC_TIMEOUT_CHKALLONE   (SystemCoreClock*2)      /*!< Check-all-one command time-out 2 s   \hideinitializer */
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Global variables                                                                                       */
+/*---------------------------------------------------------------------------------------------------------*/
+extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  FTCTL constant definitions                                                                            */
@@ -249,17 +258,34 @@ extern "C"
  *
  * @details    To program word data into Flash include APROM, LDROM, Data Flash, and CONFIG.
  *             The corresponding functions in CONFIG are listed in FMC section of Technical Reference Manual.
+ *             If timeout, the g_FMC_i32ErrCode will be set to -1.
  *
  */
 static __INLINE void FMC_Write(uint32_t u32Addr, uint32_t u32Data)
 {
+    int32_t  tout;
+
+    g_FMC_i32ErrCode = 0;
     FMC->ISPCMD = FMC_ISPCMD_PROGRAM;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = u32Data;
     FMC->ISPTRG = 0x1;
     __ISB();
 
-    while (FMC->ISPTRG);
+    tout = FMC_TIMEOUT_WRITE;
+
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = -1;
+    }
+
+    if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
+    {
+        FMC->ISPSTS |= FMC_ISPSTS_ISPFF_Msk;
+        g_FMC_i32ErrCode = -1;
+    }
 }
 
 /**
@@ -270,17 +296,29 @@ static __INLINE void FMC_Write(uint32_t u32Addr, uint32_t u32Data)
  * @return      The data of specified address
  *
  * @details     To read word data from Flash include APROM, LDROM, Data Flash, and CONFIG.
+ *              If timeout, the g_FMC_i32ErrCode will be set to -1.
  *
  */
 static __INLINE uint32_t FMC_Read(uint32_t u32Addr)
 {
+    int32_t  tout;
+
+    g_FMC_i32ErrCode = 0;
     FMC->ISPCMD = FMC_ISPCMD_READ;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = 0;
     FMC->ISPTRG = 0x1;
     __ISB();
 
-    while (FMC->ISPTRG);
+    tout = FMC_TIMEOUT_READ;
+
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = -1;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
