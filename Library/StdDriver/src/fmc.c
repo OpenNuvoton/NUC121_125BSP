@@ -30,7 +30,6 @@ int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
   *                1: Boot from LDROM
   *                0: Boot from APROM
   *
-  * @return   None
   *
   * @details   This function is used to switch APROM boot or LDROM boot. User need to call
   *            FMC_SetBootSource to select boot source first, then use CPU reset or
@@ -49,9 +48,7 @@ void FMC_SetBootSource(int32_t i32BootSrc)
 /**
   * @brief    Disable ISP Functions
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  This function will clear ISPEN bit of ISPCON to disable ISP function
   *
@@ -65,9 +62,7 @@ void FMC_Close(void)
 /**
   * @brief    Disable APROM update function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Disable APROM update function will forbid APROM programming when boot form APROM.
   *           APROM update is default to be disable.
@@ -82,9 +77,7 @@ void FMC_DisableAPUpdate(void)
 /**
   * @brief    Disable User Configuration update function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Disable User Configuration update function will forbid User Configuration programming.
   *           User Configuration update is default to be disable.
@@ -98,9 +91,7 @@ void FMC_DisableConfigUpdate(void)
 /**
   * @brief    Disable LDROM update function
   *
-  * @param    None
   *
-  * @return   None
 
   * @details  Disable LDROM update function will forbid LDROM programming.
   *           LDROM update is default to be disable.
@@ -114,9 +105,7 @@ void FMC_DisableLDUpdate(void)
 /**
   * @brief    Disable SPROM update function
   *
-  * @param    None
   *
-  * @return   None
 
   * @details  Disable SPROM update function will forbid SPROM programming.
   *           SPROM update is default to be disable.
@@ -130,9 +119,7 @@ void FMC_DisableSPUpdate(void)
 /**
   * @brief    Enable APROM update function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Enable APROM to be able to program when boot from APROM.
   *
@@ -146,9 +133,7 @@ void FMC_EnableAPUpdate(void)
 /**
   * @brief    Enable User Configuration update function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Enable User Configuration to be able to program.
   *
@@ -162,9 +147,7 @@ void FMC_EnableConfigUpdate(void)
 /**
   * @brief    Enable LDROM update function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Enable LDROM to be able to program.
   *
@@ -178,9 +161,7 @@ void FMC_EnableLDUpdate(void)
 /**
   * @brief    Enable SPROM update function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Enable SPROM to be able to program.
   *
@@ -194,7 +175,6 @@ void FMC_EnableSPUpdate(void)
 /**
   * @brief    Get the current boot source
   *
-  * @param    None
   *
   * @retval   0 This chip is currently booting from APROM
   * @retval   1 This chip is currently booting from LDROM
@@ -214,9 +194,7 @@ int32_t FMC_GetBootSource(void)
 /**
   * @brief    Enable FMC ISP function
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  ISPEN bit of ISPCON must be set before we can use ISP commands.
   *           Therefore, To use all FMC function APIs, user needs to call FMC_Open() first to enable ISP functions.
@@ -232,7 +210,6 @@ void FMC_Open(void)
 /**
   * @brief    Get the base address of Data Flash if enabled.
   *
-  * @param    None
   *
   * @return   The base address of Data Flash
   *
@@ -309,7 +286,6 @@ int32_t FMC_WriteConfig(uint32_t *u32Config, uint32_t u32Count)
  *             - \ref FMC_FTCTL_OPTIMIZE_24MHZ
  *             - \ref FMC_FTCTL_OPTIMIZE_50MHZ
  *
- * @return     None
  *
  * @details    This function will set FOM bit fields of FTCTL register to set flash access frequency optimization mode.
  *
@@ -322,11 +298,11 @@ void FMC_EnableFreqOptimizeMode(uint32_t u32Mode)
     FMC->FTCTL |= (u32Mode << FMC_FTCTL_FOM_Pos);
 }
 
-/*@}*/ /* end of group FMC_EXPORTED_FUNCTIONS */
+/** @} end of group FMC_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group FMC_Driver */
+/** @} end of group FMC_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
 

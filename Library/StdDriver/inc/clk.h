@@ -332,7 +332,7 @@ extern "C"
 
 #define CLK_TIMEOUT_ERR            (-1)     /*!< Clock timeout error value \hideinitializer */
 
-/*@}*/ /* end of group CLK_EXPORTED_CONSTANTS */
+/** @} end of group CLK_EXPORTED_CONSTANTS */
 
 extern int32_t g_CLK_i32ErrCode;
 
@@ -343,7 +343,6 @@ extern int32_t g_CLK_i32ErrCode;
 
 /**
   * @brief      Get PLL clock frequency
-  * @param      None
   * @return     PLL frequency
   * @details    This function get PLL frequency. The frequency unit is Hz.
   */
@@ -381,7 +380,6 @@ __STATIC_INLINE uint32_t CLK_GetPLLClockFreq(void)
   * @brief      This function execute delay function.
   * @param[in]  us  Delay time. The Max value is 2^24 / CPU Clock(MHz). Ex:
   *                             50MHz => 335544us, 48MHz => 349525us, 28MHz => 699050us ...
-  * @return     None
   * @details    Use the SysTick to generate the delay time and the UNIT is in us.
   *             The SysTick clock source is from HCLK, i.e the same as system core clock.
   *             User can use SystemCoreClockUpdate() to calculate CyclesPerUs automatically before using this function.
@@ -426,11 +424,11 @@ void CLK_DisableSysTick(void);
 
 
 
-/*@}*/ /* end of group CLK_EXPORTED_FUNCTIONS */
+/** @} end of group CLK_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group CLK_Driver */
+/** @} end of group CLK_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 
 #ifdef __cplusplus

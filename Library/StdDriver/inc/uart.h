@@ -107,7 +107,7 @@ extern "C"
 
 
 
-/*@}*/ /* end of group UART_EXPORTED_CONSTANTS */
+/** @} end of group UART_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup UART_EXPORTED_FUNCTIONS UART Exported Functions
@@ -151,7 +151,6 @@ extern "C"
  *    @param[in]    psUART  The pointer of the specified UART module
  *    @param[in]    u8Data  Data byte to transmit.
  *
- *    @return       None
  *
  *    @details      This macro write Data to Tx data register.
  *
@@ -225,7 +224,6 @@ extern "C"
  *
  *    @param[in]    psUART    The pointer of the specified UART module
  *
- *    @return       None
  *
  *    @details      This macro wait specified uart port transmission is over.
  *
@@ -325,7 +323,6 @@ extern "C"
  *                              - \ref UART_INTEN_THREIEN_Msk    : Tx empty interrupt
  *                              - \ref UART_INTEN_RDAIEN_Msk     : Rx ready interrupt
  *
- *    @return       None
  *
  *    @details      This macro enable specified UART interrupt.
  *
@@ -350,7 +347,6 @@ extern "C"
  *                              - \ref UART_INTEN_THREIEN_Msk    : Transmit Holding Register Empty Interrupt
  *                              - \ref UART_INTEN_RDAIEN_Msk     : Receive Data Available Interrupt
  *
- *    @return       None
  *
  *    @details      This macro enable specified UART interrupt.
  *
@@ -407,7 +403,6 @@ extern "C"
  *
  *    @param[in]    psUART    The pointer of the specified UART module
  *
- *    @return       None
  *
  *    @details      This macro set RTS pin to low.
  *
@@ -425,7 +420,6 @@ __STATIC_INLINE void UART_CLEAR_RTS(UART_T *psUART)
  *
  *    @param[in]    psUART    The pointer of the specified UART module
  *
- *    @return       None
  *
  *    @details      This macro set RTS pin to high.
  *
@@ -442,7 +436,6 @@ __STATIC_INLINE void UART_SET_RTS(UART_T *psUART)
  *
  *    @param[in]    psUART    The pointer of the specified UART module
  *
- *    @return       None
  *
  *    @details      This macro clear RS-485 address byte detection flag.
  *
@@ -473,7 +466,6 @@ __STATIC_INLINE void UART_SET_RTS(UART_T *psUART)
  *                             - \ref UART_INTEN_TXPDMAEN_Msk
  *                             - \ref UART_INTEN_RXPDMAEN_Msk
  *
- *    @return       None
  *
  *    \hideinitializer
  */
@@ -487,7 +479,6 @@ __STATIC_INLINE void UART_SET_RTS(UART_T *psUART)
  *                             - \ref UART_INTEN_TXPDMAEN_Msk
  *                             - \ref UART_INTEN_RXPDMAEN_Msk
  *
- *    @return       None
  *
  *    \hideinitializer
  */
@@ -509,11 +500,11 @@ void UART_SelectLINMode(UART_T *psUART, uint32_t u32Mode, uint32_t u32BreakLengt
 uint32_t UART_Write(UART_T *psUART, uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 
 
-/*@}*/ /* end of group UART_EXPORTED_FUNCTIONS */
+/** @} end of group UART_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group UART_Driver */
+/** @} end of group UART_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

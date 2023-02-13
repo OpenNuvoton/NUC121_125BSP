@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup PWM Pulse Width Modulation Controller (PWM)
     Memory Mapped Structure for PWM Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -2321,9 +2322,9 @@ typedef struct
 #define PWM_CMPBUF_CMPBUF_Pos            (0)                                               /*!< PWM_T::CMPBUF: CMPBUF Position         */
 #define PWM_CMPBUF_CMPBUF_Msk            (0xfffful << PWM_CMPBUF_CMPBUF_Pos)               /*!< PWM_T::CMPBUF: CMPBUF Mask             */
 
-/**@}*/ /* PWM_CONST */
-/**@}*/ /* end of PWM register group */
-/**@}*/ /* end of REGISTER group */
+/** @} PWM_CONST */
+/** @} end of PWM register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

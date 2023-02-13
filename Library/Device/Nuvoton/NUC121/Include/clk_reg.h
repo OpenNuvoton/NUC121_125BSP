@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup CLK System Clock Controller (CLK)
     Memory Mapped Structure for CLK Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -740,9 +741,9 @@ typedef struct
 #define CLK_CDLOWB_LOWERBD_Pos           (0)                                               /*!< CLK_T::CDLOWB: LOWERBD Position        */
 #define CLK_CDLOWB_LOWERBD_Msk           (0x3fful << CLK_CDLOWB_LOWERBD_Pos)               /*!< CLK_T::CDLOWB: LOWERBD Mask            */
 
-/**@}*/ /* CLK_CONST */
-/**@}*/ /* end of CLK register group */
-/**@}*/ /* end of REGISTER group */
+/** @} CLK_CONST */
+/** @} end of CLK register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

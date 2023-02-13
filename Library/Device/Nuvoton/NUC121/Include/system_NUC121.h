@@ -55,8 +55,6 @@ extern uint32_t PllClock;           /*!< PLL Output Clock Frequency           */
  *
  * @param[in]  expr  Expression to be evaluated
  *
- * @return     None
- *
  * @details    If the expression is false, an error message will be printed out
  *             from debug port (UART0 or UART1).
  */
@@ -73,10 +71,6 @@ void AssertError(uint8_t *file, uint32_t line);
 /**
  * @brief    System Initialization
  *
- * @param    None
- *
- * @return   None
- *
  * @details  The necessary initialization of system.
  */
 extern void SystemInit(void);
@@ -84,10 +78,6 @@ extern void SystemInit(void);
 
 /**
  * @brief    Update the Variable SystemCoreClock
- *
- * @param    None
- *
- * @return   None
  *
  * @details  This function is used to update the variable SystemCoreClock
  *           and must be called whenever the core clock is changed.

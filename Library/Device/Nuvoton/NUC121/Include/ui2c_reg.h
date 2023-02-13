@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup UI2C I2C Mode of USCI Controller (UI2C)
     Memory Mapped Structure for UI2C Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -548,9 +549,9 @@ typedef struct
 #define UI2C_TMCTL_HTCTL_Pos             (6)                                               /*!< UI2C_T::TMCTL: HTCTL Position          */
 #define UI2C_TMCTL_HTCTL_Msk             (0x3ful << UI2C_TMCTL_HTCTL_Pos)                  /*!< UI2C_T::TMCTL: HTCTL Mask              */
 
-/**@}*/ /* UI2C_CONST */
-/**@}*/ /* end of UI2C register group */
-/**@}*/ /* end of REGISTER group */
+/** @} UI2C_CONST */
+/** @} end of UI2C register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

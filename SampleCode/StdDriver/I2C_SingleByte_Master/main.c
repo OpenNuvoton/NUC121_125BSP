@@ -1,12 +1,11 @@
 /**************************************************************************//**
  * @file     main.c
  * @version  V3.00
- * @brief
- *           Show how to use I2C Signle byte API Read and Write data to Slave
+ * @brief    Show how to use I2C Signle byte API Read and Write data to Slave
  *           Needs to work with I2C_Slave sample code.
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
@@ -16,9 +15,6 @@
 /*---------------------------------------------------------------------------------------------------------*/
 volatile uint8_t g_u8DeviceAddr;
 
-/*---------------------------------------------------------------------------------------------------------*/
-/* System Initial                                                                                          */
-/*---------------------------------------------------------------------------------------------------------*/
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -61,19 +57,6 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
-{
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Init UART                                                                                               */
-    /*---------------------------------------------------------------------------------------------------------*/
-    /* Reset IP */
-    SYS_ResetModule(UART0_RST);
-
-    /* Configure UART0 and set UART0 Baudrate */
-    UART_Open(UART0, 115200);
-}
-
-
 void I2C0_Init(void)
 {
     /* Open I2C0 module and set bus clock */
@@ -92,11 +75,9 @@ void I2C0_Close(void)
     /* Disable I2C0 and close I2C0 clock */
     I2C_Close(I2C0);
     CLK_DisableModuleClock(I2C0_MODULE);
+
 }
 
-/*---------------------------------------------------------------------------------------------------------*/
-/*  Main Function                                                                                          */
-/*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
     uint32_t u32Index;
@@ -108,11 +89,11 @@ int32_t main(void)
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
 
-    /* Init UART0 for printf */
-    UART0_Init();
-
     /* Lock protected registers */
     SYS_LockReg();
+
+    /* Configure UART0: 115200, 8-bit word, no parity bit, 1 stop bit. */
+    UART_Open(UART0, 115200);
 
     /*
         This sample code sets I2C bus clock to 100kHz. Then, Master accesses Slave with Byte Write
@@ -122,14 +103,11 @@ int32_t main(void)
     printf("| I2C Driver Sample Code for Single Byte Read/Write Test |\n");
     printf("| Needs to work with I2C_Slave sample code               |\n");
     printf("|                                                        |\n");
-    printf("|      I2C Master (I2C0) <---> I2C Slave (I2C0)          |\n");
-    printf("| !! This sample code requires two borads to test !!     |\n");
+    printf("| I2C Master (I2C0) <---> I2C Slave(I2C0)                |\n");
+    printf("| !! This sample code requires two boards to test !!     |\n");
     printf("+--------------------------------------------------------+\n");
 
     printf("\n");
-    printf("Configure I2C0 as Master\n");
-    printf("The I/O connection for I2C0:\n");
-    printf("I2C0_SDA(PC.11), I2C0_SCL(PC.12)\n");
 
     /* Init I2C0 */
     I2C0_Init();

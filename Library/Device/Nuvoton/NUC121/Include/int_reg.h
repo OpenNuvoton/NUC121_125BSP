@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup INT Interrupt Source Register (INT)
     Memory Mapped Structure for INT Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -91,9 +92,9 @@ typedef struct
 #define INT_MCU_IRQCR_FAST_IRQ_Pos           (0)                                               /*!< INT_T::IRQCR: FAST_IRQ Position        */
 #define INT_MCU_IRQCR_FAST_IRQ_Msk           (0x1ul << INT_MCU_IRQCR_FAST_IRQ_Pos)             /*!< INT_T::IRQCR: FAST_IRQ Mask            */
 
-/**@}*/ /* INT_CONST */
-/**@}*/ /* end of INT register group */
-/**@}*/ /* end of REGISTER group */
+/** @} INT_CONST */
+/** @} end of INT register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

@@ -1,10 +1,10 @@
 /**************************************************************************//**
  * @file     FMC.h
- * @version  V3.00
+ * @version  V3.01
  * @brief    NUC121 series FMC driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
+ * @copyright (C) 2022 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
 #ifndef __FMC_H__
 #define __FMC_H__
@@ -71,6 +71,13 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Global variables                                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
+typedef enum
+{
+    eFMC_ERRCODE_SUCCESS       = 0,
+    eFMC_ERRCODE_CMD_TIMEOUT   = -1,
+    eFMC_ERRCODE_INVALID_PARAM = -2,
+    eFMC_ERRCODE_CMD_FAIL      = -3,
+} E_FMC_ERRCODE;
 extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -79,7 +86,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 #define FMC_FTCTL_OPTIMIZE_24MHZ        0x01       /*!< Frequency Optimize Mode <= 24Mhz */
 #define FMC_FTCTL_OPTIMIZE_50MHZ        0x02       /*!< Frequency Optimize Mode <= 50Mhz */
 
-/*@}*/ /* end of group FMC_EXPORTED_CONSTANTS */
+/** @} end of group FMC_EXPORTED_CONSTANTS */
 
 /** @addtogroup FMC_EXPORTED_FUNCTIONS FMC Exported Functions
   @{
@@ -91,9 +98,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Enable ISP Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will set ISPEN bit of ISPCTL control register to enable ISP function.
  *
@@ -104,9 +109,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Disable ISP Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will clear ISPEN bit of ISPCTL control register to disable ISP function.
  *
@@ -117,9 +120,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Enable LDROM Update Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will set LDUEN bit of ISPCTL control register to enable LDROM update function.
  *             User needs to set LDUEN bit before they can update LDROM.
@@ -131,9 +132,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Disable LDROM Update Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will set ISPEN bit of ISPCTL control register to disable LDROM update function.
  *
@@ -144,9 +143,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Enable User Configuration Update Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will set CFGUEN bit of ISPCTL control register to enable User Configuration update function.
  *             User needs to set CFGUEN bit before they can update User Configuration area.
@@ -158,9 +155,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Disable User Configuration Update Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will clear CFGUEN bit of ISPCTL control register to disable User Configuration update function.
  *
@@ -172,9 +167,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Enable APROM Update Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will set APUEN bit of ISPCTL control register to enable APROM update function.
  *             User needs to set APUEN bit before they can update APROM in APROM boot mode.
@@ -186,9 +179,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Disable APROM Update Function
  *
- * @param      None
  *
- * @return     None
  *
  * @details    This function will clear APUEN bit of ISPCTL control register to disable APROM update function.
  *
@@ -199,7 +190,6 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Get ISP fail flag
  *
- * @param      None
  *
  * @retval     0 Previous ISP command execution result is successful
  * @retval     1 Previous ISP command execution result is fail
@@ -215,9 +205,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Select booting from APROM
  *
- * @param      None
  *
- * @return     None
  *
  * @details    If MCU is working without IAP, user need to set BS bit of ISPCTL and reset CPU to execute the code of LDROM/APROM.
  *             This function is used to set BS bit of ISPCTL to boot to APROM.
@@ -231,9 +219,7 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
 /**
  * @brief      Select booting from APROM
  *
- * @param      None
  *
- * @return     None
  *
  * @details    If MCU is working without IAP, user need to set/clear BS bit of ISPCON and reset CPU to execute the code of APROM/LDROM.
  *             This function is used to clear BS bit of ISPCTL to boot to LDROM.
@@ -254,18 +240,18 @@ extern int32_t  g_FMC_i32ErrCode; /*!< FMC global error code */
  * @param[in]  u32Addr  Flash address include APROM, LDROM, Data Flash, and CONFIG
  * @param[in]  u32Data  32-bit Data to program
  *
- * @return     None
  *
  * @details    To program word data into Flash include APROM, LDROM, Data Flash, and CONFIG.
  *             The corresponding functions in CONFIG are listed in FMC section of Technical Reference Manual.
- *             If timeout, the g_FMC_i32ErrCode will be set to -1.
+ *             If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
+ *             If command fail, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_FAIL.
  *
  */
 static __INLINE void FMC_Write(uint32_t u32Addr, uint32_t u32Data)
 {
     int32_t  tout;
 
-    g_FMC_i32ErrCode = 0;
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_PROGRAM;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = u32Data;
@@ -278,13 +264,13 @@ static __INLINE void FMC_Write(uint32_t u32Addr, uint32_t u32Data)
 
     if (tout <= 0)
     {
-        g_FMC_i32ErrCode = -1;
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
     }
 
     if (FMC->ISPSTS & FMC_ISPSTS_ISPFF_Msk)
     {
         FMC->ISPSTS |= FMC_ISPSTS_ISPFF_Msk;
-        g_FMC_i32ErrCode = -1;
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_FAIL;
     }
 }
 
@@ -296,14 +282,14 @@ static __INLINE void FMC_Write(uint32_t u32Addr, uint32_t u32Data)
  * @return      The data of specified address
  *
  * @details     To read word data from Flash include APROM, LDROM, Data Flash, and CONFIG.
- *              If timeout, the g_FMC_i32ErrCode will be set to -1.
+ *              If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
  *
  */
 static __INLINE uint32_t FMC_Read(uint32_t u32Addr)
 {
     int32_t  tout;
 
-    g_FMC_i32ErrCode = 0;
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_READ;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = 0;
@@ -316,7 +302,7 @@ static __INLINE uint32_t FMC_Read(uint32_t u32Addr)
 
     if (tout <= 0)
     {
-        g_FMC_i32ErrCode = -1;
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
         return 0xFFFFFFFF;
     }
 
@@ -330,6 +316,8 @@ static __INLINE uint32_t FMC_Read(uint32_t u32Addr)
  *
  * @details    To do flash page erase. The target address could be APROM, LDROM, Data Flash, or CONFIG.
  *             The page size is 2048 bytes.
+ *             If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
+ *             If command fail, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_FAIL.
  *
  * @retval      0 Success
  * @retval     -1 Erase failed
@@ -337,6 +325,9 @@ static __INLINE uint32_t FMC_Read(uint32_t u32Addr)
  */
 static __INLINE int32_t FMC_Erase(uint32_t u32Addr)
 {
+    int32_t  tout = FMC_TIMEOUT_ERASE;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
     FMC->ISPADDR = u32Addr;
 
@@ -346,13 +337,20 @@ static __INLINE int32_t FMC_Erase(uint32_t u32Addr)
     FMC->ISPTRG = 0x1;
     __ISB();
 
-    while (FMC->ISPTRG);
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return -1;
+    }
 
     /* Check ISPFF flag to know whether erase OK or fail. */
     if (FMC->ISPCTL & FMC_ISPCTL_ISPFF_Msk)
     {
         // comment For FMC FPGA
         //FMC->ISPCTL |= FMC_ISPCTL_ISPFF_Msk;
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_FAIL;
 
         return -1;
     }
@@ -368,17 +366,27 @@ static __INLINE int32_t FMC_Erase(uint32_t u32Addr)
  * @return      The 32-bit unique ID data of specified UID index.
  *
  * @details     To read out 96-bit Unique ID.
+ *              If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
  *
  */
 static __INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
 {
+    int32_t  tout = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_READ_UID;
     FMC->ISPADDR = (u8Index << 2);
     FMC->ISPDAT = 0;
     FMC->ISPTRG = 0x1;
     __ISB();
 
-    while (FMC->ISPTRG);
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
@@ -386,21 +394,31 @@ static __INLINE uint32_t FMC_ReadUID(uint8_t u8Index)
 /**
   * @brief    Read company ID
   *
-  * @param    None
   *
   * @return   The company ID (32-bit)
   *
   * @details  The company ID of Nuvoton is fixed to be 0xDA
+  *           If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
   *
   */
 static __INLINE uint32_t FMC_ReadCID(void)
 {
+    int32_t  tout = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_READ_CID;           /* Set ISP Command Code */
     FMC->ISPADDR = 0x0;                          /* Must keep 0x0 when read CID */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;          /* Trigger to start ISP procedure */
     __ISB();                                     /* To make sure ISP/CPU be Synchronized */
 
-    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk) ; /* Waiting for ISP Done */
+    /* Waiting for ISP Done */
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
@@ -408,21 +426,31 @@ static __INLINE uint32_t FMC_ReadCID(void)
 /**
   * @brief    Read device ID
   *
-  * @param    None
   *
   * @return   The device ID (32-bit)
   *
   * @details  This function is used to read device ID.
+  *           If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
   *
   */
 static __INLINE uint32_t FMC_ReadDID(void)
 {
+    int32_t  tout = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_READ_DID;          /* Set ISP Command Code */
     FMC->ISPADDR = 0;                           /* Must keep 0x0 when read DID */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;         /* Trigger to start ISP procedure */
     __ISB();                                    /* To make sure ISP/CPU be Synchronized */
 
-    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk); /* Waiting for ISP Done */
+    /* Waiting for ISP Done */
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
@@ -430,21 +458,31 @@ static __INLINE uint32_t FMC_ReadDID(void)
 /**
   * @brief    Read product ID
   *
-  * @param    None
   *
   * @return   The product ID (32-bit)
   *
   * @details  This function is used to read product ID.
+  *           If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
   *
   */
 static __INLINE uint32_t FMC_ReadPID(void)
 {
+    int32_t  tout = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_READ_DID;          /* Set ISP Command Code */
     FMC->ISPADDR = 0x04;                        /* Must keep 0x4 when read PID */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;         /* Trigger to start ISP procedure */
     __ISB();                                    /* To make sure ISP/CPU be Synchronized */
 
-    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk); /* Waiting for ISP Done */
+    /* Waiting for ISP Done */
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
@@ -457,16 +495,27 @@ static __INLINE uint32_t FMC_ReadPID(void)
   * @return     The UCID of specified index
   *
   * @details    This function is used to read unique chip ID (UCID).
+  *             If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
   *
   */
 static __INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
 {
+    int32_t  tout = FMC_TIMEOUT_READ;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_READ_UID;          /* Set ISP Command Code */
     FMC->ISPADDR = (0x04 * u32Index) + 0x10;    /* The UCID is at offset 0x10 with word alignment. */
     FMC->ISPTRG = FMC_ISPTRG_ISPGO_Msk;         /* Trigger to start ISP procedure */
     __ISB();                                    /* To make sure ISP/CPU be Synchronized */
 
-    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk); /* Waiting for ISP Done */
+    /* Waiting for ISP Done */
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
@@ -476,28 +525,33 @@ static __INLINE uint32_t FMC_ReadUCID(uint32_t u32Index)
  *
  * @param[in]   u32PageAddr  The page address to remap to address 0x0. The address must be page alignment.
  *
- * @return      To set VECMAP to remap specified page address to 0x0.
- *
  * @details     This function is used to set VECMAP to map specified page to vector page (0x0).
- *
+ *              If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
  * @note
  *              VECMAP only valid when new IAP function is enabled. (CBS = 10'b or 00'b)
- *
  */
 static __INLINE void FMC_SetVectorPageAddr(uint32_t u32PageAddr)
 {
+    int32_t  tout = FMC_TIMEOUT_WRITE;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_VECMAP; /* Set ISP Command Code */
     FMC->ISPADDR = u32PageAddr;      /* The address of specified page which will be map to address 0x0. It must be page alignment. */
     FMC->ISPTRG = 0x1;               /* Trigger to start ISP procedure */
     __ISB();                         /* To make sure ISP/CPU be Synchronized */
 
-    while (FMC->ISPTRG);             /* Waiting for ISP Done */
+    /* Waiting for ISP Done */
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+    }
 }
 
 /**
  * @brief       Get current vector mapping address.
  *
- * @param       None
  *
  * @return      The current vector mapping address.
  *
@@ -521,22 +575,42 @@ static __INLINE uint32_t FMC_GetVECMAP(void)
  * @return      A checksum value of a flash block.
  *
  * @details     To get VECMAP value which is the page address for remapping to vector page (0x0).
+ *              If timeout, g_FMC_i32ErrCode will be set to eFMC_ERRCODE_CMD_TIMEOUT.
  *
  */
 static __INLINE uint32_t FMC_GetCheckSum(uint32_t u32Addr, int32_t i32Size)
 {
+    int32_t  tout;
+
+    g_FMC_i32ErrCode = eFMC_ERRCODE_SUCCESS;
     FMC->ISPCMD = FMC_ISPCMD_CAL_CHECKSUM;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = i32Size;
     FMC->ISPTRG = 0x1;
     __ISB();
 
-    while (FMC->ISPTRG);
+    tout = FMC_TIMEOUT_CHKSUM;
+
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     FMC->ISPCMD = FMC_ISPCMD_CHECKSUM;
     FMC->ISPTRG = 0x1;
 
-    while (FMC->ISPTRG);
+    tout = FMC_TIMEOUT_CHKSUM;
+
+    while ((tout-- > 0) && (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk)) {}
+
+    if (tout <= 0)
+    {
+        g_FMC_i32ErrCode = eFMC_ERRCODE_CMD_TIMEOUT;
+        return 0xFFFFFFFF;
+    }
 
     return FMC->ISPDAT;
 }
@@ -559,11 +633,11 @@ uint32_t FMC_ReadDataFlashBaseAddr(void);
 void FMC_EnableFreqOptimizeMode(uint32_t u32Mode);
 
 
-/*@}*/ /* end of group FMC_EXPORTED_FUNCTIONS */
+/** @} end of group FMC_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group FMC_Driver */
+/** @} end of group FMC_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }
@@ -571,4 +645,3 @@ void FMC_EnableFreqOptimizeMode(uint32_t u32Mode);
 
 
 #endif
-

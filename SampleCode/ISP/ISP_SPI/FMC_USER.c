@@ -23,9 +23,9 @@
  *             before using this function. User can check the status of
  *             Register Write-Protection Function with DrvSYS_IsProtectedRegLocked().
  */
-int FMC_Write_User(unsigned int u32Addr, unsigned int u32Data)
+int FMC_Write_User(uint32_t u32Addr, uint32_t u32Data)
 {
-    unsigned int Reg;
+    uint32_t Reg;
     FMC->ISPCMD = FMC_ISPCMD_PROGRAM;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = u32Data;
@@ -56,9 +56,9 @@ int FMC_Write_User(unsigned int u32Addr, unsigned int u32Data)
  *              before using this function. User can check the status of
  *              Register Write-Protection Function with DrvSYS_IsProtectedRegLocked().
  */
-int FMC_Read_User(unsigned int u32Addr, unsigned int *data)
+int FMC_Read_User(uint32_t u32Addr, uint32_t *data)
 {
-    unsigned int Reg;
+    uint32_t Reg;
     FMC->ISPCMD = FMC_ISPCMD_READ;
     FMC->ISPADDR = u32Addr;
     FMC->ISPDAT = 0;
@@ -89,9 +89,9 @@ int FMC_Read_User(unsigned int u32Addr, unsigned int *data)
  *             before using this function. User can check the status of
  *             Register Write-Protection Function with DrvSYS_IsProtectedRegLocked().
  */
-int FMC_Erase_User(unsigned int u32Addr)
+int FMC_Erase_User(uint32_t u32Addr)
 {
-    unsigned int Reg;
+    uint32_t Reg;
     FMC->ISPCMD = FMC_ISPCMD_PAGE_ERASE;
     FMC->ISPADDR = u32Addr;
     FMC->ISPTRG = 0x1;
@@ -107,9 +107,9 @@ int FMC_Erase_User(unsigned int u32Addr)
     return 0;
 }
 
-void ReadData(unsigned int addr_start, unsigned int addr_end, unsigned int *data)    // Read data from flash
+void ReadData(uint32_t addr_start, uint32_t addr_end, uint32_t *data)    // Read data from flash
 {
-    unsigned int rLoop;
+    uint32_t rLoop;
 
     for (rLoop = addr_start; rLoop < addr_end; rLoop += 4)
     {
@@ -120,9 +120,9 @@ void ReadData(unsigned int addr_start, unsigned int addr_end, unsigned int *data
     return;
 }
 
-void WriteData(unsigned int addr_start, unsigned int addr_end, unsigned int *data)  // Write data into flash
+void WriteData(uint32_t addr_start, uint32_t addr_end, uint32_t *data)  // Write data into flash
 {
-    unsigned int wLoop;
+    uint32_t wLoop;
 
     for (wLoop = addr_start; wLoop < addr_end; wLoop += 4)
     {

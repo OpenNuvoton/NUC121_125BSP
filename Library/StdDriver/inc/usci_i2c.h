@@ -88,7 +88,7 @@ enum UI2C_SLAVE_EVENT
 #define UI2C_ERR_INT_MASK          (0x020)    /*!< Error interrupt mask */
 #define UI2C_ACK_INT_MASK          (0x040)    /*!< Acknowledge interrupt mask */
 
-/*@}*/ /* end of group UI2C_EXPORTED_CONSTANTS */
+/** @} end of group UI2C_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup UI2C_EXPORTED_FUNCTIONS UI2C Exported Functions
@@ -101,7 +101,6 @@ enum UI2C_SLAVE_EVENT
  *    @param[in]    ui2c      The pointer of the specified USCI_I2C module.
  *    @param[in]    u8Ctrl    Set the register value of USCI_I2C control register.
  *
- *    @return       None
  *
  *    @details      Set UI2C_PROTCTL register to control USCI_I2C bus conditions of START, STOP, SI, ACK.
  *
@@ -114,7 +113,6 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c      The pointer of the specified USCI_I2C module.
  *
- *    @return       None
  *
  *    @details      Set the USCI_I2C bus START condition in UI2C_PROTCTL register.
  *
@@ -127,7 +125,6 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c      The pointer of the specified USCI_I2C module.
  *
- *    @return       None
  *
  *    @details      Set the USCI_I2C bus STOP condition in UI2C_PROTCTL register.
  *
@@ -154,7 +151,6 @@ enum UI2C_SLAVE_EVENT
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *    @param[in]    u8Data   The data which will be written to data register of USCI_I2C module.
  *
- *    @return       None
  *
  *    @details      Write a byte data value of UI2C_TXDAT register, then sends address or data to USCI I2C bus
  *
@@ -195,7 +191,6 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *
- *    @return       None
  *
  *    @details      If USCI_I2C wake-up flag is set, use this macro to clear it.
  *
@@ -208,7 +203,6 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *
- *    @return       None
  *
  *    @details      The UI2C_I2C is 7-bit address mode, when disable USCI_I2C 10-bit address match function.
  *
@@ -221,7 +215,6 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *
- *    @return       None
  *
  *    @details      To enable USCI_I2C 10-bit address match function.
  *
@@ -253,7 +246,6 @@ enum UI2C_SLAVE_EVENT
  *                                  - \ref UI2C_PROTSTS_STORIF_Msk
  *                                  - \ref UI2C_PROTSTS_STARIF_Msk
  *                                  - \ref UI2C_PROTSTS_TOIF_Msk
- *    @return None
  *
  *    @details      To clear interrupt flag when USCI_I2C occurs interrupt and set interrupt flag.
  *
@@ -272,7 +264,6 @@ enum UI2C_SLAVE_EVENT
  *                                  - \ref UI2C_PROTIEN_STORIEN_Msk
  *                                  - \ref UI2C_PROTIEN_STARIEN_Msk
  *                                  - \ref UI2C_PROTIEN_TOIEN_Msk
- *    @return None
  *
  *    @details      Set specified USCI_I2C protocol interrupt bits to enable interrupt function.
  *
@@ -291,7 +282,6 @@ enum UI2C_SLAVE_EVENT
  *                                  - \ref UI2C_PROTIEN_STORIEN_Msk
  *                                  - \ref UI2C_PROTIEN_STARIEN_Msk
  *                                  - \ref UI2C_PROTIEN_TOIEN_Msk
- *    @return None
  *
  *    @details      Clear specified USCI_I2C protocol interrupt bits to disable interrupt funtion.
  *
@@ -330,11 +320,11 @@ uint8_t UI2C_ReadByteOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAdd
 uint32_t UI2C_ReadMultiBytesOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, uint8_t *rdata, uint32_t u32rLen);
 uint8_t UI2C_ReadByteTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr);
 uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *rdata, uint32_t u32rLen);
-/*@}*/ /* end of group UI2C_EXPORTED_FUNCTIONS */
+/** @} end of group UI2C_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group UI2C_Driver */
+/** @} end of group UI2C_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

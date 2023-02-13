@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup SYS System Manger Controller (SYS)
     Memory Mapped Structure for SYS Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -874,9 +875,9 @@ typedef struct
 #define SYS_TSOFFSET_VTEMP_Pos           (0)                                               /*!< SYS_T::TSOFFSET: VTEMP Position        */
 #define SYS_TSOFFSET_VTEMP_Msk           (0xffful << SYS_TSOFFSET_VTEMP_Pos)               /*!< SYS_T::TSOFFSET: VTEMP Mask            */
 
-/**@}*/ /* SYS_CONST */
-/**@}*/ /* end of SYS register group */
-/**@}*/ /* end of REGISTER group */
+/** @} SYS_CONST */
+/** @} end of SYS register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

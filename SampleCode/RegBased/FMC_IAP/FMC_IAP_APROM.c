@@ -313,10 +313,8 @@ int main()
                 printf("\n\nChange VECMAP and branch to LDROM...\n");
                 UART_WAIT_TX_EMPTY(UART0); /* To make sure all message has been print out */
 
-                while (!(((UART0->FIFOSTS) & UART_FIFOSTS_TXEMPTYF_Msk) >> UART_FIFOSTS_TXEMPTYF_Pos))
-
-                    /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
-                    __set_PRIMASK(1);
+                /* Mask all interrupt before changing VECMAP to avoid wrong interrupt handler fetched */
+                __set_PRIMASK(1);
 
                 /* Set VECMAP to LDROM for booting from LDROM */
                 FMC->ISPCMD = FMC_ISPCMD_VECMAP;

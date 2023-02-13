@@ -34,7 +34,6 @@
   * @param[in] u32ChMask Channel enable bit. Each bit corresponds to a input channel. Bit 0 is channel 0, bit 1 is channel 1..., bit 11 is channel 11. Other valid values are:
   *                       - \ref ADC_ADCHER_BANDGAP                 :Internal band-gap voltage.
   *                       - \ref ADC_ADCHER_TEMPERATURE_SENSOR      :Output of internal temperature sensor.
-  * @return  None
   * @note NUC121 ADC can only convert 1 channel at a time. If more than 1 channels are enabled, only channel
   *       with smallest number will be convert.
   * @note This API does not turn on ADC power nor does trigger ADC conversion
@@ -56,7 +55,6 @@ void ADC_Open(ADC_T *adc,
 /**
   * @brief Disable ADC module
   * @param[in] adc The pointer of the specified ADC module
-  * @return None
   */
 void ADC_Close(ADC_T *adc)
 {
@@ -82,7 +80,6 @@ void ADC_Close(ADC_T *adc)
   *                      - \ref ADC_ADCR_TRGCOND_FALLING_EDGE  :STADC Falling edge active
   *                      - \ref ADC_ADCR_TRGCOND_RISING_EDGE   :STADC Rising edge active
   *                     Please call ADC_EnableTimerTrigger() if you want to trigger ADC conversion by Timer0 ~ Timer3.
-  * @return None
   */
 void ADC_EnableHWTrigger(ADC_T *adc,
                          uint32_t u32Source,
@@ -106,7 +103,6 @@ void ADC_EnableHWTrigger(ADC_T *adc,
 /**
   * @brief Disable hardware trigger ADC function.
   * @param[in] adc The pointer of the specified ADC module
-  * @return None
   * @note This API also disable timer trigger that enable by ADC_EnableTimerTrigger()
   */
 void ADC_DisableHWTrigger(ADC_T *adc)
@@ -121,7 +117,6 @@ void ADC_DisableHWTrigger(ADC_T *adc)
   * @param[in] u32Source Decides which timer trigger source. Valid values are:
   *                       - \ref ADC_ADCR_TRGS_TIMER           :A/D conversion is started by Timer0 ~ Timer3 overflow pulse trigger.
   * @param[in] u32Param  NUC121 don't support this parameter.
-  * @return None
   */
 void ADC_EnableTimerTrigger(ADC_T *adc,
                             uint32_t u32Source,
@@ -136,7 +131,6 @@ void ADC_EnableTimerTrigger(ADC_T *adc,
 /**
   * @brief Disable timer trigger ADC function
   * @param[in] adc The pointer of the specified ADC module
-  * @return None
   * @note This API also disable hardware trigger that enable by ADC_EnableHWTrigger()
   */
 void ADC_DisableTimerTrigger(ADC_T *adc)
@@ -154,7 +148,6 @@ void ADC_DisableTimerTrigger(ADC_T *adc)
   *                     - \ref ADC_ADF_INT    :ADC convert complete interrupt
   *                     - \ref ADC_CMP0_INT   :ADC comparator 0 interrupt
   *                     - \ref ADC_CMP1_INT   :ADC comparator 1 interrupt
-  * @return None
   */
 void ADC_EnableInt(ADC_T *adc, uint32_t u32Mask)
 {
@@ -179,7 +172,6 @@ void ADC_EnableInt(ADC_T *adc, uint32_t u32Mask)
   *                     - \ref ADC_ADF_INT     :ADC convert complete interrupt
   *                     - \ref ADC_CMP0_INT    :ADC comparator 0 interrupt
   *                     - \ref ADC_CMP1_INT    :ADC comparator 1 interrupt
-  * @return None
   */
 void ADC_DisableInt(ADC_T *adc, uint32_t u32Mask)
 {
@@ -196,10 +188,10 @@ void ADC_DisableInt(ADC_T *adc, uint32_t u32Mask)
 }
 
 
-/*@}*/ /* end of group ADC_EXPORTED_FUNCTIONS */
+/** @} end of group ADC_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group ADC_Driver */
+/** @} end of group ADC_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

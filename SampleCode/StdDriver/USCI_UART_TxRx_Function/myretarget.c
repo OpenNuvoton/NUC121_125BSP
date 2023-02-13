@@ -67,16 +67,16 @@ enum { r0, r1, r2, r3, r12, lr, pc, psr};
  */
 static void stackDump(uint32_t stack[])
 {
- /*
-    printf("r0  = 0x%x\n", stack[r0]);
-    printf("r1  = 0x%x\n", stack[r1]);
-    printf("r2  = 0x%x\n", stack[r2]);
-    printf("r3  = 0x%x\n", stack[r3]);
-    printf("r12 = 0x%x\n", stack[r12]);
-    printf("lr  = 0x%x\n", stack[lr]);
-    printf("pc  = 0x%x\n", stack[pc]);
-    printf("psr = 0x%x\n", stack[psr]);
- */
+    /*
+       printf("r0  = 0x%x\n", stack[r0]);
+       printf("r1  = 0x%x\n", stack[r1]);
+       printf("r2  = 0x%x\n", stack[r2]);
+       printf("r3  = 0x%x\n", stack[r3]);
+       printf("r12 = 0x%x\n", stack[r12]);
+       printf("lr  = 0x%x\n", stack[lr]);
+       printf("pc  = 0x%x\n", stack[pc]);
+       printf("psr = 0x%x\n", stack[psr]);
+    */
 }
 
 /**
@@ -139,7 +139,7 @@ int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 void SH_End(void)
 {
     asm("MOVS   R0,#1 \n"        //; Set return value to 1
-        "BX     lr    \n"            //; Return
+        "BX     lr    \n"        //; Return
        );
 }
 
@@ -292,38 +292,39 @@ __asm int32_t HardFault_Handler(void)
     BMI     SP_is_PSP             //; previous stack is PSP
     MRS     R0, MSP               //; previous stack is MSP, read MSP
     B       SP_Read_Ready
+
 SP_is_PSP
     MRS     R0, PSP               //; Read PSP
 
 SP_Read_Ready
     LDR     R1, [R0, #24]         //; Get previous PC
     LDRH    R3, [R1]              //; Get instruction
-    LDR     R2, =0xBEAB           //; The special BKPT instruction
+    LDR     R2, = 0xBEAB          //; The special BKPT instruction
     CMP     R3, R2                //; Test if the instruction at previous PC is BKPT
     BNE     HardFault_Handler_Ret //; Not BKPT
 
     ADDS    R1, #4                //; Skip BKPT and next line
     STR     R1, [R0, #24]         //; Save previous PC
-
     BX      LR                    //; Return
-HardFault_Handler_Ret
 
+HardFault_Handler_Ret
     /* TODO: Implement your own hard fault handler here. */
     MOVS    r0, #4
     MOV     r1, LR
-    TST     r0, r1                          //; check LR bit 2  
-    BEQ     Stack_Use_MSP                   //; stack use MSP
-    MRS     R0, PSP ;stack use PSP          //; stack use PSP, read PSP
+    TST     r0, r1                //; check LR bit 2
+    BEQ     Stack_Use_MSP         //; stack use MSP
+    MRS     R0, PSP               //; stack use PSP, read PSP
     B       Get_LR_and_Branch
+
 Stack_Use_MSP
-    MRS     R0, MSP ; stack use MSP         //; read MSP
+    MRS     R0, MSP               //; read MSP
+
 Get_LR_and_Branch
-    MOV     R1, LR ; LR current value       //; LR current value       
-    LDR     R2,=__cpp(Hard_Fault_Handler)   //; branch to Hard_Fault_Handler 
+    MOV     R1, LR                //; LR current value
+    LDR     R2, = __cpp(Hard_Fault_Handler) //; branch to Hard_Fault_Handler
     BX      R2
 
     B       .
-
     ALIGN
 }
 
@@ -462,17 +463,19 @@ void HardFault_Handler(void)
  */
 __asm int32_t HardFault_Handler(void)
 {
-    MOVS    r0, #4  
+    MOVS    r0, #4
     MOV     r1, LR
-    TST     r0, r1          //; check LR bit 2                 
+    TST     r0, r1          //; check LR bit 2
     BEQ     Stack_Use_MSP   //; stack use MSP
     MRS     R0, PSP         //; stack use PSP, read PSP
     B       Get_LR_and_Branch
+
 Stack_Use_MSP
     MRS     R0, MSP         //; read MSP
+
 Get_LR_and_Branch
     MOV     R1, LR          //; LR current value
-    LDR     R2,=__cpp(Hard_Fault_Handler) //; branch to Hard_Fault_Handler 
+    LDR     R2, = __cpp(Hard_Fault_Handler) //; branch to Hard_Fault_Handler
     BX      R2
 }
 
@@ -496,11 +499,12 @@ void SendChar_ToUART(int ch)
 
     if (ch == '\n')
     {
-        DEBUG_PORT->TXDAT = '\r';			
+        DEBUG_PORT->TXDAT = '\r';
+
         while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
     }
-		
-		DEBUG_PORT->TXDAT = ch;
+
+    DEBUG_PORT->TXDAT = ch;
 }
 
 #else
@@ -529,7 +533,7 @@ void SendChar_ToUART(int ch)
                 i32Head = i32Tmp;
             }
         }
-		
+
         i32Tmp = i32Head + 1;
 
         if (i32Tmp > BUF_SIZE) i32Tmp = 0;
@@ -538,7 +542,7 @@ void SendChar_ToUART(int ch)
         {
             u8Buf[i32Head] = ch;
             i32Head = i32Tmp;
-        }		
+        }
     }
     else
     {
@@ -560,8 +564,7 @@ void SendChar_ToUART(int ch)
         }
         else
             break; // FIFO full
-    }
-    while (i32Tail != i32Head);
+    } while (i32Tail != i32Head);
 }
 #endif
 
@@ -737,16 +740,16 @@ int _write(int fd, char *ptr, int len)
 
     while (i--)
     {
-		while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
-       
+        while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
+
         if (*ptr == '\n')
         {
-            DEBUG_PORT->TXDAT = '\r';			
-			
+            DEBUG_PORT->TXDAT = '\r';
+
             while (DEBUG_PORT->BUFSTS & UUART_BUFSTS_TXFULL_Msk);
         }
-		
-		DEBUG_PORT->TXDAT = *ptr++;
+
+        DEBUG_PORT->TXDAT = *ptr++;
     }
 
     return len;

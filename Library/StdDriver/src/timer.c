@@ -68,7 +68,6 @@ uint32_t TIMER_Open(TIMER_T *timer, uint32_t u32Mode, uint32_t u32Freq)
   *
   * @param[in]  timer   The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   *
-  * @return     None
   *
   * @details    This API stops timer counting and disable all timer interrupt function.
   */
@@ -208,7 +207,6 @@ int32_t TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
   *                         - \ref TIMER_CAPTURE_RISING_EDGE
   *                         - \ref TIMER_CAPTURE_FALLING_AND_RISING_EDGE
   *
-  * @return     None
   *
   * @details    This API is used to enable timer capture function with specify capture trigger edge \n
   *             to get current counter value or reset counter value to 0.
@@ -226,7 +224,6 @@ void TIMER_EnableCapture(TIMER_T *timer, uint32_t u32CapMode, uint32_t u32Edge)
   *
   * @param[in]  timer   The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   *
-  * @return     None
   *
   * @details    This API is used to disable the timer capture function.
   */
@@ -243,7 +240,6 @@ void TIMER_DisableCapture(TIMER_T *timer)
   *                         - \ref TIMER_COUNTER_FALLING_EDGE, or
   *                         - \ref TIMER_COUNTER_RISING_EDGE
   *
-  * @return     None
   *
   * @details    This function is used to enable the timer counter function with specify detection edge.
   * @note       Timer compare value should be configured separately by using \ref TIMER_SET_CMP_VALUE macro or program registers directly.
@@ -260,7 +256,6 @@ void TIMER_EnableEventCounter(TIMER_T *timer, uint32_t u32Edge)
   *
   * @param[in]  timer   The pointer of the specified Timer module. It could be TIMER0, TIMER1, TIMER2, TIMER3.
   *
-  * @return     None
   *
   * @details    This API is used to disable the timer event counter function.
   */
@@ -314,10 +309,10 @@ uint32_t TIMER_GetModuleClock(TIMER_T *timer)
     return u32Clk;
 }
 
-/*@}*/ /* end of group TIMER_EXPORTED_FUNCTIONS */
+/** @} end of group TIMER_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group TIMER_Driver */
+/** @} end of group TIMER_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

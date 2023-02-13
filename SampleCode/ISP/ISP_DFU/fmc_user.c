@@ -13,6 +13,7 @@
 int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end, unsigned int *data)
 {
     unsigned int u32Addr;
+    unsigned int u32Reg;
 
     for (u32Addr = addr_start; u32Addr < addr_end; data++, u32Addr += 4)
     {
@@ -38,11 +39,11 @@ int FMC_Proc(unsigned int u32Cmd, unsigned int addr_start, unsigned int addr_end
 
         while (FMC->ISPTRG & 0x1) ;  /* Wait for ISP command done. */
 
-        unsigned int Reg = FMC->ISPCTL;
+        u32Reg = FMC->ISPCTL;
 
-        if (Reg & FMC_ISPCTL_ISPFF_Msk)
+        if (u32Reg & FMC_ISPCTL_ISPFF_Msk)
         {
-            FMC->ISPCTL = Reg;
+            FMC->ISPCTL = u32Reg;
             return -1;
         }
 

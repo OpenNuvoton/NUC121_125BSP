@@ -58,7 +58,7 @@ extern "C"
 #define UUART_RXEND_INT_MASK    (0x080) /*!< RX end interrupt mask */
 
 
-/*@}*/ /* end of group UUART_EXPORTED_CONSTANTS */
+/** @} end of group UUART_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup UUART_EXPORTED_FUNCTIONS UUART Exported Functions
@@ -72,7 +72,6 @@ extern "C"
  *    @param[in]    psUUART   The pointer of the specified USCI_UART module
  *    @param[in]    u8Data  Data byte to transmit.
  *
- *    @return       None
  *
  *    @details      This macro write Data to Tx data register.
  *
@@ -162,7 +161,6 @@ extern "C"
  *
  *    @param[in]    psUUART    The pointer of the specified USCI_UART module
  *
- *    @return       None
  *
  *    @details      This macro wait specified usci_uart port transmission is over.
  *
@@ -239,7 +237,6 @@ extern "C"
  *                             - \ref UUART_PROTIEN_RLSIEN_Msk   : Rx Line status interrupt
  *                             - \ref UUART_PROTIEN_ABRIEN_Msk   : Auto-baud rate interrupt
  *
- *    @return       None
  *
  *    @details      This macro enable specified USCI_UART protocol interrupt.
  *
@@ -256,7 +253,6 @@ extern "C"
  *                             - \ref UUART_PROTIEN_RLSIEN_Msk   : Rx Line status interrupt
  *                             - \ref UUART_PROTIEN_ABRIEN_Msk   : Auto-baud rate interrupt
  *
- *    @return       None
  *
  *    @details      This macro disable specified USCI_UART protocol interrupt.
  *
@@ -272,7 +268,6 @@ extern "C"
  *    @param[in]    u32IntSel  Interrupt type select
  *                             - \ref UUART_BUFCTL_RXOVIEN_Msk     : Receive buffer overrun error interrupt
  *
- *    @return       None
  *
  *    @details      This macro enable specified USCI_UART buffer interrupt.
  *
@@ -288,7 +283,6 @@ extern "C"
  *    @param[in]    u32IntSel  Interrupt type select
  *                             - \ref UUART_BUFCTL_RXOVIEN_Msk     : Receive buffer overrun error interrupt
  *
- *    @return       None
  *
  *    @details      This macro disable specified USCI_UART buffer interrupt.
  *
@@ -307,7 +301,6 @@ extern "C"
  *                             - \ref UUART_INTEN_TXENDIEN_Msk  : Transmit end interrupt
  *                             - \ref UUART_INTEN_TXSTIEN_Msk   : Transmit start interrupt
  *
- *    @return       None
  *
  *    @details      This macro enable specified USCI_UART transfer interrupt.
  *
@@ -326,7 +319,6 @@ extern "C"
  *                             - \ref UUART_INTEN_TXENDIEN_Msk  : Transmit end interrupt
  *                             - \ref UUART_INTEN_TXSTIEN_Msk   : Transmit start interrupt
  *
- *    @return       None
  *
  *    @details      This macro disable specified USCI_UART transfer interrupt.
  *
@@ -364,7 +356,6 @@ extern "C"
  *                                  - \ref UUART_PROTSTS_TXENDIF_Msk     : Transmit End Interrupt Flag
  *                                  - \ref UUART_PROTSTS_TXSTIF_Msk      : Transmit Start Interrupt Flag
  *
- *    @return       None
  *
  *    @details      This macro clear specified protocol interrupt flag.
  *
@@ -394,7 +385,6 @@ extern "C"
  *    @param[in]    u32IntTypeFlag  Interrupt Type Flag, should be
  *                                  - \ref UUART_BUFSTS_RXOVIF_Msk : Receive Buffer Over-run Error  Interrupt Indicator
  *
- *    @return       None
  *
  *    @details      This macro clear specified buffer interrupt flag.
  *
@@ -423,7 +413,6 @@ extern "C"
  *
  *    @param[in]    psUUART        The pointer of the specified USCI_UART module
  *
- *    @return       None
  *
  *    @details      This macro clear wakeup flag.
  *
@@ -437,7 +426,6 @@ extern "C"
   *
   *   @param[in]  psUUART    The pointer of the specified USCI_UART module.
   *
-  *   @return     None
   *
   *   @details    Enable PDMA function for both transfer and receive.
  *
@@ -451,7 +439,6 @@ extern "C"
   *
   *   @param[in]  psUUART    The pointer of the specified USCI_UART module.
   *
-  *   @return     None
   *
   *   @details    Disable PDMA function for both transfer and receive.
  *
@@ -475,11 +462,11 @@ void UUART_EnableFlowCtrl(UUART_T *psUUART);
 void UUART_DisableFlowCtrl(UUART_T *psUUART);
 
 
-/*@}*/ /* end of group UUART_EXPORTED_FUNCTIONS */
+/** @} end of group UUART_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group UUART_Driver */
+/** @} end of group UUART_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

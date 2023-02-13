@@ -2,7 +2,6 @@
  * @file     main.c
  * @version  V3.00
  * @brief    Implement a code and execute in SRAM to program embedded Flash.
- *           (Support KEIL MDK Only)
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -85,7 +84,9 @@ int main()
 
     /*
        This sample code is used to demonstrate how to implement a code to execute in SRAM.
-       By setting scatter loading file (scatter.scf),
+       By setting KEIL's scatter file: scatter.scf,
+                  IAR's linker configuration file: FMC_ExeInSRAM.icf,
+                  GCC's linker script file: FMC_ExeInSRAM.ld,
        RO code is placed to 0x10000000 ~ 0x10003fff with RW is placed to 0x20004000 ~ 0x20007fff.
     */
 

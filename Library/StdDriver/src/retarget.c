@@ -11,6 +11,13 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+#if defined (__ICCARM__)
+    #if (__VER__ >= 9000000)
+        #include <LowLevelIOInterface.h>
+    #endif
+    #pragma diag_suppress=Pm150
+#endif
+
 #if defined ( __CC_ARM   )
     #if (__ARMCC_VERSION < 400000)
     #else
@@ -23,11 +30,25 @@
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 #if !(defined(__ICCARM__) && (__VER__ >= 6010000))
+#if (__ARMCC_VERSION < 6040000)
 struct __FILE
 {
     int handle; /* Add whatever you need here */
 };
-#endif
+#else
+#if !defined(__MICROLIB)
+    #if (__OPTIMIZE__ == -O0)
+        __asm(".global __ARM_use_no_argv\n\t" "__ARM_use_no_argv:\n\t");
+    #endif /* (__OPTIMIZE__ == -O0) */
+#endif /* !defined(__MICROLIB) */
+#endif /* (__ARMCC_VERSION < 6040000) */
+
+#elif(__VER__ >= 8000000)
+struct __FILE
+{
+    int handle; /* Add whatever you need here */
+};
+#endif /* !(defined(__ICCARM__) && (__VER__ >= 6010000)) */
 
 FILE __stdout;
 FILE __stdin;
@@ -62,27 +83,25 @@ enum { r0, r1, r2, r3, r12, lr, pc, psr};
 /**
  * @brief       Helper function to dump register while hard fault occurred
  * @param[in]   stack pointer points to the dumped registers in SRAM
- * @return      None
  * @details     This function is implement to print r0, r1, r2, r3, r12, lr, pc, psr
  */
 static void stackDump(uint32_t stack[])
 {
- /*
-    printf("r0  = 0x%x\n", stack[r0]);
-    printf("r1  = 0x%x\n", stack[r1]);
-    printf("r2  = 0x%x\n", stack[r2]);
-    printf("r3  = 0x%x\n", stack[r3]);
-    printf("r12 = 0x%x\n", stack[r12]);
-    printf("lr  = 0x%x\n", stack[lr]);
-    printf("pc  = 0x%x\n", stack[pc]);
-    printf("psr = 0x%x\n", stack[psr]);
- */
+    /*
+       printf("r0  = 0x%x\n", stack[r0]);
+       printf("r1  = 0x%x\n", stack[r1]);
+       printf("r2  = 0x%x\n", stack[r2]);
+       printf("r3  = 0x%x\n", stack[r3]);
+       printf("r12 = 0x%x\n", stack[r12]);
+       printf("lr  = 0x%x\n", stack[lr]);
+       printf("pc  = 0x%x\n", stack[pc]);
+       printf("psr = 0x%x\n", stack[psr]);
+    */
 }
 
 /**
  * @brief       Hard fault handler
  * @param[in]   stack pointer points to the dumped registers in SRAM
- * @return      None
  * @details     Replace while(1) at the end of this function with chip reset if WDT is not enabled for end product
  */
 void Hard_Fault_Handler(uint32_t stack[])
@@ -139,7 +158,7 @@ int32_t SH_Return(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 void SH_End(void)
 {
     asm("MOVS   R0,#1 \n"        //; Set return value to 1
-        "BX     lr    \n"            //; Return
+        "BX     lr    \n"        //; Return
        );
 }
 
@@ -175,8 +194,6 @@ int32_t SH_DoCommand(int32_t n32In_R0, int32_t n32In_R1, int32_t *pn32Out_R0)
 
 /**
  * @brief       Get LR value and branch to Hard_Fault_Handler function
- * @param       None
- * @return      None
  * @details     This function is use to get LR value and branch to Hard_Fault_Handler function.
  */
 void Get_LR_and_Branch(void)
@@ -188,8 +205,6 @@ void Get_LR_and_Branch(void)
 
 /**
  * @brief       Get MSP value and branch to Get_LR_and_Branch function
- * @param       None
- * @return      None
  * @details     This function is use to get stack pointer value and branch to Get_LR_and_Branch function.
  */
 void Stack_Use_MSP(void)
@@ -201,8 +216,6 @@ void Stack_Use_MSP(void)
 
 /**
  * @brief       Get stack pointer value and branch to Get_LR_and_Branch function
- * @param       None
- * @return      None
  * @details     This function is use to get stack pointer value and branch to Get_LR_and_Branch function.
  */
 void HardFault_Handler_Ret(void)
@@ -218,8 +231,7 @@ void HardFault_Handler_Ret(void)
 
 /**
  * @brief    This function is implemented to support semihost
- * @param    None
- * @returns  None
+ *
  * @details  This function is implement to support semihost message print.
  *
  */
@@ -240,8 +252,6 @@ void SP_Read_Ready(void)
 
 /**
  * @brief       Get stack pointer value and branch to Get_LR_and_Branch function
- * @param       None
- * @return      None
  * @details     This function is use to get stack pointer value and branch to Get_LR_and_Branch function.
  */
 void SP_is_PSP(void)
@@ -255,10 +265,6 @@ void SP_is_PSP(void)
 
 /**
  * @brief    This HardFault handler is implemented to support semihost
- *
- * @param    None
- *
- * @returns  None
  *
  * @details  This function is implement to support semihost message print.
  *
@@ -280,8 +286,7 @@ void HardFault_Handler(void)
 
 /**
  * @brief    This HardFault handler is implemented to support semihost
- * @param    None
- * @returns  None
+ *
  * @details  This function is implement to support semihost message print.
  *
  */
@@ -292,38 +297,39 @@ __asm int32_t HardFault_Handler(void)
     BMI     SP_is_PSP             //; previous stack is PSP
     MRS     R0, MSP               //; previous stack is MSP, read MSP
     B       SP_Read_Ready
+
 SP_is_PSP
     MRS     R0, PSP               //; Read PSP
 
 SP_Read_Ready
     LDR     R1, [R0, #24]         //; Get previous PC
     LDRH    R3, [R1]              //; Get instruction
-    LDR     R2, =0xBEAB           //; The special BKPT instruction
+    LDR     R2, = 0xBEAB          //; The special BKPT instruction
     CMP     R3, R2                //; Test if the instruction at previous PC is BKPT
     BNE     HardFault_Handler_Ret //; Not BKPT
 
     ADDS    R1, #4                //; Skip BKPT and next line
     STR     R1, [R0, #24]         //; Save previous PC
-
     BX      LR                    //; Return
-HardFault_Handler_Ret
 
+HardFault_Handler_Ret
     /* TODO: Implement your own hard fault handler here. */
     MOVS    r0, #4
     MOV     r1, LR
-    TST     r0, r1                          //; check LR bit 2  
-    BEQ     Stack_Use_MSP                   //; stack use MSP
-    MRS     R0, PSP ;stack use PSP          //; stack use PSP, read PSP
+    TST     r0, r1                //; check LR bit 2
+    BEQ     Stack_Use_MSP         //; stack use MSP
+    MRS     R0, PSP               //; stack use PSP, read PSP
     B       Get_LR_and_Branch
+
 Stack_Use_MSP
-    MRS     R0, MSP ; stack use MSP         //; read MSP
+    MRS     R0, MSP               //; read MSP
+
 Get_LR_and_Branch
-    MOV     R1, LR ; LR current value       //; LR current value       
-    LDR     R2,=__cpp(Hard_Fault_Handler)   //; branch to Hard_Fault_Handler 
+    MOV     R1, LR                //; LR current value
+    LDR     R2, = __cpp(Hard_Fault_Handler) //; branch to Hard_Fault_Handler
     BX      R2
 
     B       .
-
     ALIGN
 }
 
@@ -370,12 +376,7 @@ SH_End
 /**
  * @brief    This HardFault handler is implemented to show r0, r1, r2, r3, r12, lr, pc, psr
  *
- * @param    None
- *
- * @returns  None
- *
  * @details  This function is implement to print r0, r1, r2, r3, r12, lr, pc, psr.
- *
  */
 void HardFault_Handler(void)
 {
@@ -428,12 +429,7 @@ void Stack_Use_MSP(void)
 /**
  * @brief    This HardFault handler is implemented to show r0, r1, r2, r3, r12, lr, pc, psr
  *
- * @param    None
- *
- * @returns  None
- *
  * @details  This function is implement to print r0, r1, r2, r3, r12, lr, pc, psr.
- *
  */
 void HardFault_Handler(void)
 {
@@ -453,26 +449,26 @@ void HardFault_Handler(void)
 /**
  * @brief    This HardFault handler is implemented to show r0, r1, r2, r3, r12, lr, pc, psr
  *
- * @param    None
  *
- * @return   None
  *
  * @details  The function extracts the location of stack frame and passes it to Hard_Fault_Handler function as a pointer
  *
  */
 __asm int32_t HardFault_Handler(void)
 {
-    MOVS    r0, #4  
+    MOVS    r0, #4
     MOV     r1, LR
-    TST     r0, r1          //; check LR bit 2                 
+    TST     r0, r1          //; check LR bit 2
     BEQ     Stack_Use_MSP   //; stack use MSP
     MRS     R0, PSP         //; stack use PSP, read PSP
     B       Get_LR_and_Branch
+
 Stack_Use_MSP
     MRS     R0, MSP         //; read MSP
+
 Get_LR_and_Branch
     MOV     R1, LR          //; LR current value
-    LDR     R2,=__cpp(Hard_Fault_Handler) //; branch to Hard_Fault_Handler 
+    LDR     R2, = __cpp(Hard_Fault_Handler) //; branch to Hard_Fault_Handler
     BX      R2
 }
 
@@ -485,23 +481,22 @@ Get_LR_and_Branch
  *
  * @param[in] ch  A character data writes to debug port
  *
- * @returns  Send value from UART debug port
- *
  * @details  Send a target char to UART debug port .
  */
 #ifndef NONBLOCK_PRINTF
 void SendChar_ToUART(int ch)
 {
 
-    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);    
+    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
 
     if (ch == '\n')
     {
-        DEBUG_PORT->DAT = '\r';		
+        DEBUG_PORT->DAT = '\r';
+
         while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
     }
-	
-	DEBUG_PORT->DAT = ch;
+
+    DEBUG_PORT->DAT = ch;
 }
 
 #else
@@ -530,7 +525,7 @@ void SendChar_ToUART(int ch)
                 i32Head = i32Tmp;
             }
         }
-		
+
         i32Tmp = i32Head + 1;
 
         if (i32Tmp > BUF_SIZE) i32Tmp = 0;
@@ -539,7 +534,7 @@ void SendChar_ToUART(int ch)
         {
             u8Buf[i32Head] = ch;
             i32Head = i32Tmp;
-        }		
+        }
     }
     else
     {
@@ -561,8 +556,7 @@ void SendChar_ToUART(int ch)
         }
         else
             break; // FIFO full
-    }
-    while (i32Tail != i32Head);
+    } while (i32Tail != i32Head);
 }
 #endif
 
@@ -570,8 +564,6 @@ void SendChar_ToUART(int ch)
  * @brief    Routine to send a char
  *
  * @param[in] ch A character data writes to debug port
- *
- * @returns  Send value from UART debug port or semihost
  *
  * @details  Send a target char to UART debug port or semihost.
  */
@@ -608,7 +600,6 @@ void SendChar(int ch)
 /**
  * @brief    Routine to get a char
  *
- * @param    None
  *
  * @returns  Get value from UART debug port or semihost
  *
@@ -656,7 +647,6 @@ char GetChar(void)
 /**
  * @brief    Check any char input from UART
  *
- * @param    None
  *
  * @retval   1: No any char input
  * @retval   0: Have some char input
@@ -671,7 +661,6 @@ int kbhit(void)
 /**
  * @brief    Check if debug message finished
  *
- * @param    None
  *
  * @retval   1: Message is finished
  * @retval   0: Message is transmitting.
@@ -688,8 +677,6 @@ int IsDebugFifoEmpty(void)
  * @brief    C library retargetting
  *
  * @param[in]  ch  Write a character data
- *
- * @returns  None
  *
  * @details  Check if message finished (FIFO empty of debug port)
  */
@@ -718,13 +705,44 @@ void _ttywrch(int ch)
  *
  *
  */
+#if defined (__ICCARM__) && (__VER__ >= 9000000)
+size_t __write(int handle, const unsigned char *buffer, size_t size)
+{
+    size_t nChars = 0;
 
+    if (buffer == 0)
+    {
+        /*
+        * This means that we should flush internal buffers.  Since we
+        * don't we just return.  (Remember, "handle" == -1 means that all
+        * handles should be flushed.)
+        */
+        return 0;
+    }
+
+    /* This template only writes to "standard out" and "standard err",
+    * for all other file handles it returns failure. */
+    if (handle != _LLIO_STDOUT && handle != _LLIO_STDERR)
+    {
+        return _LLIO_ERROR;
+    }
+
+    for (/* Empty */; size != 0; --size)
+    {
+        SendChar(*buffer++);
+        ++nChars;
+    }
+
+    return nChars;
+}
+#else
 int fputc(int ch, FILE *stream)
 {
     (void) stream;
     SendChar(ch);
     return ch;
 }
+#endif
 
 #if defined ( __GNUC__ )
 #if defined (OS_USE_SEMIHOSTING)
@@ -739,15 +757,15 @@ int _write(int fd, char *ptr, int len)
     while (i--)
     {
         while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
-       
+
         if (*ptr == '\n')
         {
-            DEBUG_PORT->DAT = '\r';			
-			
+            DEBUG_PORT->DAT = '\r';
+
             while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
         }
-		
-		DEBUG_PORT->DAT = *ptr++;
+
+        DEBUG_PORT->DAT = *ptr++;
     }
 
     return len;
@@ -776,11 +794,47 @@ int _read(int fd, char *ptr, int len)
  * @details    For get message from debug port or semihosting.
  *
  */
+#if defined (__ICCARM__) && (__VER__ >= 9000000)
+size_t __read(int handle, unsigned char *buffer, size_t size)
+{
+    /* Remove the #if #endif pair to enable the implementation */
+    int nChars = 0;
 
+    /* This template only reads from "standard in", for all other file
+     * handles it returns failure. */
+    if (handle != _LLIO_STDIN)
+    {
+        return _LLIO_ERROR;
+    }
+
+    for (/* Empty */; size > 0; --size)
+    {
+        int c = GetChar();
+
+        if (c < 0)
+            break;
+
+#if (STDIN_ECHO != 0)
+        SendChar(c);
+#endif
+
+        *buffer++ = c;
+        ++nChars;
+    }
+
+    return nChars;
+}
+
+long __lseek(int handle, long offset, int whence)
+{
+    return -1;
+}
+#else
 int fgetc(FILE *stream)
 {
     return (GetChar());
 }
+#endif
 
 /**
  * @brief      Check error indicator

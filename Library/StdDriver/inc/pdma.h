@@ -105,7 +105,7 @@ extern "C"
 #define PDMA_SCATSTS_TEMPTYF0_Pos        (0)                                               /*!< PDMA_T::SCATSTS: TEMPTYFn Position     */
 #define PDMA_SCATSTS_TEMPTYFn_Msk        (0x1ful << PDMA_SCATSTS_TEMPTYFn_Pos)             /*!< PDMA_T::SCATSTS: TEMPTYFn Mask         */
 
-/*@}*/ /* end of group PDMA_EXPORTED_CONSTANTS */
+/** @} end of group PDMA_EXPORTED_CONSTANTS */
 
 /** @addtogroup PDMA_EXPORTED_FUNCTIONS PDMA Exported Functions
   @{
@@ -116,7 +116,6 @@ extern "C"
  *
  * @param[in]   None
  *
- * @return      None
  *
  * @details     This macro gets the interrupt status.
  *
@@ -129,7 +128,6 @@ extern "C"
  *
  * @param[in]   None
  *
- * @return      None
  *
  * @details     Get the transfer done Interrupt status.
  *
@@ -142,7 +140,6 @@ extern "C"
  *
  * @param[in]   u32Mask     The channel mask
  *
- * @return      None
  *
  * @details     Clear the transfer done Interrupt status.
  *
@@ -155,7 +152,6 @@ extern "C"
  *
  * @param[in]   None
  *
- * @return      None
  *
  * @details     Get the target abort Interrupt status.
  *
@@ -168,7 +164,6 @@ extern "C"
  *
  * @param[in]   u32Mask     The channel mask
  *
- * @return      None
  *
  * @details     Clear the target abort Interrupt status.
  *
@@ -181,7 +176,6 @@ extern "C"
  *
  * @param[in]   None
  *
- * @return      None
  *
  * @details     Get the scatter-gather table empty Interrupt status.
  *
@@ -194,7 +188,6 @@ extern "C"
  *
  * @param[in]   u32Mask     The channel mask
  *
- * @return      None
  *
  * @details     Clear the scatter-gather table empty Interrupt status.
  *
@@ -207,7 +200,6 @@ extern "C"
  *
  * @param[in]   u32Ch     The selected channel
  *
- * @return      None
  *
  * @details     Clear the selected channel timeout interrupt status.
  * @note        This function is only supported in channel 0 and channel 1.
@@ -236,7 +228,6 @@ extern "C"
  * @param[in]   u32Ch     The selected channel
  * @param[in]   u32Addr   The selected address
  *
- * @return      None
  *
  * @details     This macro set the selected channel source address.
  *
@@ -250,7 +241,6 @@ extern "C"
  * @param[in]   u32Ch     The selected channel
  * @param[in]   u32Addr   The selected address
  *
- * @return      None
  *
  * @details     This macro set the selected channel destination address.
  *
@@ -264,7 +254,6 @@ extern "C"
  * @param[in]   u32Ch          The selected channel
  * @param[in]   u32TransCount  Transfer Count
  *
- * @return      None
  *
  * @details     This macro set the selected channel transfer count.
  *
@@ -278,7 +267,6 @@ extern "C"
  * @param[in]   u32Ch     The selected channel
  * @param[in]   u32Addr   The descriptor address
  *
- * @return      None
  *
  * @details     This macro set the selected channel scatter-gather descriptor address.
  *
@@ -290,7 +278,6 @@ extern "C"
  *
  * @param[in]   u32Ch     The selected channel
  *
- * @return      None
  *
  * @details     This macro pause the selected channel.
  *
@@ -303,7 +290,6 @@ extern "C"
  *
  * @param[in]   u32Ch     The selected channel
  *
- * @return      None
  *
  * @details     This macro reset the selected channel.
  *
@@ -328,11 +314,11 @@ void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask);
 void PDMA_DisableInt(uint32_t u32Ch, uint32_t u32Mask);
 
 
-/*@}*/ /* end of group PDMA_EXPORTED_FUNCTIONS */
+/** @} end of group PDMA_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group PDMA_Driver */
+/** @} end of group PDMA_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

@@ -111,7 +111,7 @@ extern "C"
 #define ADC_GREATER_OR_EQUAL   1   /*!< ADC compare condition is "greater than or equal to the compare value" */
 
 
-/*@}*/ /* end of group ADC_EXPORTED_CONSTANTS */
+/** @} end of group ADC_EXPORTED_CONSTANTS */
 
 /** @addtogroup ADC_EXPORTED_FUNCTIONS ADC Exported Functions
   @{
@@ -150,7 +150,6 @@ extern "C"
   *                     - \ref ADC_ADF_INT          :Convert complete interrupt flag.
   *                     - \ref ADC_CMP0_INT         :Comparator 0 interrupt flag.
   *                     - \ref ADC_CMP1_INT         :Comparator 1 interrupt flag.
-  * @return  None
   * @details ADF (ADSR0[0])/CMPF0 (ADSR0[1])/CMPF1 (ADSR0[2]) can be cleared by writing 1 to itself.
   * \hideinitializer
   */
@@ -191,7 +190,6 @@ extern "C"
 /**
   * @brief Power down ADC module.
   * @param[in] adc The pointer of the specified ADC module.
-  * @return None
   * @details Disable A/D converter analog circuit for saving power consumption.
   * \hideinitializer
   */
@@ -200,7 +198,6 @@ extern "C"
 /**
   * @brief Power on ADC module.
   * @param[in] adc The pointer of the specified ADC module.
-  * @return None
   * @details Before starting A/D conversion function, ADEN bit (ADCR[0]) should be set to 1.
   * \hideinitializer
   */
@@ -215,7 +212,6 @@ extern "C"
   *                          - \ref ADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value".
   * @param[in] u32Data Specifies the compare value, valid value are between 0 ~ 0xFFF.
   * @param[in] u32MatchCount Specifies the match count setting, valid values are between 1~16.
-  * @return None
   * @details For example, ADC_ENABLE_CMP0(ADC, 5, ADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL, 0x800, 10);
   *          Means ADC will assert comparator 0 flag if channel 5 conversion result is greater than or
   *          equal to 0x800 for 10 times continuously.
@@ -234,7 +230,6 @@ extern "C"
 /**
   * @brief Disable comparator 0
   * @param[in] adc The pointer of the specified ADC module
-  * @return None
   * @details Set CMPEN (ADCMPR0[0]) to 0 and reset comparator 0 configurations to disable ADC compare function.
   * \hideinitializer
   */
@@ -249,7 +244,6 @@ extern "C"
   *                          - \ref ADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL     :The compare condition is "greater than or equal to the compare value".
   * @param[in] u32Data Specifies the compare value, valid value are between 0 ~ 0xFFF.
   * @param[in] u32MatchCount Specifies the match count setting, valid values are between 1~16.
-  * @return None
   * @details For example, ADC_ENABLE_CMP1(ADC, 5, ADC_ADCMPR_CMPCOND_GREATER_OR_EQUAL, 0x800, 10);
   *          Means ADC will assert comparator 1 flag if channel 5 conversion result is greater than or
   *          equal to 0x800 for 10 times continuously.
@@ -268,7 +262,6 @@ extern "C"
 /**
   * @brief Disable comparator 1.
   * @param[in] adc The pointer of the specified ADC module.
-  * @return None
   * @details Set CMPEN (ADCMPR1[0]) to 0 and reset comparator 1 configurations to disable ADC compare function.
   * \hideinitializer
   */
@@ -280,7 +273,6 @@ extern "C"
   * @param[in] u32Mask  Channel enable bit. Each bit corresponds to a input channel. Bit 0 is channel 0, bit 1 is channel 1..., bit 11 is channel 11. Other valid values are:
   *                     - \ref ADC_ADCHER_BANDGAP             : Internal bandgap voltage.
   *                     - \ref ADC_ADCHER_TEMPERATURE_SENSOR  : Output of internal temperature sensor.
-  * @return None
   * @details Enabled channel will be converted while ADC starts.
   * @note In single mode, ADC can only convert 1 channel. If more than 1 channel are enabled, only the channel with smallest number will be converted.
   * \hideinitializer
@@ -293,7 +285,6 @@ extern "C"
   * @param[in] u32Format Decides the output format. Valid values are:
   *                      - \ref ADC_ADCR_DMOF_UNSIGNED_OUTPUT      : Select the straight binary format as the output format of the conversion result.
   *                      - \ref ADC_ADCR_DMOF_TWOS_COMPLEMENT      : Select the 2's complement format as the output format of the conversion result.
-  * @return None
   * @details  The macro is used to set the output format of ADC differential input mode.
   * \hideinitializer
   */
@@ -302,7 +293,6 @@ extern "C"
 /**
   * @brief Start the A/D conversion.
   * @param[in] adc The pointer of the specified ADC module.
-  * @return None
   * @details Set ADST bit to 1 to start the A/D conversion.
   * \hideinitializer
   */
@@ -311,7 +301,6 @@ extern "C"
 /**
   * @brief Stop the A/D conversion.
   * @param[in] adc The pointer of the specified ADC module.
-  * @return None
   * @details ADST (ADCR[11]) will be cleared to 0 by hardware automatically at the ends of single mode and single-cycle scan mode.
   *          In continuous scan mode and burst mode, A/D conversion is continuously performed until software writes 0 to this bit.
   * @note If ADST bit is cleared to 0 when ADC is in converting, the BUSY bit will be cleared to 0 immediately, ADC will finish
@@ -323,7 +312,6 @@ extern "C"
 /**
   * @brief Enable PDMA transfer.
   * @param[in] adc The pointer of the specified ADC module
-  * @return None
   * @details Enable PDMA to transfer the conversion data.
   * @note While enable PDMA transfer, software must set ADIE = 0 to disable interrupt.
   * \hideinitializer
@@ -333,7 +321,6 @@ extern "C"
 /**
   * @brief Disable PDMA transfer.
   * @param[in] adc The pointer of the specified ADC module
-  * @return None
   * @details Disable PDMA to transfer the conversion data.
   * \hideinitializer
   */
@@ -366,11 +353,11 @@ void ADC_DisableInt(ADC_T *adc, uint32_t u32Mask);
 
 
 
-/*@}*/ /* end of group ADC_EXPORTED_FUNCTIONS */
+/** @} end of group ADC_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group ADC_Driver */
+/** @} end of group ADC_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

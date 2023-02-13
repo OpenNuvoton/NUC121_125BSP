@@ -1,10 +1,10 @@
 /******************************************************************************//**
  * @file     main.c
- * @version  V3.00
+ * @version  V3.01
  * @brief
- * @brief    Demonstrate how to update chip flash data through USB HID interface
+ *           Demonstrate how to update chip flash data through USB HID interface
  *           between chip USB device and PC.
- *           Nuvoton NuMicro ISP Porgramming Tool is also required in this
+ *           Nuvoton NuMicro ISP Programming Tool is also required in this
  *           sample code to connect with chip USB device and assign update file
  *           of Flash.
  *
@@ -15,6 +15,11 @@
 #include "targetdev.h"
 #include "hid_transfer.h"
 
+#define HIRC_AUTO_TRIM      (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);   /* Use USB signal to fine tune HIRC 48MHz */
+#define TRIM_INIT           (SYS_BASE+0x110)
+#define TRIM_THRESHOLD      16      /* Each value is 0.125%, max 2% */
+
+static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
 
 /*--------------------------------------------------------------------------*/
 void SYS_Init(void)
@@ -61,8 +66,58 @@ int32_t main(void)
         /* Enable USB device interrupt */
         NVIC_EnableIRQ(USBD_IRQn);
 
+        /* Backup default trim value */
+        s_u32DefaultTrim = M32(TRIM_INIT);
+        s_u32LastTrim = s_u32DefaultTrim;
+
+        /* Clear SOF */
+        USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
         while (DetectPin == 0)
         {
+            /* Start USB trim function if it is not enabled. */
+            if ((SYS->IRCTCTL & SYS_IRCTCTL_FREQSEL_Msk) != 0x2)
+            {
+                /* Start USB trim only when USB signal arrived */
+                if (USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
+                {
+                    /* Clear SOF */
+                    USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+                    /* Enable USB clock trim function */
+                    SYS->IRCTCTL = HIRC_AUTO_TRIM;
+                }
+            }
+
+            /* Disable USB Trim when any error found */
+            if (SYS->IRCTISTS & (SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk))
+            {
+                /* Last TRIM */
+                M32(TRIM_INIT) = s_u32LastTrim;
+
+                /* Disable USB clock trim function */
+                SYS->IRCTCTL = 0;
+
+                /* Clear trim error flags */
+                SYS->IRCTISTS = SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk;
+
+                /* Clear SOF */
+                USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+            }
+
+            /* Check trim value whether it is over the threshold */
+            if ((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
+            {
+                /* Write updated value */
+                M32(TRIM_INIT) = s_u32LastTrim;
+            }
+            else
+            {
+                /* Backup trim value */
+                s_u32LastTrim =  M32(TRIM_INIT);
+            }
+
             if (bUsbDataReady == TRUE)
             {
                 WDT->CTL &= ~(WDT_CTL_WDTEN_Msk | WDT_CTL_ICEDEBUG_Msk);
@@ -91,8 +146,3 @@ _APROM:
     /* Trap the CPU */
     while (1);
 }
-
-
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
-

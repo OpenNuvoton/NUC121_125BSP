@@ -33,7 +33,6 @@ static uint8_t u32ChSelect[PDMA_CH_MAX];
  *                - \ref PDMA_CHCTL_CHEN2_Msk
  *                - \ref PDMA_CHCTL_CHEN3_Msk
  *                - \ref PDMA_CHCTL_CHEN4_Msk
- * @return      None
  *
  * @details     This function enable the PDMA channels.
  */
@@ -56,9 +55,7 @@ void PDMA_Open(uint32_t u32Mask)
 /**
  * @brief       PDMA Close
  *
- * @param       None
  *
- * @return      None
  *
  * @details     This function disable all PDMA channels.
  */
@@ -77,7 +74,6 @@ void PDMA_Close(void)
  *                - \ref PDMA_WIDTH_32
  * @param[in]   u32TransCount   Transfer count
  *
- * @return      None
  *
  * @details     This function set the selected channel data width and transfer count.
  */
@@ -100,7 +96,6 @@ void PDMA_SetTransferCnt(uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCou
  *                - \ref PDMA_DAR_INC
  *                - \ref PDMA_DAR_FIX
  *
- * @return      None
  *
  * @details     This function set the selected channel source/destination address and attribute.
  */
@@ -142,7 +137,6 @@ void PDMA_SetTransferAddr(uint32_t u32Ch, uint32_t u32SrcAddr, uint32_t u32SrcCt
  * @param[in]   u32ScatterEn    Scatter-gather mode enable
  * @param[in]   u32DescAddr     Scatter-gather descriptor address
  *
- * @return      None
  *
  * @details     This function set the selected channel transfer mode. Include peripheral setting.
  */
@@ -201,7 +195,6 @@ void PDMA_SetTransferMode(uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32Sc
  *                - \ref PDMA_BURST_2
  *                - \ref PDMA_BURST_1
  *
- * @return      None
  *
  * @details     This function set the selected channel burst type and size.
  */
@@ -217,7 +210,6 @@ void PDMA_SetBurstType(uint32_t u32Ch, uint32_t u32BurstType, uint32_t u32BurstS
  * @param[in]   u32Mask         Channel enable bits.
  *                - \ref PDMA_TOUTEN_TOUTEN0_Msk
  *                - \ref PDMA_TOUTEN_TOUTEN1_Msk
- * @return      None
  *
  * @details     This function enable timeout function of the selected channel(s).
  * @note        This function is only supported in channel 0 and channel 1.
@@ -233,7 +225,6 @@ void PDMA_EnableTimeout(uint32_t u32Mask)
  * @param[in]   u32Mask         Channel enable bits.
  *                - \ref PDMA_TOUTEN_TOUTEN0_Msk
  *                - \ref PDMA_TOUTEN_TOUTEN1_Msk
- * @return      None
  *
  * @details     This function disable timeout function of the selected channel(s).
  * @note        This function is only supported in channel 0 and channel 1.
@@ -249,7 +240,6 @@ void PDMA_DisableTimeout(uint32_t u32Mask)
  * @param[in]   u32Ch           The selected channel
  * @param[in]   u32OnOff        Enable/disable timeout function
  * @param[in]   u32TimeOutCnt   Timeout count
- * @return      None
  *
  * @details     This function set the timeout count.
  * @note        This function is only supported in channel 0 and channel 1.
@@ -281,7 +271,6 @@ void PDMA_SetTimeOut(uint32_t u32Ch, uint32_t u32OnOff, uint32_t u32TimeOutCnt)
  *
  * @param[in]   u32Ch           The selected channel
  *
- * @return      None
  *
  * @details     This function trigger the selected channel.
  */
@@ -300,7 +289,6 @@ void PDMA_Trigger(uint32_t u32Ch)
  *                - \ref PDMA_INT_TEMPTY
  *                - \ref PDMA_INT_TIMEOUT
  *
- * @return      None
  *
  * @details     This function enable the selected channel interrupt.
  * @note        PDMA_INT_TIMEOUT is only supported in channel 0 and channel 1.
@@ -335,7 +323,6 @@ void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask)
  *                - \ref PDMA_INT_TEMPTY
  *                - \ref PDMA_INT_TIMEOUT
  *
- * @return      None
  *
  * @details     This function disable the selected channel interrupt.
  * @note        PDMA_INT_TIMEOUT is only supported in channel 0 and channel 1.
@@ -362,10 +349,10 @@ void PDMA_DisableInt(uint32_t u32Ch, uint32_t u32Mask)
     }
 }
 
-/*@}*/ /* end of group PDMA_EXPORTED_FUNCTIONS */
+/** @} end of group PDMA_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group PDMA_Driver */
+/** @} end of group PDMA_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

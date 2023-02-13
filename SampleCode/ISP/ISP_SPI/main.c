@@ -60,16 +60,16 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* PC.0 is SPI_SS */
     SYS->GPC_MFPL &= ~SYS_GPC_MFPL_PC0MFP_Msk;
-    SYS->GPC_MFPL |= (1 << SYS_GPC_MFPL_PC0MFP_Pos);
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC0MFP_SPI0_SS;
     /* PC.1 is SPI_CLK */
     SYS->GPC_MFPL &= ~SYS_GPC_MFPL_PC1MFP_Msk;
-    SYS->GPC_MFPL |= (1 << SYS_GPC_MFPL_PC1MFP_Pos);
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC1MFP_SPI0_CLK;
     /* PC.2 is SPI_MISO */
     SYS->GPC_MFPL &= ~SYS_GPC_MFPL_PC2MFP_Msk;
-    SYS->GPC_MFPL |= (1 << SYS_GPC_MFPL_PC2MFP_Pos);
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC2MFP_SPI0_MISO;
     /* PC.3 is SPI_MOSI */
     SYS->GPC_MFPL &= ~SYS_GPC_MFPL_PC3MFP_Msk;
-    SYS->GPC_MFPL |= (1 << SYS_GPC_MFPL_PC3MFP_Pos);
+    SYS->GPC_MFPL |= SYS_GPC_MFPL_PC3MFP_SPI0_MOSI;
 
     /* Enable SPI0 clock pin (PC1) schmitt trigger */
     PC->SMTEN |= GPIO_SMTEN_SMTEN1_Msk;

@@ -424,7 +424,7 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 #define SYS_GPF_MFPL_PF5MFP_UART0_RXD        (0x3UL<<SYS_GPF_MFPL_PF5MFP_Pos)   /*!< GPF_MFPL PF5 setting for UART0_RXD      */
 
 
-/*@}*/ /* end of group SYS_EXPORTED_CONSTANTS */
+/** @} end of group SYS_EXPORTED_CONSTANTS */
 
 /** @addtogroup SYS_EXPORTED_FUNCTIONS SYS Exported Functions
   @{
@@ -433,8 +433,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Clear Brown-out detector interrupt flag
-  * @param      None
-  * @return     None
   * @details    This macro clear Brown-out detector interrupt flag.
   * \hideinitializer
   */
@@ -442,8 +440,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Set Brown-out detector function to normal mode
-  * @param      None
-  * @return     None
   * @details    This macro set Brown-out detector to normal mode.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -452,8 +448,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Disable Brown-out detector function
-  * @param      None
-  * @return     None
   * @details    This macro disable Brown-out detector function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -462,8 +456,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Enable Brown-out detector function
-  * @param      None
-  * @return     None
   * @details    This macro enable Brown-out detector function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -472,7 +464,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get Brown-out detector interrupt flag
-  * @param      None
   * @retval     0   Brown-out detect interrupt flag is not set.
   * @retval     >=1 Brown-out detect interrupt flag is set.
   * @details    This macro get Brown-out detector interrupt flag.
@@ -482,7 +473,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get Brown-out detector status
-  * @param      None
   * @retval     0   System voltage is higher than BOD threshold voltage setting or BOD function is disabled.
   * @retval     >=1 System voltage is lower than BOD threshold voltage setting.
   * @details    This macro get Brown-out detector output status.
@@ -493,8 +483,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Enable Brown-out detector interrupt function
-  * @param      None
-  * @return     None
   * @details    This macro enable Brown-out detector interrupt function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -503,8 +491,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Enable Brown-out detector reset function
-  * @param      None
-  * @return     None
   * @details    This macro enable Brown-out detect reset function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -513,8 +499,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Set Brown-out detector function low power mode
-  * @param      None
-  * @return     None
   * @details    This macro set Brown-out detector to low power mode.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -528,7 +512,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
   *             - \ref SYS_BODCTL_BODVL_3_7V
   *             - \ref SYS_BODCTL_BODVL_2_7V
   *             - \ref SYS_BODCTL_BODVL_2_2V
-  * @return     None
   * @details    This macro set Brown-out detector voltage level.
   *             The write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -537,7 +520,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from Brown-out detector reset
-  * @param      None
   * @retval     0   Previous reset source is not from Brown-out detector reset
   * @retval     >=1 Previous reset source is from Brown-out detector reset
   * @details    This macro get previous reset source is from Brown-out detect reset or not.
@@ -547,7 +529,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from CPU reset
-  * @param      None
   * @retval     0   Previous reset source is not from CPU reset
   * @retval     >=1 Previous reset source is from CPU reset
   * @details    This macro get previous reset source is from CPU reset.
@@ -557,7 +538,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from LVR Reset
-  * @param      None
   * @retval     0   Previous reset source is not from Low-Voltage-Reset
   * @retval     >=1 Previous reset source is from Low-Voltage-Reset
   * @details    This macro get previous reset source is from Low-Voltage-Reset.
@@ -567,7 +547,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from Power-on Reset
-  * @param      None
   * @retval     0   Previous reset source is not from Power-on Reset
   * @retval     >=1 Previous reset source is from Power-on Reset
   * @details    This macro get previous reset source is from Power-on Reset.
@@ -577,7 +556,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from reset pin reset
-  * @param      None
   * @retval     0   Previous reset source is not from reset pin reset
   * @retval     >=1 Previous reset source is from reset pin reset
   * @details    This macro get previous reset source is from reset pin reset.
@@ -587,7 +565,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from system reset
-  * @param      None
   * @retval     0   Previous reset source is not from system reset
   * @retval     >=1 Previous reset source is from system reset
   * @details    This macro get previous reset source is from system reset.
@@ -597,7 +574,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Get reset source is from window watch dog reset
-  * @param      None
   * @retval     0   Previous reset source is not from window watch dog reset
   * @retval     >=1 Previous reset source is from window watch dog reset
   * @details    This macro get previous reset source is from window watch dog reset.
@@ -607,8 +583,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Disable Low-Voltage-Reset function
-  * @param      None
-  * @return     None
   * @details    This macro disable Low-Voltage-Reset function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -617,8 +591,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Enable Low-Voltage-Reset function
-  * @param      None
-  * @return     None
   * @details    This macro enable Low-Voltage-Reset function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -627,8 +599,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Disable Power-on Reset function
-  * @param      None
-  * @return     None
   * @details    This macro disable Power-on Reset function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -637,8 +607,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Enable Power-on Reset function
-  * @param      None
-  * @return     None
   * @details    This macro enable Power-on Reset function.
   *             The register write-protection function should be disabled before using this macro.
   * \hideinitializer
@@ -655,7 +623,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
   *             - \ref SYS_RSTSTS_BODRF_Msk
   *             - \ref SYS_RSTSTS_MCURF_Msk
   *             - \ref SYS_RSTSTS_CPURF_Msk
-  * @return     None
   * @details    This macro clear reset source flag.
   * \hideinitializer
   */
@@ -664,8 +631,6 @@ Example: If user want to set PB.1 as UART0_TXD and PB.0 as UART0_RXD in initial 
 
 /**
   * @brief      Disable register write-protection function
-  * @param      None
-  * @return     None
   * @details    This function disable register write-protection function.
   *             To unlock the protected register to allow write access.
   */
@@ -681,8 +646,6 @@ __STATIC_INLINE void SYS_UnlockReg(void)
 
 /**
   * @brief      Enable register write-protection function
-  * @param      None
-  * @return     None
   * @details    This function is used to enable register write-protection function.
   *             To lock the protected register to forbid write access.
   */
@@ -704,11 +667,11 @@ void SYS_EnableBOD(int32_t i32Mode, uint32_t u32BODLevel);
 void SYS_DisableBOD(void);
 
 
-/*@}*/ /* end of group SYS_EXPORTED_FUNCTIONS */
+/** @} end of group SYS_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group SYS_Driver */
+/** @} end of group SYS_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 
 #ifdef __cplusplus

@@ -122,7 +122,7 @@ typedef enum IRQn
 #define __NVIC_PRIO_BITS        2       /*!< armikcmu Supports 2 Bits for the Priority Levels     */
 #define __Vendor_SysTickConfig  0       /*!< Set to 1 if different SysTick Config is used         */
 
-/*@}*/ /* end of group MCU_CMSIS */
+/** @} end of group MCU_CMSIS */
 
 
 #include <stdint.h>
@@ -132,17 +132,6 @@ typedef enum IRQn
 #if defined ( __CC_ARM   )
     #pragma anon_unions
 #endif
-
-/**
- * Initialize the system clock
- *
- * @param  None
- * @return None
- *
- * @brief  Setup the microcontroller system
- *         Initialize the PLL and update the SystemFrequency variable
- */
-extern void SystemInit(void);
 
 
 /******************************************************************************/
@@ -172,7 +161,7 @@ extern void SystemInit(void);
 #include "wdt_reg.h"
 #include "wwdt_reg.h"
 
-/**@}*/ /* end of REGISTER group */
+/** @} end of REGISTER group */
 
 
 /******************************************************************************/
@@ -228,7 +217,7 @@ extern void SystemInit(void);
 #define BPWM1_BASE          (APB2_BASE      + 0x40000)                  /*!< BPWM1 Base Address                               */
 #define PWM1_BASE           (APB2_BASE      + 0x44000)                  /*!< PWM1 Base Address                                */
 
-/**@}*/ /* end of group PERIPHERAL_BASE */
+/** @} end of group PERIPHERAL_BASE */
 
 
 /******************************************************************************/
@@ -287,8 +276,7 @@ extern void SystemInit(void);
 
 #define WWDT                ((WWDT_T *) WWDT_BASE)                      /*!< Window Watch Dog Timer Configuration Struct      */
 
-/**@}*/ /* end of group PMODULE */
-/**@}*/ /* end of group REGISTER */
+/** @} end of group PMODULE */
 
 
 //=============================================================================

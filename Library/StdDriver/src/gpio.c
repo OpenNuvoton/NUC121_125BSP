@@ -35,7 +35,6 @@
  * @param[in]   u32Mode     Operation mode.  It could be \n
  *                          GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_OPEN_DRAIN, GPIO_MODE_QUASI.
  *
- * @return      None
  *
  * @details     This function is used to set specified GPIO operation mode.
  */
@@ -67,7 +66,6 @@ void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
  * @param[in]   u32IntAttribs   The interrupt attribute of specified GPIO pin. It could be \n
  *                              GPIO_INT_RISING, GPIO_INT_FALLING, GPIO_INT_BOTH_EDGE, GPIO_INT_HIGH, GPIO_INT_LOW.
  *
- * @return      None
  *
  * @details     This function is used to enable specified GPIO pin interrupt.
  */
@@ -93,7 +91,6 @@ void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs)
  *                              It could be 0 ~ 2 for PE. \n
  *                              It could be 0 ~ 5 for PF.
  *
- * @return      None
  *
  * @details     This function is used to enable specified GPIO pin interrupt.
  */
@@ -107,10 +104,10 @@ void GPIO_DisableInt(GPIO_T *port, uint32_t u32Pin)
 }
 
 
-/*@}*/ /* end of group GPIO_EXPORTED_FUNCTIONS */
+/** @} end of group GPIO_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group GPIO_Driver */
+/** @} end of group GPIO_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

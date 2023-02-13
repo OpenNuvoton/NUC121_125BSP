@@ -60,7 +60,7 @@ extern "C"
 #define USPI_TX_FULL_MASK            (0x10)                          /*!< TX full status mask */
 #define USPI_SSLINE_STS_MASK         (0x20)                          /*!< USCI_SPI_SS line status mask */
 
-/*@}*/ /* end of group USPI_EXPORTED_CONSTANTS */
+/** @} end of group USPI_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup USPI_EXPORTED_FUNCTIONS USPI Exported Functions
@@ -70,7 +70,6 @@ extern "C"
 /**
   * @brief  Disable slave 3-wire mode.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * \hideinitializer
   */
 #define USPI_DISABLE_3WIRE_MODE(uspi) ( (uspi)->PROTCTL &= ~USPI_PROTCTL_SLV3WIRE_Msk )
@@ -78,7 +77,6 @@ extern "C"
 /**
   * @brief  Enable slave 3-wire mode.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * \hideinitializer
   */
 #define USPI_ENABLE_3WIRE_MODE(uspi) ( (uspi)->PROTCTL |= USPI_PROTCTL_SLV3WIRE_Msk )
@@ -125,7 +123,6 @@ extern "C"
   * @brief  Write datum to TX register.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * @param[in]  u32TxData The datum which user attempt to transfer through USCI_SPI bus.
-  * @return None
   * \hideinitializer
   */
 #define USPI_WRITE_TX(uspi, u32TxData) ( (uspi)->TXDAT = (u32TxData) )
@@ -160,7 +157,6 @@ extern "C"
   * @brief  Set the length of suspend interval.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * @param[in]  u32SuspCycle Decide the length of suspend interval.
-  * @return None
   * \hideinitializer
   */
 #define USPI_SET_SUSPEND_CYCLE(uspi, u32SuspCycle) ( (uspi)->PROTCTL = ((uspi)->PROTCTL & ~USPI_PROTCTL_SUSPITV_Msk) | ((u32SuspCycle) << USPI_PROTCTL_SUSPITV_Pos) )
@@ -168,7 +164,6 @@ extern "C"
 /**
   * @brief  Set the USCI_SPI transfer sequence with LSB first.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * \hideinitializer
   */
 #define USPI_SET_LSB_FIRST(uspi) ( (uspi)->LINECTL |= USPI_LINECTL_LSB_Msk )
@@ -176,7 +171,6 @@ extern "C"
 /**
   * @brief  Set the USCI_SPI transfer sequence with MSB first.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * \hideinitializer
   */
 #define USPI_SET_MSB_FIRST(uspi) ( (uspi)->LINECTL &= ~USPI_LINECTL_LSB_Msk )
@@ -204,7 +198,6 @@ extern "C"
 /**
   * @brief Clear the USCI_SPI wake-up flag.
   * @param[in] uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * \hideinitializer
   */
 #define USPI_CLR_WAKEUP_FLAG(uspi)  ( (uspi)->WKSTS |= USPI_WKSTS_WKF_Msk)
@@ -229,7 +222,6 @@ extern "C"
   *                                  - \ref USPI_PROTSTS_RXSTIF_Msk
   *                                  - \ref USPI_PROTSTS_TXENDIF_Msk
   *                                  - \ref USPI_PROTSTS_TXSTIF_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_CLR_PROT_INT_FLAG(uspi,u32IntTypeFlag)    ( (uspi)->PROTSTS = (u32IntTypeFlag))
@@ -248,7 +240,6 @@ extern "C"
   * @param[in] u32IntTypeFlag Interrupt Type Flag, should be
   *                                  - \ref USPI_BUFSTS_TXUDRIF_Msk
   *                                  - \ref USPI_BUFSTS_RXOVIF_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_CLR_BUF_INT_FLAG(uspi,u32IntTypeFlag)    ( (uspi)->BUFSTS = (u32IntTypeFlag))
@@ -261,7 +252,6 @@ extern "C"
   *                                  - \ref USPI_PROTIEN_SLVTOIEN_Msk
   *                                  - \ref USPI_PROTIEN_SSACTIEN_Msk
   *                                  - \ref USPI_PROTIEN_SSINAIEN_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_ENABLE_PROT_INT(uspi, u32IntSel)    ((uspi)->PROTIEN |= (u32IntSel))
@@ -274,7 +264,6 @@ extern "C"
   *                                  - \ref USPI_PROTIEN_SLVTOIEN_Msk
   *                                  - \ref USPI_PROTIEN_SSACTIEN_Msk
   *                                  - \ref USPI_PROTIEN_SSINAIEN_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_DISABLE_PROT_INT(uspi, u32IntSel)    ((uspi)->PROTIEN &= ~ (u32IntSel))
@@ -285,7 +274,6 @@ extern "C"
   * @param[in] u32IntSel Interrupt Type, should be
   *                                  - \ref USPI_BUFCTL_RXOVIEN_Msk
   *                                  - \ref USPI_BUFCTL_TXUDRIEN_Msk
-  * @return None
    * \hideinitializer
  */
 #define USPI_ENABLE_BUF_INT(uspi, u32IntSel)    ((uspi)->BUFCTL |= (u32IntSel))
@@ -296,7 +284,6 @@ extern "C"
   * @param[in] u32IntSel Interrupt Type, should be
   *                                  - \ref USPI_BUFCTL_RXOVIEN_Msk
   *                                  - \ref USPI_BUFCTL_TXUDRIEN_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_DISABLE_BUF_INT(uspi, u32IntSel)    ((uspi)->BUFCTL &= ~ (u32IntSel))
@@ -309,7 +296,6 @@ extern "C"
   *                                  - \ref USPI_INTEN_RXSTIEN_Msk
   *                                  - \ref USPI_INTEN_TXENDIEN_Msk
   *                                  - \ref USPI_INTEN_TXSTIEN_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_ENABLE_TRANS_INT(uspi, u32IntSel)    ((uspi)->INTEN |= (u32IntSel))
@@ -322,7 +308,6 @@ extern "C"
   *                                  - \ref USPI_INTEN_RXSTIEN_Msk
   *                                  - \ref USPI_INTEN_TXENDIEN_Msk
   *                                  - \ref USPI_INTEN_TXSTIEN_Msk
-  * @return None
   * \hideinitializer
   */
 #define USPI_DISABLE_TRANS_INT(uspi, u32IntSel)    ((uspi)->INTEN &= ~ (u32IntSel))
@@ -330,7 +315,6 @@ extern "C"
 /**
   * @brief Enable PDMA transfer.
   * @param[in] uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * @details Enable PDMA function for both transfer and receive.
   * \hideinitializer
   */
@@ -339,7 +323,6 @@ extern "C"
 /**
   * @brief Disable PDMA transfer.
   * @param[in] uspi The pointer of the specified USCI_SPI module.
-  * @return None
   * @details Disable PDMA function for both transfer and receive.
   * \hideinitializer
   */
@@ -350,7 +333,6 @@ extern "C"
   * @brief  Set the data width of a USCI_SPI transaction.
   * @param[in]  uspi The pointer of the specified USCI_SPI module.
   * @param[in]  u32Width The data width. The valid data width is 4 ~ 16.
-  * @return None
   */
 static __INLINE void USPI_SET_DATA_WIDTH(USPI_T *uspi, uint32_t u32Width)
 {
@@ -378,11 +360,11 @@ void USPI_EnableWakeup(USPI_T *uspi);
 void USPI_DisableWakeup(USPI_T *uspi);
 
 
-/*@}*/ /* end of group USPI_EXPORTED_FUNCTIONS */
+/** @} end of group USPI_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group USPI_Driver */
+/** @} end of group USPI_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

@@ -151,7 +151,7 @@ extern "C"
 #define PF4             GPIO_PIN_DATA(5, 4 ) /*!< Specify PF.4 Pin Data Input/Output */
 #define PF5             GPIO_PIN_DATA(5, 5 ) /*!< Specify PF.5 Pin Data Input/Output */
 
-/*@}*/ /* end of group GPIO_EXPORTED_CONSTANTS */
+/** @} end of group GPIO_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup GPIO_EXPORTED_FUNCTIONS GPIO Exported Functions
@@ -170,7 +170,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
- * @return      None
  *
  * @details     Clear the interrupt status of specified GPIO pin.
  *
@@ -190,7 +189,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
- * @return      None
  *
  * @details     Disable the interrupt de-bounce function of specified GPIO pin.
  *
@@ -209,7 +207,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT11(exclude BIT6BIT7) for PD. \n
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
- * @return      None
  *
  * @details     Enable the interrupt de-bounce function of specified GPIO pin.
  *
@@ -229,7 +226,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
- * @return      None
  *
  * @details     Disable I/O digital input path of specified GPIO pin.
  *
@@ -249,7 +245,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
- * @return      None
  *
  * @details     Enable I/O digital input path of specified GPIO pin.
  *
@@ -269,7 +264,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
- * @return      None
  *
  * @details     Disable I/O DOUT mask of specified GPIO pin.
  *
@@ -289,7 +283,6 @@ extern "C"
  *                          It could be BIT0 ~ BIT2 for PE. \n
  *                          It could be BIT0 ~ BIT5 for PF.
  *
- * @return      None
  *
  * @details     Enable I/O DOUT mask of specified GPIO pin.
  *
@@ -328,7 +321,6 @@ extern "C"
  *                              GPIO_DBCTL_DBCLKSEL_256, GPIO_DBCTL_DBCLKSEL_512, GPIO_DBCTL_DBCLKSEL_1024, GPIO_DBCTL_DBCLKSEL_2048, \n
  *                              GPIO_DBCTL_DBCLKSEL_4096, GPIO_DBCTL_DBCLKSEL_8192, GPIO_DBCTL_DBCLKSEL_16384, GPIO_DBCTL_DBCLKSEL_32768.
  *
- * @return      None
  *
  * @details     Set the interrupt de-bounce sampling cycle time based on the debounce counter clock source. \n
  *              Example: _GPIO_SET_DEBOUNCE_TIME(GPIO_DBCTL_DBCLKSRC_LIRC, GPIO_DBCTL_DBCLKSEL_4). \n
@@ -359,7 +351,6 @@ extern "C"
  * @param[in]   port        GPIO port. It could be PA, PB, PC, PD, PE or PF.
  * @param[in]   u32Data     GPIO port data.
  *
- * @return      None
  *
  * @details     Set the Data into specified GPIO port.
  *
@@ -372,7 +363,6 @@ extern "C"
  *
  * @param[in]   u32Pin      Pxy
  *
- * @return      None
  *
  * @details     Toggle the specified GPIO pint.
  *
@@ -396,7 +386,6 @@ extern "C"
 * @param[in]   u32IntAttribs   The interrupt attribute of specified GPIO pin. It could be \n
 *                              GPIO_INT_RISING, GPIO_INT_FALLING, GPIO_INT_BOTH_EDGE, GPIO_INT_HIGH, GPIO_INT_LOW.
 *
-* @return      None
 *
 * @details     This function is used to enable specified GPIO pin interrupt.
 *
@@ -416,7 +405,6 @@ extern "C"
 *                              It could be 0 ~ 2 for PE. \n
 *                              It could be 0 ~ 5 for PF.
 *
-* @return      None
 *
 * @details     This function is used to enable specified GPIO pin interrupt.
 *
@@ -430,11 +418,11 @@ void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs);
 void GPIO_DisableInt(GPIO_T *port, uint32_t u32Pin);
 
 
-/*@}*/ /* end of group GPIO_EXPORTED_FUNCTIONS */
+/** @} end of group GPIO_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group GPIO_Driver */
+/** @} end of group GPIO_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

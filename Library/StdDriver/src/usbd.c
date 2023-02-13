@@ -71,7 +71,6 @@ uint32_t g_u32EpStallLock                   = 0;       /*!< Bit map flag to lock
   * @param[in]  pfnClassReq     USB Class request callback function.
   * @param[in]  pfnSetInterface USB Set Interface request callback function.
   *
-  * @return     None
   *
   * @details    This function will enable USB controller, USB PHY transceiver and pull-up resistor of USB_D+ pin. USB PHY will drive SE0 to bus.
   */
@@ -98,9 +97,7 @@ void USBD_Open(const S_USBD_INFO_T *param, CLASS_REQ pfnClassReq, SET_INTERFACE_
 /**
   * @brief    This function makes USB host to recognize the device
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Enable WAKEUP, FLDET, USB and BUS interrupts. Disable software-disconnect function after 100ms delay with SysTick timer.
   */
@@ -122,7 +119,6 @@ void USBD_Start(void)
   *
   * @param[in]  buf A buffer pointer used to store 8-byte SETUP packet.
   *
-  * @return     None
   *
   * @details    Store SETUP packet to a user-specified buffer.
   *
@@ -135,9 +131,7 @@ void USBD_GetSetupPacket(uint8_t *buf)
 /**
   * @brief    Process SETUP packet
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Parse SETUP packet and perform the corresponding action.
   *
@@ -190,9 +184,7 @@ void USBD_ProcessSetupPacket(void)
 /**
   * @brief    Process GetDescriptor request
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Parse GetDescriptor request and perform the corresponding action.
   *
@@ -350,9 +342,7 @@ void USBD_GetDescriptor(void)
 /**
   * @brief    Process standard request
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Parse standard request and perform the corresponding action.
   *
@@ -581,7 +571,6 @@ void USBD_StandardRequest(void)
   * @param[in]  pu8Buf  The pointer of data sent to USB host.
   * @param[in]  u32Size The IN transfer size.
   *
-  * @return     None
   *
   * @details    Prepare data for Control IN transfer.
   *
@@ -614,9 +603,7 @@ void USBD_PrepareCtrlIn(uint8_t *pu8Buf, uint32_t u32Size)
 /**
   * @brief    Repeat Control IN pipe
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  This function processes the remained data of Control IN transfer.
   *
@@ -675,7 +662,6 @@ void USBD_CtrlIn(void)
   * @param[in]  pu8Buf  The pointer of data received from USB host.
   * @param[in]  u32Size The OUT transfer size.
   *
-  * @return     None
   *
   * @details    This function is used to prepare the first Control OUT transfer.
   *
@@ -691,9 +677,7 @@ void USBD_PrepareCtrlOut(uint8_t *pu8Buf, uint32_t u32Size)
 /**
   * @brief    Repeat Control OUT pipe
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  This function processes the successive Control OUT transfer.
   *
@@ -735,9 +719,7 @@ void USBD_CtrlOut(void)
 /**
   * @brief    Reset software flags
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  This function resets all variables for protocol and resets USB device address to 0.
   *
@@ -768,7 +750,6 @@ void USBD_SwReset(void)
  *
  * @param[in]   pfnVendorReq    Vendor Request Callback Function
  *
- * @return      None
  *
  * @details     This function is used to set USBD vendor request callback function
  */
@@ -782,7 +763,6 @@ void USBD_SetVendorRequest(VENDOR_REQ pfnVendorReq)
  *
  * @param[in]   pfnSetConfigCallback    Callback function pointer for SET CONFIGURATION request
  *
- * @return      None
  *
  * @details     This function is used to set the callback function which will be called at SET CONFIGURATION request.
  */
@@ -797,7 +777,6 @@ void USBD_SetConfigCallback(SET_CONFIG_CB pfnSetConfigCallback)
  *
  * @param[in]   u32EpBitmap    Use bitmap to select which endpoints will be locked
  *
- * @return      None
  *
  * @details     This function is used to lock relative endpoint to avoid stall clear by SET FEATURE requst.
  *              If ep stall locked, user needs to reset USB device or re-configure device to clear it.
@@ -811,11 +790,11 @@ void USBD_LockEpStall(uint32_t u32EpBitmap)
 
 
 
-/*@}*/ /* end of group USBD_EXPORTED_FUNCTIONS */
+/** @} end of group USBD_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group USBD_Driver */
+/** @} end of group USBD_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

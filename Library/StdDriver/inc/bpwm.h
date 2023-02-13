@@ -106,7 +106,7 @@ extern "C"
 
 
 
-/*@}*/ /* end of group BPWM_EXPORTED_CONSTANTS */
+/** @} end of group BPWM_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup BPWM_EXPORTED_FUNCTIONS BPWM Exported Functions
@@ -125,7 +125,6 @@ extern "C"
  *              - \ref BPWM_SSCTL_SSRC_BPWM1
  *              - \ref BPWM_SSCTL_SSRC_PWM0
  *              - \ref BPWM_SSCTL_SSRC_PWM1
- * @return None
  * @details This macro is used to enable timer synchronous mode of specified channel(s). All channels share the same setting.
  * \hideinitializer
  */
@@ -137,7 +136,6 @@ extern "C"
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelMask Combination of enabled channels. This parameter is not used.
- * @return None
  * @details This macro is used to disable timer synchronous mode of specified channel(s).
  * @note All channels share channel 0's setting.
  * \hideinitializer
@@ -149,7 +147,6 @@ extern "C"
  * @param[in] bpwm The pointer of the specified BPWM module
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
- * @return None
  * @details This macro is used to make selected BPWM0 and BPWM1 channel(s) start counting at the same time.
  *          To configure synchronous start counting channel(s) by BPWM_ENABLE_TIMER_SYNC() and BPWM_DISABLE_TIMER_SYNC().
  * \hideinitializer
@@ -163,7 +160,6 @@ extern "C"
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelMask Combination of enabled channels. Each bit corresponds to a channel
  *                           Bit 0 represents channel 0, bit 1 represents channel 1...
- * @return None
  * \hideinitializer
  */
 #define BPWM_ENABLE_OUTPUT_INVERTER(bpwm, u32ChannelMask) ((bpwm)->POLCTL |= (u32ChannelMask))
@@ -174,7 +170,6 @@ extern "C"
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelNum BPWM channel number. Valid values are between 0~5
- * @return None
  * \hideinitializer
  */
 #define BPWM_GET_CAPTURE_RISING_DATA(bpwm, u32ChannelNum) (*(__IO uint32_t *) (&((bpwm)->RCAPDAT0) + 2 * (u32ChannelNum)))
@@ -185,7 +180,6 @@ extern "C"
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelNum BPWM channel number. Valid values are between 0~5
- * @return None
  * \hideinitializer
  */
 #define BPWM_GET_CAPTURE_FALLING_DATA(bpwm, u32ChannelNum) (*(__IO uint32_t *) (&((bpwm)->FCAPDAT0) + 2 * (u32ChannelNum)))
@@ -198,7 +192,6 @@ extern "C"
  * @param[in] u32ChannelMask Combination of enabled channels. Each bit corresponds to a channel
  *                           Bit 0 represents channel 0, bit 1 represents channel 1...
  * @param[in] u32LevelMask Output logic to high or low
- * @return None
  * \hideinitializer
  */
 #define BPWM_MASK_OUTPUT(bpwm, u32ChannelMask, u32LevelMask) \
@@ -219,7 +212,6 @@ extern "C"
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelNum BPWM channel number. This parameter is not used.
  * @param[in] u32Prescaler Clock prescaler of specified channel. Valid values are between 1 ~ 0xFFF
- * @return None
  * \hideinitializer
  */
 #define BPWM_SET_PRESCALER(bpwm, u32ChannelNum, u32Prescaler) ((bpwm)->CLKPSC = (u32Prescaler))
@@ -245,7 +237,6 @@ extern "C"
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelNum BPWM channel number. Valid values are between 0~5
  * @param[in] u32CMR Duty of specified channel. Valid values are between 0~0xFFFF
- * @return None
  * @note This new setting will take effect on next BPWM period
  * \hideinitializer
  */
@@ -270,7 +261,6 @@ extern "C"
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelNum BPWM channel number. This parameter is not used.
  * @param[in] u32CNR Period of specified channel. Valid values are between 0~0xFFFF
- * @return None
  * @note This new setting will take effect on next BPWM period
  * @note BPWM counter will stop if period length set to 0
  * \hideinitializer
@@ -299,7 +289,6 @@ extern "C"
  *              - \ref BPWM_UP_COUNTER
  *              - \ref BPWM_DOWN_COUNTER
  *              - \ref BPWM_UP_DOWN_COUNTER
- * @return None
  * @note All channels share channel 0's setting.
  * \hideinitializer
  */
@@ -311,7 +300,6 @@ extern "C"
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
  * @param[in] u32ChannelMask Combination of enabled channels. This parameter is not used.
- * @return None
  * \hideinitializer
  */
 #define BPWM_CLR_COUNTER(bpwm, u32ChannelMask) ((bpwm)->CNTCLR = (BPWM_CNTCLR_CNTCLR0_Msk))
@@ -343,7 +331,6 @@ extern "C"
  *              - \ref BPWM_OUTPUT_LOW
  *              - \ref BPWM_OUTPUT_HIGH
  *              - \ref BPWM_OUTPUT_TOGGLE
- * @return None
  * @details This macro is used to Set output level at zero, compare up, period(center) and compare down of specified channel(s)
  * \hideinitializer
  */
@@ -400,11 +387,11 @@ uint32_t BPWM_GetWrapAroundFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_ClearWrapAroundFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
 
 
-/*@}*/ /* end of group BPWM_EXPORTED_FUNCTIONS */
+/** @} end of group BPWM_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group BPWM_Driver */
+/** @} end of group BPWM_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

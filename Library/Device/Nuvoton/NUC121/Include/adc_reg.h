@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup ADC Analog to Digital Converter (ADC)
     Memory Mapped Structure for ADC Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -371,9 +372,9 @@ typedef struct
 #define ADC_ADPDMA_CURDAT_Pos            (0)                                               /*!< ADC_T::ADPDMA: CURDAT Position         */
 #define ADC_ADPDMA_CURDAT_Msk            (0x3fffful << ADC_ADPDMA_CURDAT_Pos)              /*!< ADC_T::ADPDMA: CURDAT Mask             */
 
-/**@}*/ /* ADC_CONST */
-/**@}*/ /* end of ADC register group */
-/**@}*/ /* end of REGISTER group */
+/** @} ADC_CONST */
+/** @} end of ADC register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

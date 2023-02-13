@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup GPIO General Purpose Input/Output Controller (GPIO)
     Memory Mapped Structure for GPIO Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -922,9 +923,9 @@ typedef struct
 #define GPIO_DBCTL_ICLKON_Pos            (5)                                               /*!< GPIO_T::DBCTL: ICLKON Position         */
 #define GPIO_DBCTL_ICLKON_Msk            (0x1ul << GPIO_DBCTL_ICLKON_Pos)                  /*!< GPIO_T::DBCTL: ICLKON Mask             */
 
-/**@}*/ /* GPIO_CONST */
-/**@}*/ /* end of GPIO register group */
-/**@}*/ /* end of REGISTER group */
+/** @} GPIO_CONST */
+/** @} end of GPIO register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

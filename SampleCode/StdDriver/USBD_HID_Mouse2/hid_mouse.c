@@ -302,9 +302,6 @@ void HID_ClassRequest(void)
 
 void PowerDown()
 {
-    printf("Enter power down ...\n");
-
-    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
 
     /* Wakeup Enable */
     USBD->INTEN |= USBD_INTEN_WKEN_Msk;
@@ -328,8 +325,6 @@ void PowerDown()
         CLK_SysTickDelay(1000); /* Delay 1ms */
         USBD->ATTR ^= USBD_ATTR_RWAKEUP_Msk;
     }
-
-    printf("device wakeup!\n");
 
 }
 

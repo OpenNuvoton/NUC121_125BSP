@@ -1,8 +1,8 @@
 /******************************************************************************//**
  * @file     main.c
- * @version  V3.00
+ * @version  V3.01
  * @brief
- *           Demonstrate how to upgrade firmware between USB device and PC through USB DFU( Device Firmware Upgrade) class.
+ *           Demonstrate how to upgrade firmware between USB device and PC through USB DFU (Device Firmware Upgrade) class.
  *           A windows tool is also included in this sample code to connect with USB device.
  *
  * SPDX-License-Identifier: Apache-2.0
@@ -12,14 +12,18 @@
 #include "NuMicro.h"
 #include "dfu_transfer.h"
 
-#define HCLK_DIV                1
-#define USBD_DIV                1
+#define DetectPin           PB0
+#define HIRC_AUTO_TRIM      (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);   /* Use USB signal to fine tune HIRC 48MHz */
+#define TRIM_INIT           (SYS_BASE+0x110)
+#define TRIM_THRESHOLD      16      /* Each value is 0.125%, max 2% */
+#define HCLK_DIV            1
+#define USBD_DIV            1
+#define PLL_CLOCK           48000000
 
-#define PLL_CLOCK               48000000
+static volatile uint32_t s_u32DefaultTrim, s_u32LastTrim;
 
 void SYS_Init(void)
 {
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -38,7 +42,6 @@ void SYS_Init(void)
     /* Enable module clock */
     CLK->APBCLK0 |= CLK_APBCLK0_USBDCKEN_Msk;
     CLK->AHBCLK |= CLK_AHBCLK_ISPCKEN_Msk;
-
 }
 
 
@@ -47,7 +50,6 @@ void SYS_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-
     /* Unlock write-protected registers */
     SYS_UnlockReg();
 
@@ -60,7 +62,7 @@ int32_t main(void)
     /* Open USB controller */
     USBD_Open(&gsInfo, DFU_ClassRequest, NULL);
 
-    /*Init Endpoint configuration for DFU */
+    /* Init Endpoint configuration for DFU */
     DFU_Init();
 
     /* Start USB device */
@@ -69,6 +71,62 @@ int32_t main(void)
     /* Enable USB device interrupt */
     NVIC_EnableIRQ(USBD_IRQn);
 
-    while (1);
+    /* Backup default trim value */
+    s_u32DefaultTrim = M32(TRIM_INIT);
+    s_u32LastTrim = s_u32DefaultTrim;
 
+    /* Clear SOF */
+    USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+    while (DetectPin == 0)
+    {
+        /* Start USB trim function if it is not enabled. */
+        if ((SYS->IRCTCTL & SYS_IRCTCTL_FREQSEL_Msk) != 0x2)
+        {
+            /* Start USB trim only when USB signal arrived */
+            if (USBD->INTSTS & USBD_INTSTS_SOFIF_Msk)
+            {
+                /* Clear SOF */
+                USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+
+                /* Enable USB clock trim function */
+                SYS->IRCTCTL = HIRC_AUTO_TRIM;
+            }
+        }
+
+        /* Disable USB Trim when any error found */
+        if (SYS->IRCTISTS & (SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk))
+        {
+            /* Last TRIM */
+            M32(TRIM_INIT) = s_u32LastTrim;
+
+            /* Disable USB clock trim function */
+            SYS->IRCTCTL = 0;
+
+            /* Clear trim error flags */
+            SYS->IRCTISTS = SYS_IRCTISTS_CLKERRIF_Msk | SYS_IRCTISTS_TFAILIF_Msk;
+
+            /* Clear SOF */
+            USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
+        }
+
+        /* Check trim value whether it is over the threshold */
+        if ((M32(TRIM_INIT) > (s_u32DefaultTrim + TRIM_THRESHOLD)) || (M32(TRIM_INIT) < (s_u32DefaultTrim - TRIM_THRESHOLD)))
+        {
+            /* Write updated value */
+            M32(TRIM_INIT) = s_u32LastTrim;
+        }
+        else
+        {
+            /* Backup trim value */
+            s_u32LastTrim =  M32(TRIM_INIT);
+        }
+    }
+
+    // Reset to APROM
+    FMC->ISPCTL &= ~FMC_ISPCTL_BS_Msk;
+    NVIC_SystemReset();
+
+    /* Trap the CPU */
+    while (1);
 }

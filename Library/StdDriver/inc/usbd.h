@@ -47,7 +47,7 @@ typedef struct s_usbd_info
 
 extern const S_USBD_INFO_T gsInfo;
 
-/*@}*/ /* end of group USBD_EXPORTED_STRUCTS */
+/** @} end of group USBD_EXPORTED_STRUCTS */
 
 
 
@@ -187,7 +187,7 @@ extern const S_USBD_INFO_T gsInfo;
 
 
 
-/*@}*/ /* end of group USBD_EXPORTED_CONSTANTS */
+/** @} end of group USBD_EXPORTED_CONSTANTS */
 
 
 /** @addtogroup USBD_EXPORTED_FUNCTIONS USBD Exported Functions
@@ -227,9 +227,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Enable USB
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  To set USB ATTR control register to enable USB and PHY.
   *
@@ -240,9 +238,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Disable USB
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  To set USB ATTR control register to disable USB.
   *
@@ -253,9 +249,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Enable USB PHY
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  To set USB ATTR control register to enable USB PHY.
   *
@@ -266,9 +260,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Disable USB PHY
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  To set USB ATTR control register to disable USB PHY.
   *
@@ -279,9 +271,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Enable SE0. Force USB PHY transceiver to drive SE0.
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Set DRVSE0 bit of USB_DRVSE0 register to enable software-disconnect function. Force USB PHY transceiver to drive SE0 to bus.
   *
@@ -292,9 +282,7 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Disable SE0
   *
-  * @param    None
   *
-  * @return   None
   *
   * @details  Clear DRVSE0 bit of USB_DRVSE0 register to disable software-disconnect function.
   *
@@ -307,7 +295,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]   addr The USB device address.
   *
-  * @return      None
   *
   * @details     Write USB device address to USB_FADDR register.
   *
@@ -318,7 +305,6 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Get USB device address
   *
-  * @param    None
   *
   * @return   USB device address
   *
@@ -336,7 +322,6 @@ extern const S_USBD_INFO_T gsInfo;
   *             This parameter decides which interrupts will be enabled.
   *             (USBD_INT_WAKEUP, USBD_INT_FLDET, USBD_INT_USB, USBD_INT_BUS)
   *
-  * @return     None
   *
   * @details    Enable USB related interrupt functions specified by intr parameter.
   *
@@ -347,7 +332,6 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Get interrupt status
   *
-  * @param    None
   *
   * @return   The value of USB_INTSTS register
   *
@@ -365,7 +349,6 @@ extern const S_USBD_INFO_T gsInfo;
   *             This parameter decides which interrupt flags will be cleared.
   *             (USBD_INTSTS_WAKEUP, USBD_INTSTS_FLDET, USBD_INTSTS_BUS, USBD_INTSTS_USB)
   *
-  * @return     None
   *
   * @details    Clear USB related interrupt flags specified by flag parameter.
   *
@@ -376,7 +359,6 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Get endpoint status
   *
-  * @param    None
   *
   * @return   The value of USB_EPSTS register.
   *
@@ -389,7 +371,6 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Get USB bus state
   *
-  * @param    None
   *
   * @return   The value of USB_ATTR[3:0] and USB_ATTR[13:12].
   *           Bit  0 indicates USB bus reset status.
@@ -411,7 +392,6 @@ extern const S_USBD_INFO_T gsInfo;
 /**
   * @brief    Check cable connection state
   *
-  * @param    None
   *
   * @retval   0 USB cable is not attached.
   * @retval   1 USB cable is attached.
@@ -427,7 +407,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  ep The USB endpoint ID. NUC121 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
-  * @return     None
   *
   * @details    Write 1 to CLRRDY bit of USB_CFGPx register to stop USB transaction of the specified endpoint ID.
   *
@@ -440,7 +419,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  ep The USB endpoint ID. NUC121 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
-  * @return     None
   *
   * @details    Set DSQ_SYNC bit of USB_CFGx register to specify the DATA1 PID for the following IN token transaction.
   *             Base on this setting, hardware will toggle PID between DATA0 and DATA1 automatically for IN token transactions.
@@ -454,7 +432,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  ep The USB endpoint ID. NUC121 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
-  * @return     None
   *
   * @details    Clear DSQ_SYNC bit of USB_CFGx register to specify the DATA0 PID for the following IN token transaction.
   *             Base on this setting, hardware will toggle PID between DATA0 and DATA1 automatically for IN token transactions.
@@ -470,7 +447,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  size The transfer length.
   *
-  * @return     None
   *
   * @details    This macro will write the transfer length to USB_MXPLDx register for IN data transaction.
   *
@@ -498,7 +474,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  config The USB configuration.
   *
-  * @return     None
   *
   * @details    This macro will write config parameter to USB_CFGx register of specified endpoint ID.
   *
@@ -513,7 +488,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  offset The SRAM offset.
   *
-  * @return     None
   *
   * @details    This macro will set the SRAM offset for the specified endpoint ID.
   *
@@ -539,7 +513,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]   ep  The USB endpoint ID. NUC121 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
-  * @return      None
   *
   * @details     Set USB endpoint stall state for the specified endpoint ID. Endpoint will respond STALL token automatically.
   *
@@ -552,7 +525,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]   ep  The USB endpoint ID. NUC121 Series supports 8 hardware endpoint ID. This parameter could be 0 ~ 7.
   *
-  * @return      None
   *
   * @details     Clear USB endpoint stall state for the specified endpoint ID. Endpoint will respond ACK/NAK token.
   *
@@ -583,7 +555,6 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * @param[in]  size Byte count.
   *
-  * @return     None
   *
   * @details    This function will copy the number of data specified by size and src parameters to the address specified by dest parameter.
   *
@@ -599,7 +570,6 @@ static __INLINE void USBD_MemCopy(uint8_t *dest, uint8_t *src, int32_t size)
   *
   * @param[in]   epnum  USB endpoint number
   *
-  * @return      None
   *
   * @details     Set USB endpoint stall state. Endpoint will respond STALL token automatically.
   *
@@ -631,7 +601,6 @@ static __INLINE void USBD_SetStall(uint8_t epnum)
   *
   * @param[in]   epnum  USB endpoint number
   *
-  * @return      None
   *
   * @details     Clear USB endpoint stall state. Endpoint will respond ACK/NAK token.
   */
@@ -714,11 +683,11 @@ void USBD_SetVendorRequest(VENDOR_REQ pfnVendorReq);
 void USBD_SetConfigCallback(SET_CONFIG_CB pfnSetConfigCallback);
 void USBD_LockEpStall(uint32_t u32EpBitmap);
 
-/*@}*/ /* end of group USBD_EXPORTED_FUNCTIONS */
+/** @} end of group USBD_EXPORTED_FUNCTIONS */
 
-/*@}*/ /* end of group USBD_Driver */
+/** @} end of group USBD_Driver */
 
-/*@}*/ /* end of group Standard_Driver */
+/** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }

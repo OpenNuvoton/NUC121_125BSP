@@ -11,8 +11,8 @@
 #include "string.h"
 #include "ISP_USER.h"
 
-__align(4) uint8_t response_buff[64];
-__align(4) static uint8_t aprom_buf[FMC_FLASH_PAGE_SIZE];
+__attribute__((aligned(4))) uint8_t response_buff[64];
+__attribute__((aligned(4))) static uint8_t aprom_buf[FMC_FLASH_PAGE_SIZE];
 uint32_t bUpdateApromCmd;
 uint32_t g_apromSize, g_dataFlashAddr, g_dataFlashSize;
 
@@ -52,9 +52,9 @@ static uint16_t CalCheckSum(uint32_t start, uint32_t len)
 }
 
 //bAprom == TRUE erase all aprom besides data flash
-void EraseAP(unsigned int addr_start, unsigned int addr_end)
+void EraseAP(uint32_t addr_start, uint32_t addr_end)
 {
-    unsigned int eraseLoop = addr_start;
+    uint32_t eraseLoop = addr_start;
 
     for (; eraseLoop < addr_end; eraseLoop += FMC_FLASH_PAGE_SIZE)
     {
@@ -64,7 +64,7 @@ void EraseAP(unsigned int addr_start, unsigned int addr_end)
     return;
 }
 
-void UpdateConfig(unsigned int *data, unsigned int *res)
+void UpdateConfig(uint32_t *data, uint32_t *res)
 {
     FMC_ENABLE_CFG_UPDATE();
     FMC_Erase_User(Config0);

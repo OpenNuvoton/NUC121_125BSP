@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup BPWM Basic Pulse Width Modulation Controller (BPWM)
     Memory Mapped Structure for BPWM Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -1210,9 +1211,9 @@ typedef struct
 #define BPWM_CMPBUF_CMPBUF_Pos           (0)                                               /*!< BPWM_T::CMPBUF: CMPBUF Position        */
 #define BPWM_CMPBUF_CMPBUF_Msk           (0xfffful << BPWM_CMPBUF_CMPBUF_Pos)              /*!< BPWM_T::CMPBUF: CMPBUF Mask            */
 
-/**@}*/ /* BPWM_CONST */
-/**@}*/ /* end of BPWM register group */
-/**@}*/ /* end of REGISTER group */
+/** @} BPWM_CONST */
+/** @} end of BPWM register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

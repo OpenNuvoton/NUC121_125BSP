@@ -14,14 +14,15 @@
 #endif
 
 /**
-   @addtogroup REGISTER Control Register
-   @{
+    @addtogroup REGISTER Control Register
+    @{
 */
 
 /**
     @addtogroup FMC Flash Memory Controller (FMC)
     Memory Mapped Structure for FMC Controller
-@{ */
+    @{
+*/
 
 typedef struct
 {
@@ -239,9 +240,9 @@ typedef struct
 #define FMC_ISPSTS_SCODE_Pos             (31)                                              /*!< FMC_T::ISPSTS: SCODE Position          */
 #define FMC_ISPSTS_SCODE_Msk             (0x1ul << FMC_ISPSTS_SCODE_Pos)                   /*!< FMC_T::ISPSTS: SCODE Mask              */
 
-/**@}*/ /* FMC_CONST */
-/**@}*/ /* end of FMC register group */
-/**@}*/ /* end of REGISTER group */
+/** @} FMC_CONST */
+/** @} end of FMC register group */
+/** @} end of REGISTER group */
 
 #if defined ( __CC_ARM   )
     #pragma no_anon_unions

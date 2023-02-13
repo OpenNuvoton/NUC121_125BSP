@@ -172,13 +172,19 @@ int main()
     GetChar();                         /* block on waiting for any one character input from UART0 */
 
     PutString("\n\nChange VECMAP and branch to APROM...\n");
-
-    while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTY_Msk));       /* wait until UART3 TX FIFO is empty */
+    UART_WAIT_TX_EMPTY(UART0); /* To make sure all message has been print out */
 
     /*  NOTE!
      *     Before change VECMAP, user MUST disable all interrupts.
      */
-    FMC_SetVectorPageAddr(FMC_APROM_BASE);        /* Vector remap APROM page 0 to address 0. */
+    /* Vector remap APROM page 0 to address 0. */
+    FMC->ISPCMD  = FMC_ISPCMD_VECMAP;
+    FMC->ISPADDR = FMC_APROM_BASE;
+    FMC->ISPTRG  = FMC_ISPTRG_ISPGO_Msk;
+    __ISB();
+
+    while (FMC->ISPTRG & FMC_ISPTRG_ISPGO_Msk);
+
     SYS_LockReg();                                /* Lock protected registers */
 
     /*
