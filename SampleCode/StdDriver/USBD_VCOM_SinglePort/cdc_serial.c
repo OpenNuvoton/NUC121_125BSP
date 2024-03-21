@@ -64,25 +64,6 @@ void USBD_IRQHandler(void)
             USBD_ENABLE_USB();
         }
 
-#ifdef SUPPORT_LPM
-
-        if (u32State & USBD_STATE_L1SUSPEND)
-        {
-            /*
-               TODO: Implement LPM SUSPEND flag here.
-                     Recommend implementing the power-saving function in main loop.
-            */
-        }
-
-        if (u32State & USBD_STATE_L1RESUME)
-        {
-            /*
-               TODO: Implement LPM RESUME flag here.
-            */
-        }
-
-#endif
-
     }
 
     if (u32IntSts & USBD_INTSTS_NEVWKIF_Msk)
@@ -282,8 +263,7 @@ void VCOM_ClassRequest(void)
             default:
             {
                 /* Setup error, stall the device */
-                USBD_SetStall(EP0);
-                USBD_SetStall(EP1);
+                USBD_SetStall(0);
                 break;
             }
         }
@@ -324,8 +304,7 @@ void VCOM_ClassRequest(void)
             {
                 // Stall
                 /* Setup error, stall the device */
-                USBD_SetStall(EP0);
-                USBD_SetStall(EP1);
+                USBD_SetStall(0);
                 break;
             }
         }

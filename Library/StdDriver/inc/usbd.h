@@ -14,15 +14,6 @@ extern "C"
 {
 #endif
 
-
-/*!<    Define it to enable Link Power Management(LPM) function.
-        LPM related handler will raise after LPM event happen.
-        if bcdUSB >= 0x0201, USB version is equal or higher than 2.1,
-        OS(Windows) will issue "get BOS descriptor" request.
-        WIN8 ~ WIN10 will not recognize the device if device stalls the request.
-        The device can be recognized on WIN7 even though the "get BOS request" been stalled.  */
-//#define SUPPORT_LPM
-
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
@@ -384,11 +375,9 @@ extern const S_USBD_INFO_T gsInfo;
   *
   * \hideinitializer
   */
-#ifdef SUPPORT_LPM
-#define USBD_GET_BUS_STATE()        ((uint32_t)(USBD->ATTR & 0x300f))
-#else
+
 #define USBD_GET_BUS_STATE()        ((uint32_t)(USBD->ATTR & 0xf))
-#endif
+
 /**
   * @brief    Check cable connection state
   *

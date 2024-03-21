@@ -92,5 +92,14 @@
 				<arguments>1.0-name-matches-false-false-uart.c</arguments>
 			</matcher>
 		</filter>
+		<filter>
+			<id>1528700236353</id>
+			<name>Library/Library</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-clk.c</arguments>
+			</matcher>
+		</filter>
 	</filteredResources>
 </projectDescription>

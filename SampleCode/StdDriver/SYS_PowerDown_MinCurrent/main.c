@@ -15,13 +15,6 @@
 */
 
 /*
-// <o0> LVR
-//      <0=> Disable
-//      <1=> Enable
-*/
-#define SET_LVR       0
-
-/*
 // <o0> POR
 //      <0=> Disable
 //      <1=> Enable
@@ -47,7 +40,6 @@
 
 void PowerDownFunction(void);
 void GPAB_IRQHandler(void);
-int32_t LvrSetting(void);
 void PorSetting(void);
 int32_t LircSetting(void);
 int32_t LxtSetting(void);
@@ -71,22 +63,6 @@ void GPAB_IRQHandler(void)
         PB->INTSRC = u32Status;
         printf("Un-expected interrupts.\n");
     }
-}
-
-int32_t LvrSetting(void)
-{
-    if (SET_LVR == 0)
-    {
-        SYS_DISABLE_LVR();
-        TIMER_Delay(TIMER0, 3000);
-    }
-    else
-    {
-        SYS_ENABLE_LVR();
-        TIMER_Delay(TIMER0, 3000);
-    }
-
-    return 0;
 }
 
 void PorSetting(void)
@@ -295,11 +271,10 @@ int32_t main(void)
     printf("|  Operating sequence                                               |\n");
     printf("|  1. Remove all continuous load, e.g. LED.                         |\n");
     printf("|  2. Configure all GPIO as Quasi-bidirectional Mode                |\n");
-    printf("|  3. Disable LVR                                                   |\n");
-    printf("|  4. Disable analog function, e.g. POR module                      |\n");
-    printf("|  5. Disable unused clock, e.g. LIRC                               |\n");
-    printf("|  6. Enter to Power-Down                                           |\n");
-    printf("|  7. Wait for PB.2 falling-edge interrupt event to wake-up the MCU |\n");
+    printf("|  3. Disable analog function, e.g. POR module                      |\n");
+    printf("|  4. Disable unused clock, e.g. LIRC                               |\n");
+    printf("|  5. Enter to Power-Down                                           |\n");
+    printf("|  6. Wait for PB.2 falling-edge interrupt event to wake-up the MCU |\n");
     printf("+-------------------------------------------------------------------+\n\n");
 
     /* To measure Power-down current on NuTiny-SDK-NUC121 board, remove Nu-Link-Me and R10*/
@@ -331,9 +306,6 @@ int32_t main(void)
 
     /* Unlock protected registers for Power-down and wake-up setting */
     SYS_UnlockReg();
-
-    /* LVR setting */
-    if (LvrSetting() < 0) goto lexit;
 
     /* POR setting */
     PorSetting();

@@ -376,27 +376,6 @@ __STATIC_INLINE uint32_t CLK_GetPLLClockFreq(void)
     return u32PllFreq;
 }
 
-/**
-  * @brief      This function execute delay function.
-  * @param[in]  us  Delay time. The Max value is 2^24 / CPU Clock(MHz). Ex:
-  *                             50MHz => 335544us, 48MHz => 349525us, 28MHz => 699050us ...
-  * @details    Use the SysTick to generate the delay time and the UNIT is in us.
-  *             The SysTick clock source is from HCLK, i.e the same as system core clock.
-  *             User can use SystemCoreClockUpdate() to calculate CyclesPerUs automatically before using this function.
-  */
-__STATIC_INLINE void CLK_SysTickDelay(uint32_t us)
-{
-    SysTick->LOAD = us * CyclesPerUs;
-    SysTick->VAL  = (0x00);
-    SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
-
-    /* Waiting for down-count to zero */
-    while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0);
-
-    /* Disable SysTick counter */
-    SysTick->CTRL = 0;
-}
-
 void CLK_DisableCKO(void);
 void CLK_EnableCKO(uint32_t u32ClkSrc, uint32_t u32ClkDiv, uint32_t u32ClkDivBy1En);
 void CLK_PowerDown(void);
@@ -420,7 +399,7 @@ void CLK_DisablePLL(void);
 uint32_t CLK_WaitClockReady(uint32_t u32ClkMask);
 void CLK_EnableSysTick(uint32_t u32ClkSrc, uint32_t u32Count);
 void CLK_DisableSysTick(void);
-
+void CLK_SysTickDelay(uint32_t us);
 
 
 

@@ -92,7 +92,7 @@ uint32_t BPWM_ConfigCaptureChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_
 }
 
 /**
- * @brief This function Configure BPWM generator and get the nearest frequency in down counter mode
+ * @brief This function Configure BPWM generator and get the nearest frequency in up counter mode
  * @param[in] bpwm The pointer of the specified BPWM module
  *                - BPWM0 : BPWM Group 0
  *                - BPWM1 : BPWM Group 1
@@ -145,31 +145,16 @@ uint32_t BPWM_ConfigOutputChannel(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t
     // convert to real register value
     // all channels share a prescaler
     BPWM_SET_PRESCALER(bpwm, u32ChannelNum, --u16Prescale);
-    // set BPWM to down count type
-    (bpwm)->CTL1 = BPWM_DOWN_COUNTER;
+    // set BPWM to up count type
+    (bpwm)->CTL1 = BPWM_UP_COUNTER;
 
     BPWM_SET_CNR(bpwm, u32ChannelNum, --u16CNR);
+    BPWM_SET_CMR(bpwm, u32ChannelNum, u32DutyCycle * (u16CNR + 1) / 100);
 
-    if (u32DutyCycle)
-    {
-        if (u32DutyCycle >= 100)
-            BPWM_SET_CMR(bpwm, u32ChannelNum, u16CNR);
-        else
-            BPWM_SET_CMR(bpwm, u32ChannelNum, u32DutyCycle * (u16CNR + 1) / 100);
-
-        (bpwm)->WGCTL0 &= ~((BPWM_WGCTL0_PRDPCTL0_Msk | BPWM_WGCTL0_ZPCTL0_Msk) << (u32ChannelNum * 2));
-        (bpwm)->WGCTL0 |= (BPWM_OUTPUT_LOW << (u32ChannelNum * 2 + BPWM_WGCTL0_PRDPCTL0_Pos));
-        (bpwm)->WGCTL1 &= ~((BPWM_WGCTL1_CMPDCTL0_Msk | BPWM_WGCTL1_CMPUCTL0_Msk) << (u32ChannelNum * 2));
-        (bpwm)->WGCTL1 |= (BPWM_OUTPUT_HIGH << (u32ChannelNum * 2 + BPWM_WGCTL1_CMPDCTL0_Pos));
-    }
-    else
-    {
-        BPWM_SET_CMR(bpwm, u32ChannelNum, 0);
-        (bpwm)->WGCTL0 &= ~((BPWM_WGCTL0_PRDPCTL0_Msk | BPWM_WGCTL0_ZPCTL0_Msk) << (u32ChannelNum * 2));
-        (bpwm)->WGCTL0 |= (BPWM_OUTPUT_LOW << (u32ChannelNum * 2 + BPWM_WGCTL0_ZPCTL0_Pos));
-        (bpwm)->WGCTL1 &= ~((BPWM_WGCTL1_CMPDCTL0_Msk | BPWM_WGCTL1_CMPUCTL0_Msk) << (u32ChannelNum * 2));
-        (bpwm)->WGCTL1 |= (BPWM_OUTPUT_HIGH << (u32ChannelNum * 2 + BPWM_WGCTL1_CMPDCTL0_Pos));
-    }
+    (bpwm)->WGCTL0 = ((bpwm)->WGCTL0 & ~((BPWM_WGCTL0_PRDPCTL0_Msk | BPWM_WGCTL0_ZPCTL0_Msk) << (u32ChannelNum << 1))) | \
+                     (BPWM_OUTPUT_HIGH << (u32ChannelNum << 1UL << BPWM_WGCTL0_ZPCTL0_Pos));
+    (bpwm)->WGCTL1 = ((bpwm)->WGCTL1 & ~((BPWM_WGCTL1_CMPDCTL0_Msk | BPWM_WGCTL1_CMPUCTL0_Msk) << (u32ChannelNum << 1))) | \
+                     (BPWM_OUTPUT_LOW << (u32ChannelNum << 1UL << BPWM_WGCTL1_CMPUCTL0_Pos));
 
     return (i);
 }

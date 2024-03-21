@@ -16,6 +16,9 @@
 uint8_t volatile g_u8EP5Ready;
 uint32_t volatile g_u32OutToggle = 0;
 
+uint8_t Led_Status[8] = {0};
+uint32_t LED_SATUS = 0;
+
 void USBD_IRQHandler(void)
 {
     uint32_t u32IntSts = USBD_GET_INT_FLAG();
@@ -64,25 +67,6 @@ void USBD_IRQHandler(void)
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
         }
-
-#ifdef SUPPORT_LPM
-
-        if (u32State & USBD_STATE_L1SUSPEND)
-        {
-            /*
-               TODO: Implement LPM SUSPEND flag here.
-                     Recommend implementing the power-saving function in main loop.
-            */
-        }
-
-        if (u32State & USBD_STATE_L1RESUME)
-        {
-            /*
-               TODO: Implement LPM RESUME flag here.
-            */
-        }
-
-#endif
     }
 
     if (u32IntSts & USBD_INTSTS_NEVWKIF_Msk)
@@ -335,7 +319,7 @@ void HID_ClassRequest(void)
                 {
                     /* Request Type = Output */
                     USBD_SET_DATA1(EP1);
-                    USBD_SET_PAYLOAD_LEN(EP1, buf[6]);
+                    USBD_PrepareCtrlOut(Led_Status, buf[6]);
 
                     /* Trigger for HID Int in */
                     USBD_SET_PAYLOAD_LEN(EP5, 0);
@@ -479,6 +463,39 @@ void HID_UpdateKbData(void)
             pu8Buf[2] = 0x04; /* Key 'a' */
             USBD_SET_PAYLOAD_LEN(EP5, 8);
         }
+    }
+
+    if (Led_Status[0] != LED_SATUS)
+    {
+        if ((Led_Status[0] & HID_LED_ALL) != (LED_SATUS & HID_LED_ALL))
+        {
+            if (Led_Status[0] & HID_LED_NumLock)
+                printf("NmLK  ON, ");
+            else
+                printf("NmLK OFF, ");
+
+            if (Led_Status[0] & HID_LED_CapsLock)
+                printf("CapsLock  ON, ");
+            else
+                printf("CapsLock OFF, ");
+
+            if (Led_Status[0] & HID_LED_ScrollLock)
+                printf("ScrollLock  ON, ");
+            else
+                printf("ScrollLock OFF, ");
+
+            if (Led_Status[0] & HID_LED_Compose)
+                printf("Compose  ON, ");
+            else
+                printf("Compose OFF, ");
+
+            if (Led_Status[0] & HID_LED_Kana)
+                printf("Kana  ON\n");
+            else
+                printf("Kana OFF\n");
+        }
+
+        LED_SATUS = Led_Status[0];
     }
 }
 

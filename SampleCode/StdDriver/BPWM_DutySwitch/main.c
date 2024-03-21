@@ -112,9 +112,6 @@ void UART0_Init()
  */
 uint32_t CalNewDutyCMR(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32DutyCycle, uint32_t u32CycleResolution)
 {
-    if (u32DutyCycle >= u32CycleResolution)
-        return BPWM_GET_CNR(bpwm, u32ChannelNum);
-
     return (u32DutyCycle * (BPWM_GET_CNR(bpwm, u32ChannelNum) + 1) / u32CycleResolution);
 }
 

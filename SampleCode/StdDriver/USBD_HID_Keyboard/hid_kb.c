@@ -13,7 +13,8 @@
 #include "hid_kb.h"
 
 
-
+uint8_t g_u8Idle = 0, g_u8Protocol = 0;
+uint8_t Led_Status[8] = {0};
 
 void USBD_IRQHandler(void)
 {
@@ -62,25 +63,6 @@ void USBD_IRQHandler(void)
             /* Enable USB and enable PHY */
             USBD_ENABLE_USB();
         }
-
-#ifdef SUPPORT_LPM
-
-        if (u32State & USBD_STATE_L1SUSPEND)
-        {
-            /*
-               TODO: Implement LPM SUSPEND flag here.
-                     Recommend implementing the power-saving function in main loop.
-            */
-        }
-
-        if (u32State & USBD_STATE_L1RESUME)
-        {
-            /*
-               TODO: Implement LPM RESUME flag here.
-            */
-        }
-
-#endif
 
     }
 
@@ -216,26 +198,35 @@ void HID_ClassRequest(void)
         // Device to host
         switch (au8Buf[1])
         {
+            case GET_IDLE:
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                /* Data stage */
+                USBD_PrepareCtrlIn(&g_u8Idle, au8Buf[6]);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
+
+            case GET_PROTOCOL:
+            {
+                USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                /* Data stage */
+                USBD_PrepareCtrlIn(&g_u8Protocol, au8Buf[6]);
+                /* Status stage */
+                USBD_PrepareCtrlOut(0, 0);
+                break;
+            }
+
             case GET_REPORT:
 
             //             {
             //                 break;
             //             }
-            case GET_IDLE:
-
-            //             {
-            //                 break;
-            //             }
-            case GET_PROTOCOL:
-
-            //            {
-            //                break;
-            //            }
             default:
             {
                 /* Setup error, stall the device */
-                USBD_SetStall(EP0);
-                USBD_SetStall(EP1);
+                USBD_SetStall(0);
                 break;
             }
         }
@@ -251,7 +242,7 @@ void HID_ClassRequest(void)
                 {
                     /* Request Type = Output */
                     USBD_SET_DATA1(EP1);
-                    USBD_SET_PAYLOAD_LEN(EP1, au8Buf[6]);
+                    USBD_PrepareCtrlOut(Led_Status, au8Buf[6]);
 
                     /* Status stage */
                     USBD_PrepareCtrlIn(0, 0);
@@ -262,6 +253,7 @@ void HID_ClassRequest(void)
 
             case SET_IDLE:
             {
+                g_u8Idle = au8Buf[3];
                 /* Status stage */
                 USBD_SET_DATA1(EP0);
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
@@ -270,6 +262,8 @@ void HID_ClassRequest(void)
 
             case SET_PROTOCOL:
             {
+                g_u8Protocol = au8Buf[2];
+                /* Status stage */
                 USBD_SET_DATA1(EP0);
                 USBD_SET_PAYLOAD_LEN(EP0, 0);
                 break;
@@ -279,8 +273,7 @@ void HID_ClassRequest(void)
             {
                 // Stall
                 /* Setup error, stall the device */
-                USBD_SetStall(EP0);
-                USBD_SetStall(EP1);
+                USBD_SetStall(0);
                 break;
             }
         }
