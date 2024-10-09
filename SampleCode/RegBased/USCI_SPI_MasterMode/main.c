@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define TEST_COUNT 16
+//------------------------------------------------------------------------------
+#define TEST_COUNT              16
+#define USPI_TIMEOUT            (SystemCoreClock >> 2)
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* Define Function Prototypes                                                                               */
@@ -30,6 +32,7 @@ volatile uint32_t g_u32RxDataCount;
 void USCI_IRQHandler(void)
 {
     uint32_t u32RxData;
+    volatile int32_t i32TimeoutCnt = USPI_TIMEOUT;
 
     /* Clear TX end interrupt flag */
     USPI0->PROTSTS = USPI_PROTSTS_TXENDIF_Msk;
@@ -41,6 +44,11 @@ void USCI_IRQHandler(void)
         u32RxData = USPI0->RXDAT;
 
         g_au32DestinationData[g_u32RxDataCount++] = u32RxData;
+
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
     }
 
     /* Check TX data count */
@@ -54,6 +62,8 @@ void USCI_IRQHandler(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = USPI_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -62,7 +72,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK source divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -165,6 +181,7 @@ void USCI_SPI_Init(void)
 int main()
 {
     uint32_t u32DataCount;
+    volatile int32_t i32TimeoutCnt = USPI_TIMEOUT;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -226,8 +243,16 @@ int main()
     /* Write to TX Buffer */
     USPI0->TXDAT = g_au32SourceData[g_u32TxDataCount++];
 
+    i32TimeoutCnt = USPI_TIMEOUT;
+
     /* Wait for transfer done */
-    while (g_u32RxDataCount < TEST_COUNT);
+    while (g_u32RxDataCount < TEST_COUNT)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Print the received data */
     printf("Received data:\n");

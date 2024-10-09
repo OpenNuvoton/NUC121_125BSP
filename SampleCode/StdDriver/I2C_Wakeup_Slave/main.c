@@ -3,7 +3,7 @@
  * @version  V3.00
  * @brief
  *           Show how to wake up MCU in Power-down mode through I2C interface.
- *           This sample code needs to work with I2C_Wakeup_Master.
+ *           This sample code needs to work with I2C_Master.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.

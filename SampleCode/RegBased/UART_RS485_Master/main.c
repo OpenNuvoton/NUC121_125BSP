@@ -10,10 +10,13 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
 #define MATCH_ADDRSS1       0xC0
 #define MATCH_ADDRSS2       0xA2
 #define UNMATCH_ADDRSS1     0xB1
 #define UNMATCH_ADDRSS2     0xD3
+
+#define UART_TIMEOUT        (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -39,6 +42,7 @@ void RS485_SendAddressByte(uint8_t u8data)
 void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
 {
     uint32_t u32Count;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /* Set UART parity as SPACE */
     UART0->LINE = (UART_WORD_LEN_8 | UART_PARITY_SPACE | UART_STOP_BIT_1);
@@ -46,7 +50,15 @@ void RS485_SendDataByte(uint8_t *pu8TxBuf, uint32_t u32WriteBytes)
     /* Send data */
     for (u32Count = 0; u32Count != u32WriteBytes; u32Count++)
     {
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))   /* Wait Tx empty */
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         UART0->DAT = pu8TxBuf[u32Count]; /* Send UART Data from buffer */
     }
@@ -167,6 +179,7 @@ void RS485_FunctionTest()
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -176,7 +189,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

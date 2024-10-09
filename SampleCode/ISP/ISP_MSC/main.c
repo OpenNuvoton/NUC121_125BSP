@@ -10,6 +10,7 @@
 #include "NUC121_User.h"
 #include "massstorage.h"
 
+#define DetectPin           PB0
 #define HIRC_AUTO_TRIM      (SYS_IRCTCTL_REFCKSEL_Msk | 0x2);   /* Use USB signal to fine tune HIRC 48MHz */
 #define TRIM_INIT           (SYS_BASE+0x110)
 #define TRIM_THRESHOLD      16      /* Each value is 0.125%, max 2% */
@@ -79,8 +80,8 @@ int32_t main(void)
     /* Clear SOF */
     USBD_CLR_INT_FLAG(USBD_INTSTS_SOFIF_Msk);
 
-    /* Check if GPC.0 is low */
-    while (PC0 == 0)
+    /* Check if DetectPin is low */
+    while (DetectPin == 0)
     {
         /* Start USB trim function if it is not enabled. */
         if ((SYS->IRCTCTL & SYS_IRCTCTL_FREQSEL_Msk) != 0x2)
@@ -127,9 +128,8 @@ int32_t main(void)
         MSC_ProcessCmd();
     }
 
-    /* Boot from AP */
+    /* Reset to boot from APROM */
     FMC->ISPCTL &= ~FMC_ISPCTL_BS_Msk;
+    /* Wait system reset */
     NVIC_SystemReset();
-
-    while (1);
 }

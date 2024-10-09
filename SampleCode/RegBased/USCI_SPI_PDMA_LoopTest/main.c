@@ -11,8 +11,16 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define TEST_COUNT  64
-#define TEST_CYCLE  10000
+//------------------------------------------------------------------------------
+/*----------------------------------------------------------------------------------------------------------*/
+/* Define global variables and constants                                                                    */
+/*----------------------------------------------------------------------------------------------------------*/
+#define SPI_MASTER_TX_DMA_CH    0
+#define SPI_MASTER_RX_DMA_CH    1
+
+#define TEST_COUNT              64
+#define TEST_CYCLE              10000
+#define USPI_TIMEOUT            (SystemCoreClock >> 2)
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* Define Function Prototypes                                                                               */
@@ -22,16 +30,11 @@ void USCI_SPI_Init(void);
 void USCI_SPI_LoopTestWithPDMA(void);
 void UART0_Init(void);
 
-/*----------------------------------------------------------------------------------------------------------*/
-/* Define global variables and constants                                                                    */
-/*----------------------------------------------------------------------------------------------------------*/
-#define SPI_MASTER_TX_DMA_CH    0
-#define SPI_MASTER_RX_DMA_CH    1
-
+//------------------------------------------------------------------------------
 uint32_t g_au32MasterToSlaveTestPattern[TEST_COUNT];
 uint32_t g_au32MasterRxBuffer[TEST_COUNT];
 
-
+//------------------------------------------------------------------------------
 int main(void)
 {
     /* Unlock protected registers */
@@ -82,6 +85,8 @@ int main(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = USPI_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -90,7 +95,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK source divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

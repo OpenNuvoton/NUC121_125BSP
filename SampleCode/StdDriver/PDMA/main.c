@@ -41,7 +41,9 @@ void PDMA_IRQHandler(void)
     {
         /* Check if channel 2 has abort error */
         if (PDMA_GET_ABORT_STS() & PDMA_ABTSTS_ABTIF2_Msk)
+        {
             g_u32IsTestOver = 2;
+        }
 
         /* Clear abort flag of channel 2 */
         PDMA_CLR_ABORT_FLAG(PDMA_ABTSTS_ABTIF2_Msk);
@@ -50,13 +52,17 @@ void PDMA_IRQHandler(void)
     {
         /* Check transmission of channel 2 has been transfer done */
         if (PDMA_GET_TD_STS() & PDMA_TDSTS_TDIF2_Msk)
+        {
             g_u32IsTestOver = 1;
+        }
 
         /* Clear transfer done flag of channel 2 */
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF2_Msk);
     }
     else
+    {
         printf("unknown interrupt !!\n");
+    }
 }
 
 void SYS_Init(void)
@@ -64,35 +70,26 @@ void SYS_Init(void)
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
-
     /* Enable HIRC clock (Internal RC 48MHz) */
     CLK_EnableXtalRC(CLK_PWRCTL_HIRCEN_Msk);
-
     /* Waiting for HIRC clock ready */
     CLK_WaitClockReady(CLK_STATUS_HIRCSTB_Msk);
-
     /* Select HCLK clock source as HIRC and and HCLK clock divider as 1 */
     CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC, CLK_CLKDIV0_HCLK(1));
-
     /* Update clock */
     SystemCoreClockUpdate();
-
     /* Enable UART module clock */
     CLK_EnableModuleClock(UART0_MODULE);
-
     /* Select UART module clock source as HIRC_DIV2 and UART module clock divider as 1 */
     CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_HIRC_DIV2, CLK_CLKDIV0_UART(1));
-
     /* Enable PDMA clock source */
     CLK_EnableModuleClock(PDMA_MODULE);
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Set PB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL &= ~(SYS_GPB_MFPL_PB0MFP_Msk | SYS_GPB_MFPL_PB1MFP_Msk);
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
-
 }
 
 void UART0_Init()
@@ -102,7 +99,6 @@ void UART0_Init()
     /*---------------------------------------------------------------------------------------------------------*/
     /* Reset UART module */
     SYS_ResetModule(UART0_RST);
-
     /* Configure UART0 and set UART0 baud rate */
     UART_Open(UART0, 115200);
 }
@@ -113,26 +109,30 @@ void UART0_Init()
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
+    uint32_t i, u32TimeOutCnt;
     /* Unlock protected registers */
     SYS_UnlockReg();
-
     /* Init System, IP clock and multi-function I/O */
     SYS_Init();
-
     /* Lock protected registers */
     /* If user want to write protected register, please issue SYS_UnlockReg() to unlock protected register. */
     SYS_LockReg();
-
     /* Init UART for printf */
     UART0_Init();
-
     printf("\n\nCPU @ %dHz\n", SystemCoreClock);
     printf("+------------------------------------------------------+ \n");
     printf("|    PDMA Memory to Memory Driver Sample Code          | \n");
     printf("+------------------------------------------------------+ \n");
-
     /* Reset PDMA module */
+    SYS_UnlockReg();
     SYS_ResetModule(PDMA_RST);
+    SYS_LockReg();
+
+    for (i = 0; i < 0x100; i++)
+    {
+        au8SrcArray[i] = (uint8_t) i;
+        au8DestArray[i] = 0;
+    }
 
     /*------------------------------------------------------------------------------------------------------
 
@@ -164,7 +164,6 @@ int main(void)
 
         Total transfer length = PDMA_TEST_LENGTH * 32 bits
     ------------------------------------------------------------------------------------------------------*/
-
     /* Open Channel 2 */
     PDMA_Open(PDMA_CHCTL_CHEN2_Msk);
     /* Transfer count is PDMA_TEST_LENGTH, transfer width is 32 bits(one word) */
@@ -175,25 +174,44 @@ int main(void)
     PDMA_SetTransferMode(2, PDMA_MEM, FALSE, 0);
     /* Transfer type is burst transfer and burst size is 4 */
     PDMA_SetBurstType(2, PDMA_REQ_BURST, PDMA_BURST_4);
-
     /* Enable interrupt */
     PDMA_EnableInt(2, PDMA_INT_TRANS_DONE);
-
     /* Enable NVIC for PDMA */
     NVIC_EnableIRQ(PDMA_IRQn);
     g_u32IsTestOver = 0;
-
     /* Generate a software request to trigger transfer with PDMA channel 2  */
     PDMA_Trigger(2);
-
     /* Waiting for transfer done */
-    while (g_u32IsTestOver == 0);
+    u32TimeOutCnt = SystemCoreClock; /* 1 second time-out */
+
+    while (g_u32IsTestOver == 0)
+    {
+        if (--u32TimeOutCnt == 0)
+        {
+            printf("Wait for PDMA transfer done time-out!\n");
+            break;
+        }
+    }
 
     /* Check transfer result */
     if (g_u32IsTestOver == 1)
+    {
         printf("test done...\n");
+
+        /* Compare data */
+        for (i = 0; i < 0x100; i++)
+        {
+            if (au8SrcArray[i] != au8DestArray[i])
+            {
+                printf(" - Compare data fail\n");
+                break;
+            }
+        }
+    }
     else if (g_u32IsTestOver == 2)
+    {
         printf("target abort...\n");
+    }
 
     /* Close channel 2 */
     PDMA_Close();

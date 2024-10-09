@@ -9,7 +9,9 @@
 #include "stdio.h"
 #include "NuMicro.h"
 
-#define RS485_ADDRESS 0xC0UL
+//------------------------------------------------------------------------------
+#define RS485_ADDRESS           0xC0UL
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -18,8 +20,6 @@ void UART_RxThresholdWakeUp(void);
 void UART_RS485WakeUp(void);
 void UART_PowerDown_TestItem(void);
 void UART_PowerDownWakeUpTest(void);
-
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function for System Entry to Power Down Mode                                                           */
@@ -42,6 +42,8 @@ void PowerDownFunction(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
+
     /* Set X32_OUT(PF.0) and X32_IN(PF.1) to input mode */
     PF->MODE &= ~(GPIO_MODE_MODE0_Msk | GPIO_MODE_MODE1_Msk);
 
@@ -62,10 +64,26 @@ void SYS_Init(void)
     /* Enable HIRC and LXT clock */
     CLK->PWRCTL |= (CLK_PWRCTL_HIRCEN_Msk | CLK_PWRCTL_LXTEN);
 
-    /* Wait for HIRC and LXT clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    i32TimeoutCnt = UART_TIMEOUT;
 
-    while (!(CLK->STATUS & CLK_STATUS_LXTSTB_Msk));
+    /* Wait for HIRC and LXT clock ready */
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
+
+    i32TimeoutCnt = UART_TIMEOUT;
+
+    while (!(CLK->STATUS & CLK_STATUS_LXTSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -137,7 +155,6 @@ void USCI0_Init()
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -161,7 +178,6 @@ int32_t main(void)
     UART_PowerDownWakeUpTest();
 
     while (1);
-
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -171,6 +187,7 @@ void UART0_IRQHandler(void)
 {
     uint32_t u32IntSts = UART0->INTSTS;
     uint32_t u32Data;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     if (u32IntSts & UART_INTSTS_WKINT_Msk)              /* UART wake-up interrupt flag */
     {
@@ -180,19 +197,24 @@ void UART0_IRQHandler(void)
         printf("UART wake-up.\n");
         UUART_WAIT_TX_EMPTY(UUART0);
     }
-    else if (u32IntSts & (UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk))     /* UART receive data available flag */
+    else if (u32IntSts & (UART_INTSTS_RDAINT_Msk | UART_INTSTS_RXTOINT_Msk)) /* UART receive data available flag */
     {
-        while ((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0)
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (((UART0->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) == 0) && (--i32TimeoutCnt <= 0))
         {
             u32Data = UART0->DAT;
 
             if (u32Data & UART_DAT_PARITY_Msk)
+            {
                 printf("Address: 0x%X\n", (u32Data & 0xFF));
+            }
             else
+            {
                 printf("Data: 0x%X\n", u32Data);
+            }
         }
     }
-
 }
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -200,10 +222,28 @@ void UART0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_RxThresholdWakeUp(void)
 {
-    /* Select UART clock source as LXT */
-    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
-    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+    i32TimeoutCnt = UART_TIMEOUT;
+
+    /* Select UART clock source as LXT */
+    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
+
+    i32TimeoutCnt = UART_TIMEOUT;
+
+    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     CLK->CLKSEL1 = (CLK->CLKSEL1 & (~CLK_CLKSEL1_UARTSEL_Msk)) | CLK_CLKSEL1_UARTSEL_LXT;
 
@@ -230,10 +270,28 @@ void UART_RxThresholdWakeUp(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_RS485WakeUp(void)
 {
-    /* Select UART clock source as LXT */
-    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0);
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
-    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0);
+    i32TimeoutCnt = UART_TIMEOUT;
+
+    /* Select UART clock source as LXT */
+    while ((UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk) == 0)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
+
+    i32TimeoutCnt = UART_TIMEOUT;
+
+    while ((UART0->FIFOSTS & UART_FIFOSTS_RXIDLE_Msk) == 0)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     CLK->CLKSEL1 = (CLK->CLKSEL1 & (~CLK_CLKSEL1_UARTSEL_Msk)) | CLK_CLKSEL1_UARTSEL_LXT;
 

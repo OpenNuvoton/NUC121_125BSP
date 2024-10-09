@@ -10,7 +10,8 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define RXBUFSIZE 1024
+#define RXBUFSIZE               1024
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -20,6 +21,7 @@ void AutoFlow_FunctionTxTest(void);
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -29,7 +31,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -141,6 +149,7 @@ int main(void)
 void AutoFlow_FunctionTxTest()
 {
     uint32_t u32i;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     printf("\n");
     printf("+-----------------------------------------------------------+\n");
@@ -179,8 +188,16 @@ void AutoFlow_FunctionTxTest()
         /* Send 1 byte data */
         UART0->DAT = (u32i & 0xFF);
 
+        i32TimeoutCnt = UART_TIMEOUT;
+
         /* Wait if Tx FIFO is full */
-        while (UART0->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
+        while (UART0->FIFOSTS & UART_FIFOSTS_TXFULL_Msk)
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
     }
 
     printf("\n Transmit Done\n");

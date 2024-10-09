@@ -139,7 +139,7 @@ int32_t main(void)
     while ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0);
 
 _APROM:
-    outpw(&SYS->RSTSTS, 3);//clear bit
+    outpw(&SYS->RSTSTS, 3); // Clear bit
     outpw(&FMC->ISPCTL, inpw(&FMC->ISPCTL) & 0xFFFFFFFC);
     outpw(&SCB->AIRCR, (V6M_AIRCR_VECTKEY_DATA | V6M_AIRCR_SYSRESETREQ));
 

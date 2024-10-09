@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define RXBUFSIZE 1024
+//------------------------------------------------------------------------------
+#define RXBUFSIZE               1024
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -24,9 +26,10 @@ volatile int32_t g_i32pointer = 0;
 /*---------------------------------------------------------------------------------------------------------*/
 void AutoFlow_FunctionRxTest(void);
 
-
+//------------------------------------------------------------------------------
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -36,7 +39,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -147,7 +156,7 @@ int main(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void UART0_IRQHandler(void)
 {
-    volatile uint32_t u32IntSts = UART0->INTSTS;;
+    volatile uint32_t u32IntSts = UART0->INTSTS;
 
     /* Rx Ready or Time-out INT */
     if (UART_GET_INT_FLAG(UART0, UART_INTSTS_RDAINT_Msk))
@@ -168,12 +177,14 @@ void UART0_IRQHandler(void)
         } while (UART0->FIFOSTS & UART_FIFOSTS_RXPTR_Msk);
     }
 }
+
 /*---------------------------------------------------------------------------------------------------------*/
 /*  AutoFlow Function Test (Slave)                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
 void AutoFlow_FunctionRxTest()
 {
     uint32_t u32i;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     printf("\n");
     printf("+-----------------------------------------------------------+\n");
@@ -225,7 +236,13 @@ void AutoFlow_FunctionRxTest()
     printf("\n Starting to receive data...\n");
 
     /* Wait for receive 1k bytes data */
-    while (g_i32pointer < RXBUFSIZE);
+    while (g_i32pointer < RXBUFSIZE)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Compare Data */
     for (u32i = 0; u32i < RXBUFSIZE; u32i++)

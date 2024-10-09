@@ -10,7 +10,7 @@
 #define __DATA_FLASH_PROG_H__
 
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !defined (__ARMCC_VERSION)
 
     #define MASS_STORAGE_OFFSET       0x00004400 /* To avoid the code to write APROM */
     #define DATA_FLASH_STORAGE_SIZE   (15*1024)  /* Configure the DATA FLASH storage size. To pass USB-IF MSC Test, it needs > 64KB */

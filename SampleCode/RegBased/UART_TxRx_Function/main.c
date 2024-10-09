@@ -9,7 +9,9 @@
 #include "stdio.h"
 #include "NuMicro.h"
 
-#define RXBUFSIZE 1024
+//------------------------------------------------------------------------------
+#define RXBUFSIZE               1024
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -27,9 +29,10 @@ volatile int32_t g_bWait         = TRUE;
 void UART_TEST_HANDLE(void);
 void UART_FunctionTest(void);
 
-
+//------------------------------------------------------------------------------
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -39,7 +42,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -123,10 +132,13 @@ void UART0_IRQHandler(void)
 void UART_TEST_HANDLE()
 {
     uint32_t u32IntSts = UART0->INTSTS;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     if ((u32IntSts & UART_INTSTS_RDAINT_Msk) || (u32IntSts & UART_INTSTS_RXTOINT_Msk))
     {
         printf("\nInput:");
+
+        i32TimeoutCnt = UART_TIMEOUT;
 
         /* Get all the input characters */
         while (UART_GET_RX_EMPTY(UART0) == 0)
@@ -149,6 +161,11 @@ void UART_TEST_HANDLE()
                 g_u32comRtail = (g_u32comRtail == (RXBUFSIZE - 1)) ? 0 : (g_u32comRtail + 1);
                 g_u32comRbytes++;
             }
+
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
         }
 
         printf("\nTransmission Test:");
@@ -163,7 +180,15 @@ void UART_TEST_HANDLE()
         {
             uint32_t u8InChar = g_u8RecData[g_u32comRhead];
 
-            while (UART_IS_TX_FULL(UART0)); /* Wait Tx is not full to transmit data */
+            i32TimeoutCnt = UART_TIMEOUT;
+
+            while (UART_IS_TX_FULL(UART0))  /* Wait Tx is not full to transmit data */
+            {
+                if (--i32TimeoutCnt <= 0)
+                {
+                    break;
+                }
+            }
 
             UART_WRITE(UART0, u8InChar);
             g_u32comRhead = (g_u32comRhead == (RXBUFSIZE - 1)) ? 0 : (g_u32comRhead + 1);
@@ -182,6 +207,8 @@ void UART_TEST_HANDLE()
 /*---------------------------------------------------------------------------------------------------------*/
 void UART_FunctionTest()
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
+
     printf("+-----------------------------------------------------------+\n");
     printf("|  UART Function Test                                       |\n");
     printf("+-----------------------------------------------------------+\n");
@@ -212,7 +239,15 @@ void UART_FunctionTest()
     UART0->INTEN |= UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk;
     NVIC_EnableIRQ(UART0_IRQn);
 
-    while (g_bWait);
+    i32TimeoutCnt = UART_TIMEOUT;
+
+    while (g_bWait)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Disable UART RDA and THRE Interrupt */
     UART0->INTEN &= ~(UART_INTEN_RDAIEN_Msk | UART_INTEN_THREIEN_Msk | UART_INTEN_RXTOIEN_Msk);
@@ -225,7 +260,3 @@ void UART_FunctionTest()
     printf("\nUART Sample Demo End.\n");
 
 }
-
-
-
-

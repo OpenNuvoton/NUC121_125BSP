@@ -10,15 +10,16 @@
 #include "NuMicro.h"
 
 /* CheckSum Method */
-#define MODE_CLASSIC        2
-#define MODE_ENHANCED       1
+#define MODE_CLASSIC            2
+#define MODE_ENHANCED           1
+
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
 volatile int32_t g_i32pointer;
 uint8_t g_u8SendData[12] ;
-
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
@@ -206,6 +207,7 @@ void LIN_MasterTestUsingLinCtlReg(uint32_t u32id, uint32_t u32ModeSel)
 {
     uint8_t au8TestPattern[9] = {0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x0}; // 8 data byte + 1 byte checksum
     uint32_t i;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     if (u32ModeSel == MODE_CLASSIC)
     {
@@ -217,7 +219,15 @@ void LIN_MasterTestUsingLinCtlReg(uint32_t u32id, uint32_t u32ModeSel)
 
         for (i = 0; i < 9; i++)
         {
-            while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
+            i32TimeoutCnt = UART_TIMEOUT;
+
+            while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))   /* Wait Tx empty */
+            {
+                if (--i32TimeoutCnt <= 0)
+                {
+                    break;
+                }
+            }
 
             UART0->DAT = au8TestPattern[i]; /* Send UART Data from buffer */
         }
@@ -237,7 +247,15 @@ void LIN_MasterTestUsingLinCtlReg(uint32_t u32id, uint32_t u32ModeSel)
 
         for (i = 0; i < 9; i++)
         {
-            while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
+            i32TimeoutCnt = UART_TIMEOUT;
+
+            while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))   /* Wait Tx empty */
+            {
+                if (--i32TimeoutCnt <= 0)
+                {
+                    break;
+                }
+            }
 
             UART0->DAT = g_u8SendData[i + 1]; /* Send UART Data from buffer */
         }
@@ -304,6 +322,7 @@ uint8_t ComputeChksumValue(uint8_t *pu8Buf, uint32_t u32ByteCnt)
 void LIN_SendHeader(uint32_t u32id)
 {
     uint32_t u32Count;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     g_i32pointer = 0;
 
@@ -319,11 +338,18 @@ void LIN_SendHeader(uint32_t u32id)
 
     for (u32Count = 0; u32Count < 2; u32Count++)
     {
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))   /* Wait Tx empty */
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         UART0->DAT = g_u8SendData[u32Count]; /* Send UART Data from buffer */
     }
-
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------*/
@@ -332,7 +358,9 @@ void LIN_SendHeader(uint32_t u32id)
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 void LIN_SendHeaderUsingLinCtlReg(uint32_t u32id, uint32_t u32HeaderSel)
 {
-    g_i32pointer = 0 ;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
+
+    g_i32pointer = 0;
 
     /* Switch back to LIN Function */
     UART0->FUNCSEL = UART_FUNCSEL_LIN;
@@ -350,8 +378,16 @@ void LIN_SendHeaderUsingLinCtlReg(uint32_t u32id, uint32_t u32HeaderSel)
         /* LIN TX Send Header Enable */
         UART0->LINCTL |= UART_LINCTL_SENDH_Msk;
 
+        i32TimeoutCnt = UART_TIMEOUT;
+
         /* Wait until break field, sync field and ID field transfer completed */
-        while ((UART0->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk);
+        while ((UART0->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk)
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
     }
 
     /* Set LIN 1. Header select as includes "break field" and "sync field".[UART_LINCTL_HSEL_BREAK_SYNC]
@@ -364,8 +400,16 @@ void LIN_SendHeaderUsingLinCtlReg(uint32_t u32id, uint32_t u32HeaderSel)
         /* LIN TX Send Header Enable */
         UART0->LINCTL |= UART_LINCTL_SENDH_Msk;
 
+        i32TimeoutCnt = UART_TIMEOUT;
+
         /* Wait until break field and sync field transfer completed */
-        while ((UART0->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk);
+        while ((UART0->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk)
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         /* Send ID field, g_u8SendData[0] is ID+parity field*/
         g_u8SendData[g_i32pointer++] = GetParityValue(u32id);   // ID+Parity Field
@@ -382,19 +426,43 @@ void LIN_SendHeaderUsingLinCtlReg(uint32_t u32id, uint32_t u32HeaderSel)
         /* LIN TX Send Header Enable */
         UART0->LINCTL |= UART_LINCTL_SENDH_Msk;
 
+        i32TimeoutCnt = UART_TIMEOUT;
+
         /* Wait until break field transfer completed */
-        while ((UART0->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk);
+        while ((UART0->LINCTL & UART_LINCTL_SENDH_Msk) == UART_LINCTL_SENDH_Msk)
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         /* Send sync field and ID field */
         g_u8SendData[g_i32pointer++] = 0x55 ;                  // SYNC Field
         g_u8SendData[g_i32pointer++] = GetParityValue(u32id);   // ID+Parity Field
         UART0->DAT = g_u8SendData[0];
 
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         UART0->DAT = g_u8SendData[1];
 
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
     }
 }
 
@@ -404,6 +472,7 @@ void LIN_SendHeaderUsingLinCtlReg(uint32_t u32id, uint32_t u32HeaderSel)
 void LIN_SendResponse(int32_t checkSumOption, uint32_t *pu32TxBuf)
 {
     int32_t i32;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     for (i32 = 0; i32 < 8; i32++)
         g_u8SendData[g_i32pointer++] = pu32TxBuf[i32] ;
@@ -412,7 +481,15 @@ void LIN_SendResponse(int32_t checkSumOption, uint32_t *pu32TxBuf)
 
     for (i32 = 0; i32 < 9; i32++)
     {
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))   /* Wait Tx empty */
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         UART0->DAT = g_u8SendData[i32 + 2]; /* Send UART Data from buffer */
     }
@@ -424,6 +501,7 @@ void LIN_SendResponse(int32_t checkSumOption, uint32_t *pu32TxBuf)
 void LIN_SendResponseWithByteCnt(int32_t checkSumOption, uint32_t *pu32TxBuf, uint32_t u32ByteCnt)
 {
     int32_t i32;
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /* Prepare data */
     for (i32 = 0; i32 < u32ByteCnt; i32++)
@@ -438,7 +516,15 @@ void LIN_SendResponseWithByteCnt(int32_t checkSumOption, uint32_t *pu32TxBuf, ui
     /* Send data and check sum */
     for (i32 = 0; i32 < 9; i32++)
     {
-        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk));  /* Wait Tx empty */
+        i32TimeoutCnt = UART_TIMEOUT;
+
+        while (!(UART0->FIFOSTS & UART_FIFOSTS_TXEMPTYF_Msk))   /* Wait Tx empty */
+        {
+            if (--i32TimeoutCnt <= 0)
+            {
+                break;
+            }
+        }
 
         UART0->DAT = g_u8SendData[i32 + 2]; /* Send UART Data from buffer */
     }
@@ -447,6 +533,7 @@ void LIN_SendResponseWithByteCnt(int32_t checkSumOption, uint32_t *pu32TxBuf, ui
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -456,7 +543,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -576,4 +669,3 @@ int main(void)
     while (1);
 
 }
-

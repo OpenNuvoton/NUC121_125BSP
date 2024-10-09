@@ -12,9 +12,9 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-/* check CBS and flash lock before runing this sample code,
+/* Check CBS and flash lock before runing this sample code,
    BS should be APROM or APROM with IAP, flash lock should be disabled,
-   please use target option -> Utilities -> setting -> config to check */
+   please use Target option -> Utilities -> Setting -> Config to check */
 
 extern void SPROM_Function(void);
 
@@ -112,13 +112,13 @@ int main(void)
         SPROMDump();
         SPROM_Function();
         printf("--------------------------------------------------------\n");
-        printf("press any key to enter in SPROM security mode....\n");
+        printf("Press any key to enter SPROM security mode....\n");
         getchar();
-        /* the program unit is 4 bytes, hence we program 0x2001FC~0x2001FF to change mode.
+        /* The program unit is 4 bytes, hence we program 0x2001FC~0x2001FF to change mode.
            Write 0x0 on 0x2001FF to change mode to security mode,
            user also can write other data on this position except 0xFF(non-security mode) and 0xAA(debug mode) */
         FMC_Write(FMC_SPROM_BASE + 0x1FC, 0x00FFFFFF);
-        /* setting SPROM in security mode would take effect after reset chip */
+        /* Setting SPROM in security mode would take effect after reset chip */
         SYS_ResetChip();
     }
 
@@ -133,7 +133,7 @@ int main(void)
     /* Lock protected registers */
     SYS_LockReg();
 
-    printf("If user want to rerun this test,\nplease do flash again by ICE to erase SPROM area and flash back SPROM.o\n");
+    printf("Please flash this sample again to erase SPROM area to rerun test.\n");
 
     while (1);
 }

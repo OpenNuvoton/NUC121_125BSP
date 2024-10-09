@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define TEST_COUNT 16
+//------------------------------------------------------------------------------
+#define TEST_COUNT              16
+#define USPI_TIMEOUT            (SystemCoreClock >> 2)
 
 /*----------------------------------------------------------------------------------------------------------*/
 /* Define Function Prototypes                                                                               */
@@ -26,9 +28,11 @@ uint32_t g_au32DestinationData[TEST_COUNT];
 volatile uint32_t g_u32TxDataCount;
 volatile uint32_t g_u32RxDataCount;
 
-
+//------------------------------------------------------------------------------
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = USPI_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -37,7 +41,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK source divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -127,6 +137,7 @@ void USCI_SPI_Init(void)
 int main()
 {
     uint32_t u32TxDataCount, u32RxDataCount;
+    volatile int32_t i32TimeoutCnt = USPI_TIMEOUT;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -178,17 +189,21 @@ int main()
     printf("\n");
 
     /* Access TX and RX Buffer */
-    while (u32RxDataCount < TEST_COUNT)
+    while ((u32RxDataCount < TEST_COUNT) && (--i32TimeoutCnt <= 0))
     {
         /* Check TX FULL flag and TX data count */
         if (((USPI0->BUFSTS & USPI_BUFSTS_TXFULL_Msk) == 0) && (u32TxDataCount < TEST_COUNT))
+        {
             /* Write to TX Buffer */
             USPI0->TXDAT = g_au32SourceData[u32TxDataCount++];
+        }
 
         /* Check RX EMPTY flag */
         if ((USPI0->BUFSTS & USPI_BUFSTS_RXEMPTY_Msk) == 0)
+        {
             /* Read RX Buffer */
             g_au32DestinationData[u32RxDataCount++] = USPI0->RXDAT;
+        }
     }
 
     /* Print the received data */

@@ -11,14 +11,15 @@
 #include <string.h>
 #include "NuMicro.h"
 
-#define I2S_TX_DMA_CH 1
-#define I2S_RX_DMA_CH 2
+#define I2S_TX_DMA_CH       1
+#define I2S_RX_DMA_CH       2
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define BUFF_LEN 4
-#define CHECK_BUFF_LEN 32
+#define BUFF_LEN            4
+#define CHECK_BUFF_LEN      32
+#define I2S_TIMEOUT         (SystemCoreClock >> 2)
 
 typedef struct
 {
@@ -158,6 +159,8 @@ int32_t main(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = I2S_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -165,7 +168,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Waiting for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Switch HCLK clock source to HIRC */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

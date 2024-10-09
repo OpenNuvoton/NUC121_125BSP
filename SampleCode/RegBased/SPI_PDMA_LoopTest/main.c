@@ -11,12 +11,13 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
-#define SPI_MASTER_TX_DMA_CH 0
-#define SPI_MASTER_RX_DMA_CH 1
-#define SPI_SLAVE_TX_DMA_CH  2
-#define SPI_SLAVE_RX_DMA_CH  3
+#define SPI_MASTER_TX_DMA_CH    0
+#define SPI_MASTER_RX_DMA_CH    1
+#define SPI_SLAVE_TX_DMA_CH     2
+#define SPI_SLAVE_RX_DMA_CH     3
 
-#define TEST_COUNT 64
+#define TEST_COUNT              64
+#define SPI_TIMEOUT             (SystemCoreClock >> 2)
 
 /* Function prototype declaration */
 void SYS_Init(void);
@@ -74,6 +75,8 @@ int main(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = SPI_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -81,7 +84,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Waiting for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Switch HCLK clock source to HIRC */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

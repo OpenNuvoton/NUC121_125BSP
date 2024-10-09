@@ -71,6 +71,9 @@ void SYS_Init(void)
     /* Set GPB multi-function pins for UART0 RXD and TXD */
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
 
+    /* Set PD.2 to input mode */
+    PD->MODE &= ~(GPIO_MODE_MODE2_Msk);
+
     /* Set PD2 to ADC mode for ADC input channel 2 */
     SYS->GPD_MFPL &= ~(SYS_GPD_MFPL_PD2MFP_Msk);
     SYS->GPD_MFPL |= (SYS_GPD_MFPL_PD2MFP_ADC_CH2);

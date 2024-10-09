@@ -11,13 +11,17 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
 #define TEST_COUNT 16
+#define SPI_TIMEOUT (SystemCoreClock >> 2)
 
+//------------------------------------------------------------------------------
 uint32_t g_au32SourceData[TEST_COUNT];
 uint32_t g_au32DestinationData[TEST_COUNT];
 volatile uint32_t g_u32TxDataCount;
 volatile uint32_t g_u32RxDataCount;
 
+//------------------------------------------------------------------------------
 /* Function prototype declaration */
 void SYS_Init(void);
 void UART_Init(void);
@@ -29,6 +33,7 @@ void SPI_Init(void);
 int main(void)
 {
     uint32_t u32DataCount;
+    volatile int32_t i32TimeoutCnt = SPI_TIMEOUT;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -78,8 +83,16 @@ int main(void)
     g_u32RxDataCount = 0;
     NVIC_EnableIRQ(SPI0_IRQn);
 
+    i32TimeoutCnt = SPI_TIMEOUT;
+
     /* Wait for transfer done */
-    while (g_u32RxDataCount < TEST_COUNT);
+    while (g_u32RxDataCount < TEST_COUNT)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Print the received data */
     printf("Received data:\n");
@@ -104,6 +117,8 @@ int main(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = SPI_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -111,7 +126,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Waiting for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Switch HCLK clock source to HIRC */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

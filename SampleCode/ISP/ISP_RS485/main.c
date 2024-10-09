@@ -79,8 +79,8 @@ int32_t main(void)
     GetDataFlashInfo(&g_dataFlashAddr, &g_dataFlashSize);
 
     SysTick->LOAD = 300000 * CyclesPerUs;
-    SysTick->VAL   = (0x00);
-    SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;//using cpu clock
+    SysTick->VAL  = (0x00);
+    SysTick->CTRL = SysTick->CTRL | SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;   // Using CPU clock
 
     while (1)
     {
@@ -100,7 +100,7 @@ int32_t main(void)
             }
         }
 
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)//timeout, then goto APROM
+        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)     // Timeout, then goto APROM
         {
             goto _APROM;
         }
@@ -125,7 +125,7 @@ int32_t main(void)
     }
 
 _APROM:
-    outpw(&SYS->RSTSTS, 3);//clear bit
+    outpw(&SYS->RSTSTS, 3); // Clear bit
     outpw(&FMC->ISPCTL, inpw(&FMC->ISPCTL) & 0xFFFFFFFC);
     outpw(&SCB->AIRCR, (V6M_AIRCR_VECTKEY_DATA | V6M_AIRCR_SYSRESETREQ));
 

@@ -20,6 +20,7 @@
 //#define BUFF_LEN      512
 #define BUFF_LEN        256
 #define BUFF_HALF_LEN   (BUFF_LEN/2)
+#define I2S_TIMEOUT     (SystemCoreClock >> 2)
 
 typedef struct
 {
@@ -54,24 +55,58 @@ void Delay(int i32DelayCount)
 /*---------------------------------------------------------------------------------------------------------*/
 void I2C_WriteNAU8822(uint8_t u8Addr, uint16_t u16Data)
 {
-    I2C0->CTL |= I2C_CTL_SI_Msk | I2C_CTL_STA_Msk ;
+    volatile int32_t i32TimeoutCnt = I2S_TIMEOUT;
 
-    while (!(I2C0->CTL & I2C_CTL_SI_Msk));
+    I2C0->CTL |= I2C_CTL_SI_Msk | I2C_CTL_STA_Msk;
+
+    i32TimeoutCnt = I2S_TIMEOUT;
+
+    while (!(I2C0->CTL & I2C_CTL_SI_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     I2C0->DAT = NAU8822_ADDR << 1;
     I2C0->CTL = (I2C0->CTL & ~0x3c) | I2C_CTL_SI;
 
-    while (!(I2C0->CTL & I2C_CTL_SI_Msk));
+    i32TimeoutCnt = I2S_TIMEOUT;
+
+    while (!(I2C0->CTL & I2C_CTL_SI_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     I2C0->DAT = (uint8_t)((u8Addr << 1) | (u16Data >> 8));
     I2C0->CTL = (I2C0->CTL & ~0x3c) | I2C_CTL_SI;
 
-    while (!(I2C0->CTL & I2C_CTL_SI_Msk));
+    i32TimeoutCnt = I2S_TIMEOUT;
+
+    while (!(I2C0->CTL & I2C_CTL_SI_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     I2C0->DAT = (uint8_t)(u16Data & 0x00FF);
     I2C0->CTL = (I2C0->CTL & ~0x3c) | I2C_CTL_SI;
 
-    while (!(I2C0->CTL & I2C_CTL_SI_Msk));
+    i32TimeoutCnt = I2S_TIMEOUT;
+
+    while (!(I2C0->CTL & I2C_CTL_SI_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     I2C0->CTL |= I2C_CTL_SI_Msk | I2C_CTL_STO_Msk;
 }
@@ -126,6 +161,8 @@ void NAU8822_Setup(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = I2S_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -134,7 +171,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Waiting for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Switch HCLK clock source to HIRC */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

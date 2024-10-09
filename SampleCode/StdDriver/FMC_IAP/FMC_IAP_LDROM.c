@@ -16,7 +16,6 @@ typedef void (FUNC_PTR)(void);
 
 void SYS_Init(void)
 {
-
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -53,7 +52,6 @@ void SYS_Init(void)
 
     /* Set PA multi-function pins for CLKO(PA.15) */
     SYS->GPA_MFPH = (SYS->GPA_MFPH & (~SYS_GPA_MFPH_PA15MFP_Msk)) | SYS_GPA_MFPH_PA15MFP_CLKO;
-
 }
 
 void UART_Init()
@@ -73,10 +71,12 @@ void UART_Init()
  *  Set stack base address to SP register.
  */
 #ifdef __ARMCC_VERSION                 /* for Keil compiler */
-__asm void __set_SP(uint32_t _sp)
+void __set_SP(uint32_t _sp)
 {
-    MSR MSP, r0
-    BX lr
+    __ASM(
+        "MSR MSP, r0 \n"
+        "BX lr       \n"
+    );
 }
 #endif
 
@@ -192,7 +192,7 @@ int main()
      */
 #ifdef __GNUC__                        /* for GNU C compiler */
     u32Data = *(uint32_t *)FMC_LDROM_BASE;
-    asm("msr msp, %0" : : "r"(u32Data));
+    __ASM("msr msp, %0" : : "r"(u32Data));
 #else
     __set_SP((*(volatile uint32_t *)(FMC_APROM_BASE)));
 #endif

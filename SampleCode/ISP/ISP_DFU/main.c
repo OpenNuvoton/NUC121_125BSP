@@ -123,10 +123,8 @@ int32_t main(void)
         }
     }
 
-    // Reset to APROM
+    /* Reset to boot from APROM */
     FMC->ISPCTL &= ~FMC_ISPCTL_BS_Msk;
+    // Wait system reset
     NVIC_SystemReset();
-
-    /* Trap the CPU */
-    while (1);
 }

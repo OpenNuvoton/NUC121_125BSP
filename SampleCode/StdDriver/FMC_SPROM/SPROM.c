@@ -25,8 +25,9 @@ static void SendChar_ToUART(int ch)
         DEBUG_PORT->DAT = '\r';
     }
 }
+
 /* User should always see "SPROM AREA" on uart console when Sprom_function is called */
-const char c_acStringBuf[] = {'S', 'P', 'R', 'O', 'M', ' ', 'A', 'R', 'E', 'A', '\n'};
+const char c_acStringBuf[] = { "SPROM AREA\n" };
 void SPROM_Function(void)
 {
     char *ptr;

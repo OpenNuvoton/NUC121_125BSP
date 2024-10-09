@@ -46,8 +46,8 @@ typedef enum
 
 /*Buffer for play and record */
 uint32_t g_au32UsbTmpBuf[((PLAY_RATE > REC_RATE) ? PLAY_RATE : REC_RATE)
-                                                 / 2000 *
-                                                 ((PLAY_CHANNELS > REC_CHANNELS) ? PLAY_CHANNELS : REC_CHANNELS)] = {0};
+                         / 2000 *
+                         ((PLAY_CHANNELS > REC_CHANNELS) ? PLAY_CHANNELS : REC_CHANNELS)] = {0};
 
 
 /* Recoder Buffer and its pointer */

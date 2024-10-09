@@ -81,6 +81,9 @@ int main()
     printf("+-----------------------------------------------------------+\n");
     printf("|      FMC Write/Read code execute in SRAM Sample Code      |\n");
     printf("+-----------------------------------------------------------+\n");
+    printf("Check FMC function execution address\n");
+    printf("FMC_Erase: 0x%X, FMC_Write: 0x%X, FMC_Read: 0x%X\n",
+           (uint32_t)FMC_Erase, (uint32_t)FMC_Write, (uint32_t)FMC_Read);
 
     /*
        This sample code is used to demonstrate how to implement a code to execute in SRAM.

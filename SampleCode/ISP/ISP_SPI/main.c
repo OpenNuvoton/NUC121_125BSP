@@ -89,7 +89,7 @@ int32_t main(void)
     SYS_Init();
 
     CLK->AHBCLK |= CLK_AHBCLK_ISPCKEN_Msk;
-    FMC->ISPCTL |=  FMC_ISPCTL_ISPEN_Msk;
+    FMC->ISPCTL |= FMC_ISPCTL_ISPEN_Msk;
     g_apromSize = GetApromSize();
     GetDataFlashInfo(&g_dataFlashAddr, &g_dataFlashSize);
 
@@ -121,7 +121,7 @@ int32_t main(void)
     }
 
 _APROM:
-    outpw(&SYS->RSTSTS, 3);//clear bit
+    outpw(&SYS->RSTSTS, 3); // Clear bit
     outpw(&FMC->ISPCTL, inpw(&FMC->ISPCTL) & 0xFFFFFFFC);
     outpw(&SCB->AIRCR, (V6M_AIRCR_VECTKEY_DATA | V6M_AIRCR_SYSRESETREQ));
 

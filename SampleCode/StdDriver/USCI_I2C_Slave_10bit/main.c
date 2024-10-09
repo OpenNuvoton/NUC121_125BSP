@@ -193,12 +193,12 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
     printf("UI2C0 clock %d Hz\n", UI2C_GetBusClockFreq(UI2C0));
 
     /* Set USCI_I2C0 Slave Addresses */
-    UI2C_SetSlaveAddr(UI2C0, 0, 0x116, UI2C_GCMODE_DISABLE);   /* Slave Address : 0x116 */
-    UI2C_SetSlaveAddr(UI2C0, 1, 0x136, UI2C_GCMODE_DISABLE);   /* Slave Address : 0x136 */
+    UI2C_SetSlaveAddr(UI2C0, 0, 0x115, UI2C_GCMODE_DISABLE);
+    UI2C_SetSlaveAddr(UI2C0, 1, 0x135, UI2C_GCMODE_DISABLE);
 
     /* Set USCI_I2C0 Slave Addresses Mask */
-    UI2C_SetSlaveAddrMask(UI2C0, 0, 0x04);                    /* Slave Address : 0x4 */
-    UI2C_SetSlaveAddrMask(UI2C0, 1, 0x02);                    /* Slave Address : 0x2 */
+    UI2C_SetSlaveAddrMask(UI2C0, 0, 0x01);
+    UI2C_SetSlaveAddrMask(UI2C0, 1, 0x04);
 
     /* Enable UI2C0 protocol interrupt */
     UI2C_ENABLE_PROT_INT(UI2C0, (UI2C_PROTIEN_ACKIEN_Msk | UI2C_PROTIEN_NACKIEN_Msk | UI2C_PROTIEN_STORIEN_Msk | UI2C_PROTIEN_STARIEN_Msk));

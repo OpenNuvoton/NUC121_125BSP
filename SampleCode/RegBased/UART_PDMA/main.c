@@ -9,8 +9,11 @@
 #include "stdio.h"
 #include "NuMicro.h"
 
-#define UART_RX_DMA_CH 0
-#define UART_TX_DMA_CH 1
+//------------------------------------------------------------------------------
+#define UART_RX_DMA_CH          0
+#define UART_TX_DMA_CH          1
+
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -260,6 +263,8 @@ void UART0_IRQHandler(void)
 /*---------------------------------------------------------------------------------------------------------*/
 void PDMA_UART(int32_t i32option)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
+
     /* Source data initiation */
     BuildSrcPattern((uint32_t)SrcArray, UART_TEST_LENGTH);
     ClearBuf((uint32_t)DestArray, UART_TEST_LENGTH, 0xFF);
@@ -335,8 +340,16 @@ void PDMA_UART(int32_t i32option)
 
     NVIC_EnableIRQ(UART0_IRQn);
 
+    i32TimeoutCnt = UART_TIMEOUT;
+
     /* Wait for PDMA operation finish */
-    while (IsTestOver == FALSE);
+    while (IsTestOver == FALSE)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Check PDMA status */
     if (IsTestOver == 2)
@@ -362,6 +375,7 @@ void PDMA_UART(int32_t i32option)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -371,7 +385,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

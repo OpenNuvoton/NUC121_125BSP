@@ -211,12 +211,12 @@ void UI2C0_Init(uint32_t u32ClkSpeed)
     UI2C0->PROTCTL |= UI2C_PROTCTL_ADDR10EN_Msk;
 
     /* Set UI2C0 Slave Addresses */
-    UI2C0->DEVADDR0 = 0x116;   /* Slave Address : 0x116 */
-    UI2C0->DEVADDR1 = 0x136;   /* Slave Address : 0x136 */
+    UI2C0->DEVADDR0 = 0x115;
+    UI2C0->DEVADDR1 = 0x135;
 
     /* Set UI2C0 Slave Addresses Msk */
-    UI2C0->ADDRMSK0 = 0x4;   /* Slave Address : 0x4 */
-    UI2C0->ADDRMSK1 = 0x2;   /* Slave Address : 0x2 */
+    UI2C0->ADDRMSK0 = 0x01;
+    UI2C0->ADDRMSK1 = 0x04;
 
     /* Enable UI2C0 protocol interrupt */
     UI2C_ENABLE_PROT_INT(UI2C0, (UI2C_PROTIEN_ACKIEN_Msk | UI2C_PROTIEN_NACKIEN_Msk | UI2C_PROTIEN_STORIEN_Msk | UI2C_PROTIEN_STARIEN_Msk));

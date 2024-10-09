@@ -11,14 +11,15 @@
 #include <string.h>
 #include "NuMicro.h"
 
-#define I2S_TX_DMA_CH 1
-#define I2S_RX_DMA_CH 2
+#define I2S_TX_DMA_CH   1
+#define I2S_RX_DMA_CH   2
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
 /*---------------------------------------------------------------------------------------------------------*/
-#define BUFF_LEN 16
-#define TX_BUFF_LEN 32
+#define BUFF_LEN        16
+#define TX_BUFF_LEN     32
+#define I2S_TIMEOUT     (SystemCoreClock >> 2)
 
 typedef struct
 {
@@ -57,6 +58,7 @@ void PDMA_ResetRxSGTable(uint8_t u8Id)
 int32_t main(void)
 {
     uint32_t u32InitValue, u32DataCount;
+    volatile int32_t i32TimeoutCnt = I2S_TIMEOUT;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -155,7 +157,13 @@ int32_t main(void)
     SPI0->PDMACTL |= (SPI_PDMACTL_RXPDMAEN_Msk | SPI_PDMACTL_TXPDMAEN_Msk);
 
     /* wait RX Buffer 1 and RX Buffer 2 get first buffer */
-    while (g_u8Count != 2);
+    while (g_u8Count != 2)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Once I2S is enabled, CLK would be sent immediately, we still have chance to get zero data at beginning,
        in this case we only need to make sure the on-going data is correct */
@@ -174,6 +182,8 @@ int32_t main(void)
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = I2S_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
@@ -181,7 +191,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Waiting for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Switch HCLK clock source to HIRC */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

@@ -11,10 +11,15 @@
 #include <string.h>
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
+#define I2S_TIMEOUT             (SystemCoreClock >> 2)
+
+//------------------------------------------------------------------------------
 /* Function prototype declaration */
 void SYS_Init(void);
 void UART0_Init(void);
 
+//------------------------------------------------------------------------------
 volatile uint32_t g_u32TxValue;
 volatile uint32_t g_u32DataCount;
 
@@ -107,14 +112,24 @@ int32_t main(void)
 /* Function prototype declaration */
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = I2S_TIMEOUT;
+
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Enable HIRC clock */
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
+    i32TimeoutCnt = I2S_TIMEOUT;
+
     /* Waiting for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Switch HCLK clock source to HIRC */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;

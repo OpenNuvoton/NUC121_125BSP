@@ -199,7 +199,7 @@ int main()
 
     printf("\n\n");
     printf("+----------------------------------------+\n");
-    printf("|          NUC121 FMC Sample Code          |\n");
+    printf("|          NUC121 FMC Sample Code        |\n");
     printf("+----------------------------------------+\n");
 
     /* Enable FMC ISP function */

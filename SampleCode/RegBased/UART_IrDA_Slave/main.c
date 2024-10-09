@@ -10,6 +10,9 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+//------------------------------------------------------------------------------
+#define UART_TIMEOUT            (SystemCoreClock >> 2)
+
 /*---------------------------------------------------------------------------------------------------------*/
 /* Define functions prototype                                                                              */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -21,6 +24,7 @@ void IrDA_FunctionRxTest(void);
 /*---------------------------------------------------------------------------------------------------------*/
 void IrDA_FunctionRxTest()
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
     uint8_t u8InChar = 0xFF;
 
     printf("\n");
@@ -80,7 +84,13 @@ void IrDA_FunctionRxTest()
     /* Reset Rx FIFO */
     UART0->FIFO |= UART_FIFO_RXRST_Msk;
 
-    while (UART0->FIFO & UART_FIFO_RXRST_Msk);
+    while (UART0->FIFO & UART_FIFO_RXRST_Msk)
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     printf("Waiting...\n");
 
@@ -99,6 +109,7 @@ void IrDA_FunctionRxTest()
 
 void SYS_Init(void)
 {
+    volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init System Clock                                                                                       */
@@ -108,7 +119,13 @@ void SYS_Init(void)
     CLK->PWRCTL |= CLK_PWRCTL_HIRCEN_Msk;
 
     /* Wait for HIRC clock ready */
-    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk));
+    while (!(CLK->STATUS & CLK_STATUS_HIRCSTB_Msk))
+    {
+        if (--i32TimeoutCnt <= 0)
+        {
+            break;
+        }
+    }
 
     /* Select HCLK clock source as HIRC and HCLK clock divider as 1 */
     CLK->CLKSEL0 = (CLK->CLKSEL0 & (~CLK_CLKSEL0_HCLKSEL_Msk)) | CLK_CLKSEL0_HCLKSEL_HIRC;
@@ -211,4 +228,3 @@ int main(void)
     while (1);
 
 }
-
