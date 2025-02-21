@@ -86,11 +86,11 @@ int main()
            (uint32_t)FMC_Erase, (uint32_t)FMC_Write, (uint32_t)FMC_Read);
 
     /*
-       This sample code is used to demonstrate how to implement a code to execute in SRAM.
-       By setting KEIL's scatter file: scatter.scf,
-                  IAR's linker configuration file: FMC_ExeInSRAM.icf,
-                  GCC's linker script file: FMC_ExeInSRAM.ld,
-       RO code is placed to 0x10000000 ~ 0x10003fff with RW is placed to 0x20004000 ~ 0x20007fff.
+       This sample code demonstrates how to implement code execution in SRAM.
+       By configuring the linker script files:
+       - KEIL: FMC_ExeInSRAM.scf
+       - IAR:  FMC_ExeInSRAM.icf
+       - GCC:  FMC_ExeInSRAM.ld
     */
 
     /* Enable FMC ISP functions */

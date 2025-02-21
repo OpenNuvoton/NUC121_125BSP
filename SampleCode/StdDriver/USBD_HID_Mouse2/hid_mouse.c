@@ -1,7 +1,7 @@
 /******************************************************************************//**
  * @file     hid_mouse.c
  * @version  V3.00
- * @brief    NUC121 series USBD HID mouse sample file
+ * @brief    USBD HID mouse sample file
  *
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/
@@ -205,14 +205,14 @@ void HID_Init(void)
 
 void HID_ClassRequest(void)
 {
-    uint8_t buf[8];
+    uint8_t au8Buf[8];
 
-    USBD_GetSetupPacket(buf);
+    USBD_GetSetupPacket(au8Buf);
 
-    if (buf[0] & 0x80)   /* request data transfer direction */
+    if (au8Buf[0] & 0x80)   /* request data transfer direction */
     {
         // Device to host
-        switch (buf[1])
+        switch (au8Buf[1])
         {
             case GET_REPORT:
 
@@ -240,11 +240,11 @@ void HID_ClassRequest(void)
     else
     {
         // Host to device
-        switch (buf[1])
+        switch (au8Buf[1])
         {
             case SET_REPORT:
             {
-                if (buf[3] == 3)
+                if (au8Buf[3] == 3)
                 {
                     /* Request Type = Feature */
                     USBD_SET_DATA1(EP1);
@@ -338,6 +338,7 @@ void HID_UpdateMouseData(void)
         uint32_t u32MouseKey;
         uint8_t *pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
         static int32_t i32x = 0, i32y = 0;
+        static uint32_t u32MousePreKey = 0xFFFF;
 
         /* To control Y axis */
         if ((u32Reg & 1) == 0)
@@ -378,8 +379,12 @@ void HID_UpdateMouseData(void)
         pu8Buf[2] = (uint8_t)i32y >> 2;
         pu8Buf[3] = 0x00;
 
-        g_u8EP2Ready = 0;
-        /* Set transfer length and trigger IN transfer */
-        USBD_SET_PAYLOAD_LEN(EP2, 4);
+        if (i32x | i32y | (u32MousePreKey != u32MouseKey))
+        {
+            u32MousePreKey = u32MouseKey;
+            g_u8EP2Ready = 0;
+            /* Set transfer length and trigger IN transfer */
+            USBD_SET_PAYLOAD_LEN(EP2, 4);
+        }
     }
 }

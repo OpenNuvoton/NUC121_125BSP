@@ -84,11 +84,14 @@ int main()
     printf("+-----------------------------------------------------------+\n");
     printf("|      FMC Write/Read code execute in SRAM Sample Code      |\n");
     printf("+-----------------------------------------------------------+\n");
+    printf("Check main function execution address (0x%08X).\n", (uint32_t)main);
 
     /*
-       This sample code is used to demonstrate how to implement a code to execute in SRAM.
-       By setting scatter loading file (scatter.scf),
-       RO code is placed to 0x10000000 ~ 0x10003fff with RW is placed to 0x20004000 ~ 0x20007fff.
+       This sample code demonstrates how to implement code execution in SRAM.
+       By configuring the linker script files:
+       - KEIL: FMC_ExeInSRAM.scf
+       - IAR:  FMC_ExeInSRAM.icf
+       - GCC:  FMC_ExeInSRAM.ld
     */
 
     /* Enable FMC ISP functions */

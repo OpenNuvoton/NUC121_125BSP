@@ -340,7 +340,7 @@ void SendChar_ToUART(int ch)
  *
  * @param[in] ch : A character data writes to debug port
  *
- * @returns  Send value from UART debug port or semihost
+ * @returns  None
  *
  * @details  Send a target char to UART debug port or semihost.
  */

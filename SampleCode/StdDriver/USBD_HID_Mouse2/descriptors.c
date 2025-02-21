@@ -1,7 +1,7 @@
 /******************************************************************************//**
  * @file     descriptors.c
  * @version  V3.00
- * @brief    NUC121 series USBD descriptor
+ * @brief    USBD descriptor file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.

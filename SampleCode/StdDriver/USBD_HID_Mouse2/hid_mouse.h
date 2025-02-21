@@ -1,6 +1,6 @@
 /******************************************************************************//**
  * @file     hid_mouse.h
- * @brief    NUC121 series USB HID mouse header file
+ * @brief    USBD HID mouse header fil
  *
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
  ******************************************************************************/

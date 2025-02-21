@@ -11,6 +11,20 @@
 #include <string.h>
 #include "NuMicro.h"
 
+#if defined ( __GNUC__ ) && !defined (__ARMCC_VERSION)
+void HardFault_Handler(void)
+{
+    __ASM(
+        "MOV     R0, LR  \n"
+        "MRS     R1, MSP \n"
+        "MRS     R2, PSP \n"
+        "LDR     R3, =ProcessHardFault \n"
+        "BLX     R3 \n"
+        "BX      R0 \n"
+    );
+}
+#endif
+
 #define USE_MY_HARDFAULT    1   /* Select 0 to use default ProcessHardFault or 1 to use user defined ProcessHardFault. */
 
 #if USE_MY_HARDFAULT

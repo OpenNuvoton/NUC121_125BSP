@@ -26,17 +26,17 @@ static void SendChar_ToUART(int ch)
     }
 }
 
-/* User should always see "SPROM AREA" on uart console when Sprom_function is called */
+/* User should always see "SPROM AREA" on UART console when SPROM_Function is called */
 const char c_acStringBuf[] = { "SPROM AREA\n" };
 void SPROM_Function(void)
 {
     char *ptr;
     /* printf() is defined in standard library in APROM,
-       this message can not be showed when CPU is excuting APROM code in SPROM security/debug mode*/
+       this message can not be showed when CPU is executing APROM code in SPROM security/debug mode. */
     printf("*** You can see this message only when SPROM is in non-security mode ***\n");
     ptr = (char *)&c_acStringBuf[0];
 
-    /* send message by uart to check that excution code in SPROM works normally */
+    /* Send message by UART to check that execution code in SPROM works normally */
     while (*ptr != '\n')
     {
         SendChar_ToUART(*ptr++);

@@ -68,8 +68,7 @@ enum OperationNumber
     #define AngelSWITestFaultOpCode (0xB658)
 #endif
 
-static inline int
-__attribute__((always_inline))
+static inline int __attribute__((always_inline))
 call_host(int reason, void *arg)
 {
     int value;
@@ -104,8 +103,7 @@ call_host(int reason, void *arg)
 // ----------------------------------------------------------------------------
 
 // Function used in _exit() to return the status code as Angel exception.
-static inline void
-__attribute__((always_inline, noreturn))
+static inline void __attribute__((always_inline, noreturn))
 report_exception(int reason)
 {
     call_host(SEMIHOSTING_ReportException, (void *) reason);

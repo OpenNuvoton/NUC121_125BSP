@@ -275,7 +275,7 @@ void SendChar_ToUART(int ch)
     //if ((char)ch == '\n')
     //{
     //    DEBUG_PORT->DAT = '\r';
-		//
+    //
     //    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk) {}
     //}
 
@@ -616,7 +616,7 @@ int _write(int fd, char *ptr, int len)
         //if (*ptr == '\n')
         //{
         //    DEBUG_PORT->DAT = '\r';
-				//
+        //
         //    while (DEBUG_PORT->FIFOSTS & UART_FIFOSTS_TXFULL_Msk);
         //}
 
@@ -630,6 +630,7 @@ int _write(int fd, char *ptr, int len)
 int _read(int fd, char *ptr, int len)
 {
     while ((DEBUG_PORT->BUFSTS & UUART_BUFSTS_RXEMPTY_Msk) != 0);
+
     *ptr = DEBUG_PORT->RXDAT;
 
     //while ((DEBUG_PORT->FIFOSTS & UART_FIFOSTS_RXEMPTY_Msk) != 0);
