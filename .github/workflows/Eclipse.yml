@@ -1,0 +1,150 @@
+name: Eclipse building
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip default-jre make
+
+          echo "🌍 Downloading arm-none-eabi-toolchain for Linux x64"
+          wget -q https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+          tar -jxf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+          echo "$PWD/gcc-arm-none-eabi-10.3-2021.10/bin" >> $GITHUB_PATH
+          ls -al $PWD
+
+          echo "🌍 Downloading aarch64-elf-toolchain for Linux x64"
+          wget -q https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz
+          tar -xf gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf.tar.xz
+          echo "$PWD/gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf/bin" >> $GITHUB_PATH
+          ls -al $PWD
+
+          echo "🌍 Downloading Eclipse for Linux"
+
+          #wget -q https://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/2025-06/M3/eclipse-embedcpp-2025-06-M3-linux-gtk-x86_64.tar.gz
+          #tar -xzf eclipse-embedcpp-2025-06-M3-linux-gtk-x86_64.tar.gz
+          #mv eclipse eclipse-cdt
+
+          #wget -q https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2021-03/R/eclipse-embedcpp-2021-03-R-linux-gtk-x86_64.tar.gz -O eclipse-embedcpp-2021-03-R-linux-gtk-x86_64.tar.gz
+          #tar -xzf eclipse-embedcpp-2021-03-R-linux-gtk-x86_64.tar.gz
+          #mv eclipse eclipse-cdt
+          #ls -al $PWD
+
+          wget -q -O NuEclipse.tar.gz --no-check-certificate https://www.nuvoton.com/resource-download.jsp?tp_GUID=SW132023052507200264
+          tar -xzf NuEclipse.tar.gz
+          find . -name eclipse
+          mv NuEclipse_V1.02.029_Linux_Setup/eclipse ./eclipse-cdt
+          ls -al $PWD
+
+      - name: Install dependencies (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          choco install unzip jre8 -y
+
+          echo "🌍 Downloading arm-none-eabi-toolchain for Windows"
+          curl -LO https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-win32.zip
+          unzip -q gcc-arm-none-eabi-10.3-2021.10-win32.zip -d toolchain_arm
+          echo "${PWD}/toolchain_arm/gcc-arm-none-eabi-10.3-2021.10/bin" >> $GITHUB_PATH
+          ls -al toolchain_arm/gcc-arm-none-eabi-10.3-2021.10/bin
+
+          echo "🌍 Downloading aarch64-none-elf-toolchain for Windows"
+          curl -LO https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-mingw-w64-i686-aarch64-none-elf.tar.xz
+          tar -xf gcc-arm-10.3-2021.07-mingw-w64-i686-aarch64-none-elf.tar.xz
+          echo "${PWD}/gcc-arm-10.3-2021.07-mingw-w64-i686-aarch64-none-elf/bin" >> $GITHUB_PATH
+          ls -al gcc-arm-10.3-2021.07-mingw-w64-i686-aarch64-none-elf/bin
+
+          echo "🌍 Downloading Eclipse for Windows"
+          #curl -LO https://ftp.yz.yamagata-u.ac.jp/pub/eclipse/technology/epp/downloads/release/2025-06/M3/eclipse-embedcpp-2025-06-M3-win32-x86_64.zip
+          #unzip -q eclipse-embedcpp-2025-06-M3-win32-x86_64.zip
+          #mv eclipse eclipse-cdt
+          curl -LO https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2021-03/R/eclipse-embedcpp-2021-03-R-win32-x86_64.zip
+          unzip -q eclipse-embedcpp-2021-03-R-win32-x86_64.zip
+          mv eclipse eclipse-cdt
+          ls -al eclipse-cdt
+          echo $GITHUB_PATH
+
+      - name: Build all Eclipse projects
+        shell: bash
+        run: |
+          REPO_ROOT="$GITHUB_WORKSPACE"
+          chmod +x "$GITHUB_WORKSPACE/.github/workflows/vcpkg_blacklist_check.sh"         
+
+          echo "✅ Version check"
+          arm-none-eabi-gcc --version
+          aarch64-none-elf-gcc --version
+
+          mapfile -t solutions < <(find ./SampleCode -type f -name .cproject -exec dirname {} \;)
+          declare -a failed_logs=()
+
+          set +e
+          for sol_path in "${solutions[@]}"; do
+
+            dir=$(dirname "$sol_path")
+            sol_name=$(basename "$dir")
+            log_path="$dir/$sol_name.txt"
+
+            mkdir -p "$GITHUB_WORKSPACE/workspace"
+
+            #echo "🔨 Building $dir on $RUNNER_OS"
+            timeout 5m ./eclipse-cdt/eclipse \
+              -nosplash \
+              -application org.eclipse.cdt.managedbuilder.core.headlessbuild \
+              -data "$GITHUB_WORKSPACE/workspace" \
+              -import "$GITHUB_WORKSPACE/$sol_path" \
+              -build all > "$log_path" 2>&1
+            ret1=$?
+
+            # Check log file
+            $REPO_ROOT/.github/workflows/vcpkg_blacklist_check.sh $log_path
+            ret2=$?
+
+            if [[ $ret1 -ne 0 || $ret2 -ne 0 ]]; then
+              echo "❌ Build failed: $sol_path"
+              echo "🔍 Log:"
+              cat "$log_path"
+              failed_logs+=("$log_path")   #add log into the set.
+            else
+              echo "✅ Build success: $sol_path"
+            fi
+
+            rm -rf "$GITHUB_WORKSPACE/workspace"
+
+          done
+          set -e
+
+          # List all the paths of failed logs at the end (if any)
+          if [[ ${#failed_logs[@]} -ne 0 ]]; then
+            echo "🚨 The following builds failed:"
+            for log in "${failed_logs[@]}"; do
+              echo "  - $log"
+            done
+            printf "%s," "${failed_logs[@]}" | sed 's/,$//' > failed_logs.txt
+            echo "Wrote failed_logs.txt"
+            exit 1
+          else
+            echo "🎉 All builds succeeded!"
+          fi
+

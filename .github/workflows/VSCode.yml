@@ -1,0 +1,90 @@
+name: VSCode building
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Packages on Windows
+        if: matrix.os == 'windows-latest'
+        run: choco install jq python
+
+      - name: Install Packages on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip python-is-python3
+          pip install -r "$GITHUB_WORKSPACE/.github/workflows/requirements.txt"
+
+      - name: Install tools
+        uses: ARM-software/cmsis-actions/vcpkg@v1
+        with:
+          config: ".github/workflows/vcpkg-configuration.json"
+
+      - name: Activate Arm tool license
+        uses: ARM-software/cmsis-actions/armlm@v1     
+
+      - name: Activate & Build each csolution
+        shell: bash
+        run: |
+          REPO_ROOT="$GITHUB_WORKSPACE"
+          chmod +x "$GITHUB_WORKSPACE/.github/workflows/vcpkg_build.sh"
+          chmod +x "$GITHUB_WORKSPACE/.github/workflows/vcpkg_blacklist_check.sh"
+
+          mapfile -t solutions < <(find ./SampleCode -name '*.csolution.yml')
+
+          declare -a failed_logs=()
+
+          set +e
+          for sol_path in "${solutions[@]}"; do
+            sol_dir=$(dirname "$sol_path")
+            sol_name=$(basename "$sol_path")
+            log_path="$sol_dir/$sol_name.txt"
+
+            # Build & Produce log file
+            $REPO_ROOT/.github/workflows/vcpkg_build.sh "$sol_path" > $log_path
+            ret1=$?
+
+            # Check log file
+            $REPO_ROOT/.github/workflows/vcpkg_blacklist_check.sh $log_path
+            ret2=$?
+
+            if [[ $ret1 -ne 0 || $ret2 -ne 0 ]]; then
+              echo "❌ Build failed: $sol_path"
+              echo "🔍 Log:"
+              cat "$log_path"
+              failed_logs+=("$log_path")   #add log into the set.
+            else
+              echo "✅ Build success: $sol_path"
+            fi
+
+          done
+          set -e
+
+          # List all the paths of failed logs at the end (if any)
+          if [[ ${#failed_logs[@]} -ne 0 ]]; then
+            echo "🚨 The following builds failed:"
+            for log in "${failed_logs[@]}"; do
+              echo "  - $log"
+            done
+            printf "%s," "${failed_logs[@]}" | sed 's/,$//' > failed_logs.txt
+            echo "Wrote failed_logs.txt"
+            exit 1
+          else
+            echo "🎉 All builds succeeded!"
+          fi
+
