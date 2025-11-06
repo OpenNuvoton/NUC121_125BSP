@@ -206,6 +206,7 @@ const S_USBD_INFO_T gsInfo =
     gpu8UsbString,
     NULL,
     NULL,
+    NULL,
     NULL
 };
 

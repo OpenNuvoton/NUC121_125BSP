@@ -382,11 +382,11 @@ void LIN_SendResponse(int32_t i32CheckSumOption, uint32_t *pu32TxBuf)
 /*---------------------------------------------------------------------------------------------------------*/
 void LIN_SendResponseWithByteCnt(int32_t CheckSumOption, uint32_t *pu32TxBuf, uint32_t u32ByteCnt)
 {
-    int32_t i32Idx;
+    uint32_t u32Idx;
 
     /* Prepare data */
-    for (i32Idx = 0; i32Idx < u32ByteCnt; i32Idx++)
-        g_au8SendData[g_i32Pointer++] = pu32TxBuf[i32Idx] ;
+    for (u32Idx = 0; u32Idx < u32ByteCnt; u32Idx++)
+        g_au8SendData[g_i32Pointer++] = pu32TxBuf[u32Idx] ;
 
     /* Prepare check sum */
     if (CheckSumOption == MODE_CLASSIC)

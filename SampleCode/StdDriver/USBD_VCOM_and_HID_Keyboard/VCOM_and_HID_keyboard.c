@@ -439,7 +439,7 @@ void HID_UpdateKbData(void)
     {
         /* If PB.15 = 0, just report it is key 'a' */
         uint32_t u32Key = (PB->PIN & (1 << 15)) ? 0 : 1;
-        uint8_t *pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5));
+        uint8_t u8Buf[8] = {0};
         static uint32_t s_u32PreKey;
 
         if (u32Key == 0)
@@ -448,19 +448,21 @@ void HID_UpdateKbData(void)
 
             for (i = 0; i < 8; i++)
             {
-                pu8Buf[i] = 0;
+                u8Buf[i] = 0;
             }
 
             if (u32Key != s_u32PreKey)
             {
                 /* Trigger to note key release */
+                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5)), u8Buf, 8);
                 USBD_SET_PAYLOAD_LEN(EP5, 8);
             }
         }
         else
         {
             s_u32PreKey = u32Key;
-            pu8Buf[2] = 0x04; /* Key 'a' */
+            u8Buf[2] = 0x04; /* Key 'a' */
+            USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP5)), u8Buf, 8);
             USBD_SET_PAYLOAD_LEN(EP5, 8);
         }
     }

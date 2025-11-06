@@ -5,16 +5,16 @@
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
-  <WorkspaceName>WorkSpace</WorkspaceName>
+  <WorkspaceName>FMC_IAP</WorkspaceName>
 
   <project>
-    <PathAndName>.\FMC_IAP_APROM.uvproj</PathAndName>
+    <PathAndName>.\FMC_IAP_APROM.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
+    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
-    <PathAndName>.\FMC_IAP_LDROM.uvproj</PathAndName>
-
+    <PathAndName>.\FMC_IAP_LDROM.uvprojx</PathAndName>
   </project>
 
 </ProjectWorkspace>

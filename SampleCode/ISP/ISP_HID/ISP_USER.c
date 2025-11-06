@@ -31,14 +31,14 @@ static uint16_t Checksum(unsigned char *buf, int len)
 
 static uint16_t CalCheckSum(uint32_t start, uint32_t len)
 {
-    int i;
+    uint32_t i;
     register uint16_t lcksum = 0;
 
     for (i = 0; i < len; i += FMC_FLASH_PAGE_SIZE)
     {
         ReadData(start + i, start + i + FMC_FLASH_PAGE_SIZE, (uint32_t *)aprom_buf);
 
-        if (len - i >= FMC_FLASH_PAGE_SIZE)
+        if ((len - i) >= FMC_FLASH_PAGE_SIZE)
         {
             lcksum += Checksum(aprom_buf, FMC_FLASH_PAGE_SIZE);
         }

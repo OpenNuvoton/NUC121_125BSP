@@ -9,6 +9,12 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+// Function prototype
+void GPAB_IRQHandler(void);
+void GPCDEF_IRQHandler(void);
+void SYS_Init(void);
+void UART0_Init(void);
+
 /**
  * @brief       PortA/PortB IRQ
  *
@@ -102,7 +108,7 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */

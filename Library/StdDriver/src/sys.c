@@ -60,17 +60,6 @@ uint32_t SYS_GetResetSrc(void)
 }
 
 /**
-  * @brief      Check if register is locked nor not
-  * @retval     0 Write-protection function is disabled.
-  *             1 Write-protection function is enabled.
-  * @details    This function check register write-protection bit setting.
-  */
-uint32_t SYS_IsRegLocked(void)
-{
-    return !(SYS->REGLCTL & 0x1);
-}
-
-/**
   * @brief      Get product ID
   * @return     Product ID
   * @details    This function get product ID.

@@ -1,0 +1,62 @@
+project:
+  packs:
+    - pack: Nuvoton::NuMicroM0_DFP
+  setups:
+    - output:
+        # bin, elf, hex, lib
+        type: bin
+    - setup: Options for FMCIAPLDROM
+      add-path:
+        - ../../../../../Library/Device/Nuvoton/NUC121/Include
+        - ../../../../../Library/CMSIS/Core/Include
+        - ../../../../../Library/StdDriver/inc
+      misc:
+        - for-compiler: AC6
+          C:
+            - -std=c11 -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -ffunction-sections -fdata-sections -Wall
+            - -D__MICROLIB
+          CPP:
+            - -xc++ -std=c++11
+          ASM:
+            - -masm=auto
+          Link:
+            - --library_type=microlib --map --load_addr_map_info --symbols --xref
+            - --info sizes --info totals --strict --summary_stderr --info summarysizes
+            - --info unused --info veneers --callgraph
+        - for-compiler: GCC
+          C:
+            - -std=gnu11 -mthumb -masm-syntax-unified -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections
+          Link:
+            - -mthumb -fmessage-length=0 -fsigned-char --specs=nano.specs --specs=nosys.specs
+            - -Wl,--gc-sections,-Map="$elf()$.map"
+            - -Wl,--no-warn-rwx-segments
+  linker:
+    - script: ../../../../../Library/Device/Nuvoton/NUC121/Source/ARM/LDROM.sct
+      for-compiler: AC6
+    - script: ../../../../../Library/Device/Nuvoton/NUC121/Source/GCC/LDROM.ld
+      for-compiler: GCC
+  groups:
+    - group: CMSIS
+      files:
+        - file: ../../../../../Library/Device/Nuvoton/NUC121/Source/system_NUC121.c
+        - file: ../../../../../Library/Device/Nuvoton/NUC121/Source/ARM/startup_NUC121.c
+          for-compiler: AC6
+        - file: ../../../../../Library/Device/Nuvoton/NUC121/Source/GCC/startup_NUC121.S
+          for-compiler: GCC
+        - file: ../../../../../Library/Device/Nuvoton/NUC121/Source/GCC/_syscalls.c
+          for-compiler: GCC
+    - group: User
+      files:
+        - file: ../../FMC_IAP_LDROM.c
+    - group: Library
+      files:
+        - file: ../../../../../Library/StdDriver/src/retarget.c
+  # The execute: node is processed only for an application build when no --context option is specified.
+  executes:
+    - execute: CopyBinFile
+      run: ${CMAKE_COMMAND} -E copy $input$ $output$
+      always:
+      input:
+        - $bin()$
+      output:
+        - $SolutionDir()$/bin/$TargetType$

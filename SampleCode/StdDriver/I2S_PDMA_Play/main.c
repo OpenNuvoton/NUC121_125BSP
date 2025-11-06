@@ -12,7 +12,7 @@
 #include "NuMicro.h"
 
 #define I2S_TX_DMA_CH 1
-#define I2S_RXData_DMA_CH 2
+#define I2S_RX_DMA_CH 2
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* Global variables                                                                                        */
@@ -35,6 +35,7 @@ void SYS_Init(void);
 
 /* Global variable declaration */
 volatile uint8_t g_u8TxIdx = 0;
+volatile uint8_t g_u8TransDone = 1;
 uint32_t g_au32PcmRxBuff[1][CHECK_BUFF_LEN] = {0};
 uint32_t g_au32PcmTxBuff[2][BUFF_LEN] = {0};
 
@@ -51,6 +52,7 @@ void PDMA_ResetTxSGTable(uint8_t u8Id)
 int32_t main(void)
 {
     uint32_t u32InitValue, u32DataCount;
+    volatile int32_t i32TimeoutCount = SystemCoreClock;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -99,8 +101,10 @@ int32_t main(void)
         u32InitValue += 0x00010001;
     }
 
+    g_u8TransDone = 1;
+
     /* Enable PDMA channels */
-    PDMA_Open((1 << I2S_TX_DMA_CH) | (1 << I2S_RXData_DMA_CH));
+    PDMA_Open((1 << I2S_TX_DMA_CH) | (1 << I2S_RX_DMA_CH));
 
     /* Tx(Play) description */
     g_asDescTable_TX[0].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
@@ -129,13 +133,31 @@ int32_t main(void)
     /* Clear RX FIFO */
     I2S_CLR_RX_FIFO(SPI0);
 
-    /* Enable RX function and TX function */
-    I2S_ENABLE_RX(SPI0);
+    /* Enable TX function and TX PDMA function */
     I2S_ENABLE_TX(SPI0);
-
-    /* Enable RX PDMA and TX PDMA function */
     I2S_ENABLE_TXDMA(SPI0);
+
+    // Enable RX function and RX PDMA function for receiving data
+    I2S_ENABLE_RX(SPI0);
+
+    // Reset timeout count for checking RX FIFO level
+    i32TimeoutCount = SystemCoreClock;
+
+    // Wait until the RX FIFO level is greater than 0 or timeout occurs
+    while ((I2S_GET_RX_FIFO_LEVEL(SPI0) == 0) && (--i32TimeoutCount >= 0)) {}
+
+    // Clear the RX FIFO to ensure no stale data remains
+    I2S_CLR_RX_FIFO(SPI0);
+
+    // Enable RX DMA function for receiving data via DMA
     I2S_ENABLE_RXDMA(SPI0);
+
+    // Reset timeout count for checking RX FIFO level
+    i32TimeoutCount = SystemCoreClock;
+
+    while (g_u8TransDone && (--i32TimeoutCount >= 0)) {}
+
+    I2S_DISABLE_TX(SPI0);
 
     /* Print the received data */
     for (u32DataCount = 0; u32DataCount < CHECK_BUFF_LEN; u32DataCount++)
@@ -221,9 +243,15 @@ void PDMA_IRQHandler(void)
             /* Reset PDMA Scater-Gatter table */
             PDMA_ResetTxSGTable(g_u8TxIdx);
             g_u8TxIdx ^= 1;
+            PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);
         }
 
-        PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);
+        if (PDMA_GET_TD_STS() & 0x4)            /* channel 2 done */
+        {
+            /* Reset PDMA Scatter-Gather table */
+            g_u8TransDone = 0;
+            PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF2_Msk);
+        }
     }
     else
         printf("unknown interrupt, status=0x%x!!\n", u32Status);

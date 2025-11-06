@@ -119,6 +119,11 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>UL2CM3</Key>
+          <Name>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN3 -FF0NUC121_AP_32 -FS00 -FL08000 -FF1NUC121_LD_4_5 -FS1100000 -FL11200 -FF2NUC121_SP_0_5 -FS2200000 -FL2200 -FP0($$Device:NUC121SC2AE$Flash\NUC121_AP_32.FLM) -FP1($$Device:NUC121SC2AE$Flash\NUC121_LD_4_5.FLM) -FP2($$Device:NUC121SC2AE$Flash\NUC121_SP_0_5.FLM))</Name>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>Nu_Link</Key>
           <Name>-S0 -B0 -O0</Name>
         </SetRegEntry>
@@ -238,7 +243,7 @@
     <File>
       <GroupNumber>1</GroupNumber>
       <FileNumber>2</FileNumber>
-      <FileType>2</FileType>
+      <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
@@ -371,14 +376,6 @@
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
-  </Group>
-
-  <Group>
-    <GroupName>::CMSIS</GroupName>
-    <tvExp>0</tvExp>
-    <tvExpOptDlg>0</tvExpOptDlg>
-    <cbSel>0</cbSel>
-    <RteFlg>1</RteFlg>
   </Group>
 
 </ProjectOpt>

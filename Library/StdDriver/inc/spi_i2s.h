@@ -131,6 +131,24 @@ extern "C"
 #define SPI_CLR_UNIT_TRANS_INT_FLAG(spi)   ((spi)->STATUS = SPI_STATUS_UNITIF_Msk)
 
 /**
+  * @brief      Disable Slave 3-wire mode.
+  * @param[in]  spi The pointer of the specified SPI module.
+  * @return     None.
+  * @details    Clear SLV3WIRE bit of SPI_SSCTL register to disable Slave 3-wire mode.
+  * \hideinitializer
+  */
+#define SPI_DISABLE_3WIRE_MODE(spi)   ((spi)->SSCTL &= ~SPI_SSCTL_SLV3WIRE_Msk)
+
+/**
+  * @brief      Enable Slave 3-wire mode.
+  * @param[in]  spi The pointer of the specified SPI module.
+  * @return     None.
+  * @details    Set SLV3WIRE bit of SPI_SSCTL register to enable Slave 3-wire mode.
+  * \hideinitializer
+  */
+#define SPI_ENABLE_3WIRE_MODE(spi) ((spi)->SSCTL |= SPI_SSCTL_SLV3WIRE_Msk)
+
+/**
   * @brief      Trigger RX PDMA function.
   * @param[in]  spi The pointer of the specified SPI module.
   * @return     None.

@@ -69,9 +69,7 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    volatile uint32_t u32DelayTime, u32DelayTime0;
-
-    u32DelayTime0 = 0;
+    volatile uint32_t u32DelayTime;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

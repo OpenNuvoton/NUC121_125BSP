@@ -654,11 +654,21 @@ __STATIC_INLINE void SYS_LockReg(void)
     SYS->REGLCTL = 0;
 }
 
+/**
+  * @brief      Check if register is locked nor not
+  * @param      None
+  * @retval     0 Write-protection function is disabled.
+  *             1 Write-protection function is enabled.
+  * @details    This function check register write-protection bit setting.
+  */
+__STATIC_INLINE uint32_t SYS_IsRegLocked(void)
+{
+    return SYS->REGLCTL & 1UL ? 0UL : 1UL;
+}
 
 void SYS_ClearResetSrc(uint32_t u32Src);
 uint32_t SYS_GetBODStatus(void);
 uint32_t SYS_GetResetSrc(void);
-uint32_t SYS_IsRegLocked(void);
 uint32_t SYS_ReadPDID(void);
 void SYS_ResetChip(void);
 void SYS_ResetCPU(void);

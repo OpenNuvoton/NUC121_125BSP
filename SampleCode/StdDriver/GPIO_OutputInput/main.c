@@ -9,6 +9,10 @@
 #include "stdio.h"
 #include "NuMicro.h"
 
+// Function prototype
+void SYS_Init(void);
+void UART0_Init(void);
+
 void SYS_Init(void)
 {
 
@@ -44,7 +48,7 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */

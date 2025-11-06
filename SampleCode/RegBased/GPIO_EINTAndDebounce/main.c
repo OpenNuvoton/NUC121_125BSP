@@ -9,6 +9,12 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+// Function prototype
+void EINT024_IRQHandler(void);
+void EINT135_IRQHandler(void);
+void SYS_Init(void);
+void UART0_Init(void);
+
 /**
  * @brief       External INT0/2/4 IRQ
  *
@@ -85,7 +91,7 @@ void SYS_Init(void)
     SYS->GPD_MFPH = (SYS->GPD_MFPH & (~SYS_GPD_MFPH_PD11MFP_Msk)) | SYS_GPD_MFPH_PD11MFP_INT1;
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */

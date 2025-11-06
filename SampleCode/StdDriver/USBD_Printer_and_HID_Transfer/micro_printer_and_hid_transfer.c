@@ -517,6 +517,7 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
 
 void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
 {
+    (void)u32Size;
     uint8_t  u8Cmd;
     uint32_t u32StartPage;
     uint32_t u32Pages;

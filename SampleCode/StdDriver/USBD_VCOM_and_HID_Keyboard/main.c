@@ -29,7 +29,7 @@ uint16_t g_u16CtrlSignal = 0;     /* BIT0: DTR(Data Terminal Ready) , BIT1: RTS(
 /*--------------------------------------------------------------------------*/
 
 #define RXBUFSIZE           512 /* RX buffer size */
-#define TXBUFSIZE           512 /* RX buffer size */
+#define TXBUFSIZE           512 /* TX buffer size */
 
 #define TX_FIFO_SIZE        16  /* TX Hardware FIFO size */
 
@@ -203,22 +203,22 @@ void UART0_IRQHandler(void)
 
 void VCOM_TransferData(void)
 {
-    int32_t i;
+    uint32_t i;
 
     /* Check whether USB is ready for next packet or not */
     if (gu32TxSize == 0)
     {
-        int32_t i32Len;
+        uint32_t u32Len;
 
         /* Check whether we have new COM Rx data to send to USB or not */
         if (g_u16ComRbytes)
         {
-            i32Len = g_u16ComRbytes;
+            u32Len = g_u16ComRbytes;
 
-            if (i32Len > EP2_MAX_PKT_SIZE)
-                i32Len = EP2_MAX_PKT_SIZE;
+            if (u32Len > EP2_MAX_PKT_SIZE)
+                u32Len = EP2_MAX_PKT_SIZE;
 
-            for (i = 0; i < i32Len; i++)
+            for (i = 0; i < u32Len; i++)
             {
                 if (g_u16ComRhead >= RXBUFSIZE)
                     g_u16ComRhead = 0;
@@ -227,20 +227,20 @@ void VCOM_TransferData(void)
             }
 
             __set_PRIMASK(1);
-            g_u16ComRbytes -= i32Len;
+            g_u16ComRbytes -= u32Len;
             __set_PRIMASK(0);
 
-            gu32TxSize = i32Len;
-            USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2)), (uint8_t *)gRxBuf, i32Len);
-            USBD_SET_PAYLOAD_LEN(EP2, i32Len);
+            gu32TxSize = u32Len;
+            USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2)), (uint8_t *)gRxBuf, u32Len);
+            USBD_SET_PAYLOAD_LEN(EP2, u32Len);
         }
         else
         {
             /* Prepare a zero packet if previous packet size is EP2_MAX_PKT_SIZE and
                no more data to send at this moment to note Host the transfer has been done */
-            i32Len = USBD_GET_PAYLOAD_LEN(EP2);
+            u32Len = USBD_GET_PAYLOAD_LEN(EP2);
 
-            if (i32Len == EP2_MAX_PKT_SIZE)
+            if (u32Len == EP2_MAX_PKT_SIZE)
                 USBD_SET_PAYLOAD_LEN(EP2, 0);
         }
     }

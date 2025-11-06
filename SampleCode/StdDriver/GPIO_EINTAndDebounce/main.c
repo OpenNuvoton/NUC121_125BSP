@@ -9,6 +9,11 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+// Function prototype
+void EINT024_IRQHandler(void);
+void EINT135_IRQHandler(void);
+void SYS_Init(void);
+void UART0_Init(void);
 
 /**
  * @brief       External INT0/2/4 IRQ
@@ -82,7 +87,7 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */

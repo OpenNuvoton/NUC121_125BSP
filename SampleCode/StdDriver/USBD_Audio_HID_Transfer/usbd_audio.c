@@ -77,6 +77,7 @@ typedef struct
     uint32_t u32Signature;
     uint32_t u32Checksum;
 } CMD_T;
+
 CMD_T gCmd;
 
 static uint8_t  g_u8PageBuff[PAGE_SIZE] = {0};    /* Page buffer to upload/download through HID report */
@@ -309,7 +310,7 @@ void ISO_OUT_HANDLER(void)
 {
 
     uint32_t u32Len;
-    int32_t i;
+    uint32_t i;
     uint8_t *pu8Buf;
     uint8_t *pu8Src;
 
@@ -1015,7 +1016,7 @@ void UAC_SendRecData(void)
 
     if (g_u32RecPos)
     {
-        int32_t i;
+        uint32_t i;
 
         for (i = 0; i < g_u32RecPos; i++)
             g_au32PcmRecBuf[i] = g_au32PcmRecBuf[i + u32Size / 4];

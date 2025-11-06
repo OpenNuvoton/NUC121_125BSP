@@ -9,6 +9,10 @@
 #include "stdio.h"
 #include "NuMicro.h"
 
+// Function prototype
+void SYS_Init(void);
+void UART0_Init(void);
+
 void SYS_Init(void)
 {
 
@@ -48,7 +52,7 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */
@@ -68,7 +72,7 @@ void UART0_Init()
 int32_t main(void)
 {
 
-    int32_t i32Err, i32TimeOutCnt; ;
+    int32_t i32Err, i32TimeOutCnt;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

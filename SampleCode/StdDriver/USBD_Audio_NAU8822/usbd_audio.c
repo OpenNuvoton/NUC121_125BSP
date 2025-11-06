@@ -269,7 +269,7 @@ void EP3_Handler(void)
 {
 
     uint32_t u32Len;
-    int32_t i;
+    uint32_t i;
     uint8_t *pu8Buf;
     uint8_t *pu8Src;
 

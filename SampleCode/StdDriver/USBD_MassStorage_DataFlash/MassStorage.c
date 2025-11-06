@@ -266,7 +266,7 @@ void MSC_Init(void)
 {
     int32_t i;
     uint8_t *pu8;
-    uint8_t *pSerial = __TIME__;
+    char *pSerial = __TIME__;
     /* Init setup packet buffer */
     /* Buffer range for setup packet -> [0 ~ 0x7] */
     USBD->STBUFSEG = SETUP_BUF_BASE;
@@ -633,6 +633,7 @@ void MSC_ReadCapacity16(void)
     *((uint8_t *)(MassCMD_BUF + 7)) = *((uint8_t *)&tmp + 0);
     *((uint8_t *)(MassCMD_BUF + 10)) = 0x02;
 }
+
 void MSC_ModeSense10(void)
 {
     uint8_t i, j;

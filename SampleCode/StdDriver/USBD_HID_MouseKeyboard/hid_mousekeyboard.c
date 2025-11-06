@@ -314,11 +314,10 @@ void HID_ClassRequest(void)
 
 void HID_UpdateMouseData(void)
 {
-    uint8_t *pu8Buf;
+    uint8_t u8Buf[4] = {0};
 
     if (g_u8EP2Ready)
     {
-        pu8Buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2));
         g_u8Mouse_mode ^= 1;
 
         if (g_u8Mouse_mode)
@@ -326,22 +325,23 @@ void HID_UpdateMouseData(void)
             if (g_u8Move_len > 14)
             {
                 /* Update new report data */
-                pu8Buf[0] = 0x00;
-                pu8Buf[1] = g_ascMouse_table[g_u8Mouse_idx & 0x07];
-                pu8Buf[2] = g_ascMouse_table[(g_u8Mouse_idx + 2) & 0x07];
-                pu8Buf[3] = 0x00;
+                u8Buf[0] = 0x00;
+                u8Buf[1] = g_ascMouse_table[g_u8Mouse_idx & 0x07];
+                u8Buf[2] = g_ascMouse_table[(g_u8Mouse_idx + 2) & 0x07];
+                u8Buf[3] = 0x00;
                 g_u8Mouse_idx++;
                 g_u8Move_len = 0;
             }
         }
         else
         {
-            pu8Buf[0] = pu8Buf[1] = pu8Buf[2] = pu8Buf[3] = 0;
+            u8Buf[0] = u8Buf[1] = u8Buf[2] = u8Buf[3] = 0;
         }
 
         g_u8Move_len++;
         g_u8EP2Ready = 0;
         /* Set transfer length and trigger IN transfer */
+        USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP2)), u8Buf, 4);
         USBD_SET_PAYLOAD_LEN(EP2, 4);
     }
 }
@@ -353,7 +353,7 @@ void HID_UpdateKbData(void)
         /* If PB.15 = 0, just report it is key 'a' */
         uint32_t key = (PB->PIN & (1 << 15)) ? 0 : 1;
         static uint32_t preKey;
-        uint8_t *buf = (uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3));
+        uint8_t u8Buf[8] = {0};
 
         if (key == 0)
         {
@@ -361,19 +361,21 @@ void HID_UpdateKbData(void)
 
             for (i = 0; i < 8; i++)
             {
-                buf[i] = 0;
+                u8Buf[i] = 0;
             }
 
             if (key != preKey)
             {
                 /* Trigger to note key release */
+                USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3)), u8Buf, 8);
                 USBD_SET_PAYLOAD_LEN(EP3, 8);
             }
         }
         else
         {
             preKey = key;
-            buf[2] = 0x04; /* Key 'a' */
+            u8Buf[2] = 0x04; /* Key 'a' */
+            USBD_MemCopy((uint8_t *)(USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP3)), u8Buf, 8);
             USBD_SET_PAYLOAD_LEN(EP3, 8);
         }
     }

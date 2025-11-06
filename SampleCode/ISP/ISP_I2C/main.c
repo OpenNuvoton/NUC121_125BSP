@@ -14,6 +14,8 @@
 #include "targetdev.h"
 #include "i2c_transfer.h"
 
+
+
 void SYS_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
@@ -86,9 +88,12 @@ int32_t main(void)
     {
         if (bI2cDataReady == 1)
         {
+            /* Disable I2C IRQ until ParseCmd() is finished to prevent returning incomplete data prematurely */
+            NVIC_DisableIRQ(I2C0_IRQn);
             memcpy(cmd_buff, i2c_rcvbuf, 64);
             bI2cDataReady = 0;
             ParseCmd((unsigned char *)cmd_buff, 64);
+            NVIC_EnableIRQ(I2C0_IRQn);
         }
     }
 

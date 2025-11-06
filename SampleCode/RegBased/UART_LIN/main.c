@@ -500,12 +500,12 @@ void LIN_SendResponse(int32_t checkSumOption, uint32_t *pu32TxBuf)
 /*---------------------------------------------------------------------------------------------------------*/
 void LIN_SendResponseWithByteCnt(int32_t checkSumOption, uint32_t *pu32TxBuf, uint32_t u32ByteCnt)
 {
-    int32_t i32;
+    uint32_t u32;
     volatile int32_t i32TimeoutCnt = UART_TIMEOUT;
 
     /* Prepare data */
-    for (i32 = 0; i32 < u32ByteCnt; i32++)
-        g_u8SendData[g_i32pointer++] = pu32TxBuf[i32] ;
+    for (u32 = 0; u32 < u32ByteCnt; u32++)
+        g_u8SendData[g_i32pointer++] = pu32TxBuf[u32] ;
 
     /* Prepare check sum */
     if (checkSumOption == MODE_CLASSIC)
@@ -514,7 +514,7 @@ void LIN_SendResponseWithByteCnt(int32_t checkSumOption, uint32_t *pu32TxBuf, ui
         g_u8SendData[g_i32pointer++] = GetCheckSumValue(&g_u8SendData[1], (u32ByteCnt + 1)) ; //CheckSum Field
 
     /* Send data and check sum */
-    for (i32 = 0; i32 < 9; i32++)
+    for (u32 = 0; u32 < 9; u32++)
     {
         i32TimeoutCnt = UART_TIMEOUT;
 
@@ -526,7 +526,7 @@ void LIN_SendResponseWithByteCnt(int32_t checkSumOption, uint32_t *pu32TxBuf, ui
             }
         }
 
-        UART0->DAT = g_u8SendData[i32 + 2]; /* Send UART Data from buffer */
+        UART0->DAT = g_u8SendData[u32 + 2]; /* Send UART Data from buffer */
     }
 
 }
@@ -581,6 +581,7 @@ void SYS_Init(void)
     SYS->GPB_MFPL = (SYS->GPB_MFPL & (~SYS_GPB_MFPL_PB5MFP_Msk)) | SYS_GPB_MFPL_PB5MFP_USCI0_DAT1;
 
 }
+
 void UART0_Init()
 {
     /*---------------------------------------------------------------------------------------------------------*/

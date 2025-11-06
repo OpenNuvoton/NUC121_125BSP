@@ -1,6 +1,6 @@
 project:
   packs:
-    - pack: Nuvoton::NuMicro_DFP
+    - pack: Nuvoton::NuMicroM0_DFP
   setups:
     - output:
         # bin, elf, hex, lib
@@ -13,7 +13,7 @@ project:
       misc:
         - for-compiler: AC6
           C:
-            - -std=c11 -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -ffunction-sections -fdata-sections -w
+            - -std=c11 -fno-rtti -funsigned-char -fshort-enums -fshort-wchar -ffunction-sections -fdata-sections -Wall
             - -D__MICROLIB
           CPP:
             - -xc++ -std=c++11
@@ -31,6 +31,7 @@ project:
           Link:
             - -mthumb -fmessage-length=0 -fsigned-char --specs=nano.specs --specs=nosys.specs
             - -Wl,--gc-sections,-Map="$elf()$.map"
+            - -Wl,--no-warn-rwx-segments
   linker:
     - script: ./FMC_ExeInSRAM.scf
       for-compiler: AC6
@@ -43,6 +44,8 @@ project:
         - file: ../../../../Library/Device/Nuvoton/NUC121/Source/ARM/startup_NUC121.c
           for-compiler: AC6
         - file: ../../../../Library/Device/Nuvoton/NUC121/Source/GCC/startup_NUC121.S
+          for-compiler: GCC
+        - file: ../../../../Library/Device/Nuvoton/NUC121/Source/GCC/_syscalls.c
           for-compiler: GCC
     - group: Library
       files:

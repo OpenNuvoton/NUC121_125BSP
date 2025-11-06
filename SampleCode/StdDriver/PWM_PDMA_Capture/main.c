@@ -66,7 +66,7 @@ void PDMA_IRQHandler(void)
 /* The capture internal counter down count from 0x10000, and reload to 0x10000 after    */
 /* input signal falling happens (Time B/C/D)                                            */
 /*--------------------------------------------------------------------------------------*/
-void CalPeriodTime(PWM_T *PWM, uint32_t u32Ch)
+void CalPeriodTime(void)
 {
     uint16_t u16RisingTime, u16FallingTime, u16HighPeriod, u16LowPeriod, u16TotalPeriod;
     uint32_t u32TimeOutCount;
@@ -328,7 +328,7 @@ int32_t main(void)
         }
 
         /* Capture the Input Waveform Data */
-        CalPeriodTime(PWM1, 2);
+        CalPeriodTime();
         /*---------------------------------------------------------------------------------------------------------*/
         /* Stop PWM1 channel 0 (Recommended procedure method 1)                                                    */
         /* Set PWM Timer loaded value(Period) as 0. When PWM internal counter(CNT) reaches to 0, disable PWM Timer */

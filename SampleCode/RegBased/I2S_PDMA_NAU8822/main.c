@@ -43,7 +43,7 @@ DESC_TABLE_T g_asDescTable_TX[2], g_asDescTable_RX[2];
 
 void NAU8822_Setup(void);
 
-void Delay(int i32DelayCount)
+void Delay(uint32_t i32DelayCount)
 {
     volatile uint32_t u32Count;
 

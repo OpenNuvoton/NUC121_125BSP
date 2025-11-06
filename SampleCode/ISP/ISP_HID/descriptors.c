@@ -209,7 +209,8 @@ const S_USBD_INFO_T gsInfo =
     gu32ConfigHidDescIdx,
 #ifdef SUPPORT_LPM
     gu8BosDescriptor
+#else
+    NULL
 #endif
-
 };
 

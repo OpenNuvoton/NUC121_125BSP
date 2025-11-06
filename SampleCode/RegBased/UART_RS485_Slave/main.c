@@ -40,8 +40,7 @@ void UART0_IRQHandler(void)
 void RS485_HANDLE()
 {
     volatile uint32_t addr = 0;
-    volatile uint32_t regRX = 0xFF;
-    volatile uint32_t u32IntSts = UART0->INTSTS;;
+    volatile uint32_t u32IntSts = UART0->INTSTS;
 
     if ((u32IntSts & UART_INTSTS_RLSINT_Msk) && (u32IntSts & UART_INTSTS_RDAINT_Msk))           /* RLS INT & RDA INT */ //For RS485 Detect Address
     {

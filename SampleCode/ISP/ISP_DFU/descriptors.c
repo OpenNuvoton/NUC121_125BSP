@@ -123,7 +123,7 @@ const S_USBD_INFO_T gsInfo =
 {
     gu8DeviceDescriptor,
     gu8ConfigDescriptor,
-    gpu8UsbString
-
+    gpu8UsbString,
+    NULL, NULL, NULL, NULL
 };
 

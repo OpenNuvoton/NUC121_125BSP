@@ -291,7 +291,7 @@ void HID_MSC_Init(void)
 {
     int32_t i;
     uint8_t *pu8;
-    uint8_t *pSerial = __TIME__;
+    char *pSerial = __TIME__;
 
     /* Init setup packet buffer */
     /* Buffer range for SETUP packet -> [0 ~ 0x7] */
@@ -676,6 +676,7 @@ int32_t ProcessCommand(uint8_t *pu8Buffer, uint32_t u32BufferLen)
 
 void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
 {
+    (void)u32Size;
     uint8_t  u8Cmd;
     uint32_t u32StartPage;
     uint32_t u32Pages;

@@ -223,9 +223,7 @@ int32_t TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
 /*---------------------------------------------------------------------------------------------------------*/
 int main(void)
 {
-    volatile uint32_t u32DelayTime, u32DelayTime0;
-
-    u32DelayTime0 = 0;
+    volatile uint32_t u32DelayTime;
 
     /* Unlock protected registers */
     SYS_UnlockReg();

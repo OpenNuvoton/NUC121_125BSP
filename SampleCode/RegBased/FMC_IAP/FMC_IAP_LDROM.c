@@ -76,6 +76,7 @@ void UART_Init()
 #ifdef __ARMCC_VERSION                 /* for Keil compiler */
 void __set_SP(uint32_t _sp)
 {
+    (void)(_sp);
     __ASM(
         "MSR MSP, r0 \n"
         "BX lr       \n"
@@ -138,6 +139,7 @@ static void PutString(char *str)
  */
 void Hard_Fault_Handler(uint32_t stack[])
 {
+    (void)(stack);
     PutString("In Hard Fault Handler\n");
 
     while (1);

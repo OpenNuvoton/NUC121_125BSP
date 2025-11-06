@@ -14,6 +14,8 @@
 #include "targetdev.h"
 #include "spi_transfer.h"
 
+
+
 void TIMER3_Init(void)
 {
     /* Enable IP clock */
@@ -114,9 +116,12 @@ int32_t main(void)
     {
         if (bSpiDataReady == 1)
         {
+            /* Disable SPI IRQ until ParseCmd() is finished to prevent returning incomplete data prematurely */
+            NVIC_DisableIRQ(SPI0_IRQn);
             memcpy(cmd_buff, spi_rcvbuf, 64);
             bSpiDataReady = 0;
             ParseCmd((unsigned char *)cmd_buff, 64);
+            NVIC_EnableIRQ(SPI0_IRQn);
         }
     }
 

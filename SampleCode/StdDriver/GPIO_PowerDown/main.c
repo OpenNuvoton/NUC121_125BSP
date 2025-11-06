@@ -9,6 +9,12 @@
 #include <stdio.h>
 #include "NuMicro.h"
 
+// Function prototype
+void PowerDownFunction(void);
+void GPAB_IRQHandler(void);
+void SYS_Init(void);
+void UART0_Init(void);
+
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Function for System Entry to Power Down Mode                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
@@ -84,7 +90,7 @@ void SYS_Init(void)
 
 }
 
-void UART0_Init()
+void UART0_Init(void)
 {
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init UART                                                                                               */

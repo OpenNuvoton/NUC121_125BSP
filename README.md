@@ -3,7 +3,7 @@
 
 # NUC121/NUC125 Series CMSIS BSP
 
-To experience the powerful features of NUC121/NUC125 series in few minutes, please select the sample code to download and execute on their NuTiny boards. Open the project files to build them with Keil® MDK, IAR, NuEclipse or VSCode, and then download and trace them on the NuTiny board to see how it works.
+To experience the powerful features of NUC121/NUC125 series in few minutes, please select the sample code to download and execute on their NuTiny boards. Open the project files to build them with Keil® MDK, IAR, NuEclipse or VS Code, and then download and trace them on the NuTiny board to see how it works.
 
 
 ## .\Document\
@@ -12,10 +12,13 @@ To experience the powerful features of NUC121/NUC125 series in few minutes, plea
 	Document of CMSIS version 6.1.0.
 
 - NuMicro NUC121_125 Series CMSIS BSP Driver Reference.chm<br>
-	This document describes the usage of drivers in NUC121/NUC125 BSP.
+	This document describes the usage of drivers in NUC121/NUC125 Series BSP.
 
 - NuMicro NUC121_125 Series CMSIS BSP Revision History.pdf<br>
-	This document shows the revision history of NUC121/NUC125 BSP.
+	This document shows the revision history of NUC121/NUC125 Series BSP.
+
+- VS Code Quick Start Guide
+	This documents guide to install, configure and use VS Code.
 
 
 ## .\Library\
@@ -24,7 +27,7 @@ To experience the powerful features of NUC121/NUC125 series in few minutes, plea
 	Cortex® Microcontroller Software Interface Standard (CMSIS) V6.1.0 definitions by Arm® Corp.
 
 - Device<br>
-	CMSIS compliant device header file.
+	CMSIS compliant device header files.
 
 - StdDriver<br>
 	All peripheral driver header and source files.
@@ -53,7 +56,7 @@ To experience the powerful features of NUC121/NUC125 series in few minutes, plea
 	Sample code to demonstrate the usage of NUC121/NUC125 series MCU peripheral driver APIs.
 
 - Template<br>
-	A project template for NUC121/NUC125 series MCU.
+	Project template for NUC121/NUC125 series MCU.
 
 
 # License
@@ -62,4 +65,4 @@ To experience the powerful features of NUC121/NUC125 series in few minutes, plea
 
 Copyright in some of the content available in this BSP belongs to third parties.
 Third parties license is specified in a file header or license file.<p>
-NUC121/NUC125 BSP files are provided under the Apache-2.0 license.
+NUC121/NUC125 Series BSP files are provided under the Apache-2.0 license.

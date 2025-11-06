@@ -58,6 +58,7 @@ void PDMA_ResetRxSGTable(uint8_t u8Id)
 int32_t main(void)
 {
     uint32_t u32InitValue, u32DataCount;
+    volatile int32_t i32TimeoutCount = SystemCoreClock;
 
     /* Unlock protected registers */
     SYS_UnlockReg();
@@ -141,23 +142,24 @@ int32_t main(void)
     /* Clear RX FIFO */
     I2S_CLR_RX_FIFO(SPI0);
 
-    /* Enable RX function and TX function */
-    I2S_ENABLE_RX(SPI0);
+    /* Enable TX function and TX PDMA function */
     I2S_ENABLE_TX(SPI0);
-
-    /* Enable RX PDMA and TX PDMA function */
     I2S_ENABLE_TXDMA(SPI0);
+
+    // Enable RX function and RX PDMA function for receiving data
+    I2S_ENABLE_RX(SPI0);
+
+    // Reset timeout count for checking RX FIFO level
+    i32TimeoutCount = SystemCoreClock;
+
+    // Wait until the RX FIFO level is greater than 0 or timeout occurs
+    while ((I2S_GET_RX_FIFO_LEVEL(SPI0) == 0) && (--i32TimeoutCount >= 0)) {}
+
+    // Clear the RX FIFO to ensure no stale data remains
+    I2S_CLR_RX_FIFO(SPI0);
+
+    // Enable RX DMA function for receiving data via DMA
     I2S_ENABLE_RXDMA(SPI0);
-
-    while (g_u32PlayReady <= 2 || g_u32RecReady <= 2) {};
-
-    /* Disable RX PDMA and TX PDMA function */
-    I2S_DISABLE_TXDMA(SPI0);
-
-    I2S_DISABLE_RXDMA(SPI0);
-
-    NVIC_DisableIRQ(PDMA_IRQn);
-
 
     /* Print the transmitted data */
     printf("\nTX Buffer 1\tTX Buffer 2\n");
