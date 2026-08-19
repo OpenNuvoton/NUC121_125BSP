@@ -149,40 +149,34 @@ extern "C"
   *
   *
   *
-  * @details    This function will stop WDT counting and disable WDT module.
+  * @details    This macro stops WDT counting and disables WDT module.
+  *
+  * \hideinitializer
   */
-static __INLINE void WDT_Close(void)
-{
-    WDT->CTL = 0;
-    return;
-}
+#define WDT_Close()                    (WDT->CTL = 0U)
 
 /**
   * @brief      Enable WDT Time-out Interrupt
   *
   *
   *
-  * @details    This function will enable the WDT time-out interrupt function.
+  * @details    This macro enables the WDT time-out interrupt function.
+  *
+  * \hideinitializer
   */
-static __INLINE void WDT_EnableInt(void)
-{
-    WDT->CTL |= WDT_CTL_INTEN_Msk;
-    return;
-}
+#define WDT_EnableInt()                (WDT->CTL |= WDT_CTL_INTEN_Msk)
 
 /**
   * @brief      Disable WDT Time-out Interrupt
   *
   *
   *
-  * @details    This function will disable the WDT time-out interrupt function.
+  * @details    This macro disables the WDT time-out interrupt function.
+  *
+  * \hideinitializer
   */
-static __INLINE void WDT_DisableInt(void)
-{
-    // Do not touch another write 1 clear bits
-    WDT->CTL &= ~(WDT_CTL_INTEN_Msk | WDT_CTL_RSTF_Msk | WDT_CTL_IF_Msk | WDT_CTL_WKF_Msk);
-    return;
-}
+// Do not touch another write 1 clear bits
+#define WDT_DisableInt()               (WDT->CTL &= ~(WDT_CTL_INTEN_Msk | WDT_CTL_RSTF_Msk | WDT_CTL_IF_Msk | WDT_CTL_WKF_Msk))
 
 void WDT_Open(uint32_t u32TimeoutInterval, uint32_t u32ResetDelay, uint32_t u32EnableReset, uint32_t u32EnableWakeup);
 

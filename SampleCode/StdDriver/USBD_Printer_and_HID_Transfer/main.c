@@ -97,8 +97,6 @@ void UART0_Init(void)
 /*---------------------------------------------------------------------------------------------------------*/
 int32_t main(void)
 {
-    uint8_t au8Str[9];
-
     /* Unlock protected registers */
     SYS_UnlockReg();
 
@@ -184,9 +182,6 @@ int32_t main(void)
 #endif
 
         CLK_SysTickDelay(2000);   // delay
-
-        if (++au8Str[1] > 0x39)
-            au8Str[1] = 0x30;      // increase 1 to 10 than reset to 0
 
         PB->DOUT ^= 0x40; // PB.6
     }

@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     system_NUC121.c
  * @version  V3.00
  * @brief    NUC121 Series System Setting Source File
@@ -14,11 +14,9 @@
 /*----------------------------------------------------------------------------
   Clock Variable definitions
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock  = __HSI;              /*!< System Clock Frequency (Core Clock) */
-uint32_t CyclesPerUs      = (__HSI / 1000000);  /*!< Cycles per micro second             */
-uint32_t PllClock         = __HSI;              /*!< PLL Output Clock Frequency          */
-const uint32_t gau32ClkSrcTbl[] = {__HXT, __LXT, __HSI, __LIRC, __HIRC, __HSI_DIV2, 0, __HIRC_DIV2};
-
+uint32_t SystemCoreClock  = __HSI;                  /*!< System Clock Frequency (Core Clock) */
+uint32_t CyclesPerUs      = (__HSI / 1000000UL);    /*!< Cycles per micro second             */
+uint32_t PllClock         = __HSI;                  /*!< PLL Output Clock Frequency          */
 
 /**
  * @brief    Update the Variable SystemCoreClock
@@ -28,7 +26,9 @@ const uint32_t gau32ClkSrcTbl[] = {__HXT, __LXT, __HSI, __LIRC, __HIRC, __HSI_DI
  */
 void SystemCoreClockUpdate(void)
 {
-    uint32_t u32Freq, u32ClkSrc;
+    const uint32_t gau32ClkSrcTbl[] = {__HXT, __LXT, __HSI, __LIRC, __HIRC, __HSI_DIV2, 0, __HIRC_DIV2 };
+    uint32_t u32Freq;
+    uint32_t u32ClkSrc;
     uint32_t u32HclkDiv;
 
     u32ClkSrc = CLK->CLKSEL0 & CLK_CLKSEL0_HCLKSEL_Msk;
@@ -44,20 +44,21 @@ void SystemCoreClockUpdate(void)
             break;
 
         case CLK_CLKSEL0_HCLKSEL_PLL_DIV2:
-            u32Freq = PllClock / 2;
+            u32Freq = PllClock / 2UL;
             break;
 
         default:
             u32Freq = gau32ClkSrcTbl[u32ClkSrc];
+            break;
     }
 
 
-    u32HclkDiv = (CLK->CLKDIV0 & CLK_CLKDIV0_HCLKDIV_Msk) + 1;
+    u32HclkDiv = (CLK->CLKDIV0 & CLK_CLKDIV0_HCLKDIV_Msk) + 1UL;
 
     /* Update System Core Clock */
     SystemCoreClock = u32Freq / u32HclkDiv;
 
-    CyclesPerUs = (SystemCoreClock + 500000) / 1000000;
+    CyclesPerUs = (SystemCoreClock + 500000UL) / 1000000UL;
 }
 
 
@@ -88,7 +89,9 @@ void SystemInit(void)
         while ((CLK->STATUS & CLK_STATUS_PLLSTB_Msk) == 0)
         {
             if (i32TimeoutCnt-- <= 0)
+            {
                 break;
+            }
         }
 
         i8IsPllEn = 1;
@@ -104,7 +107,9 @@ void SystemInit(void)
         while ((CLK->STATUS & CLK_STATUS_PLLSTB_Msk) == 0)
         {
             if (i32TimeoutCnt-- <= 0)
+            {
                 break;
+            }
         }
 
         i8IsPllEn = 1;
@@ -122,7 +127,7 @@ void SystemInit(void)
 }
 
 
-#if USE_ASSERT
+#if defined (USE_ASSERT) && (USE_ASSERT != 0)
 /**
  * @brief      Assert Error Message
  *
@@ -138,6 +143,6 @@ void AssertError(uint8_t *file, uint32_t line)
     printf("[%s] line %u : wrong parameters.\r\n", file, line);
 
     /* Infinite loop */
-    while (1) ;
+    while (1) {}
 }
 #endif

@@ -3,7 +3,7 @@
  * @version V3.01
  * @brief   A sample code to show how to debug with semihost message print.
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 

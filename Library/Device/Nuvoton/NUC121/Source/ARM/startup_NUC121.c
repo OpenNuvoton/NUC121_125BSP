@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     startup_NUC121.c
  * @version  V1.00
  * @brief    CMSIS Device Startup File for NuMicro NUC121
@@ -14,7 +14,19 @@
 /*----------------------------------------------------------------------------
   External References
  *----------------------------------------------------------------------------*/
+/**
+ * @static_deviation
+ * <b>Rule:</b> MISRA C:2012 Rule 5.5<br>
+ * <b>Location:</b> `__INITIAL_SP` and `__STACK_LIMIT` linker symbol declarations<br>
+ * <b>Justification:</b> CMSIS defines these identifiers as toolchain-specific macros
+ * that expand to linker-provided stack boundary symbols. The startup vector table and
+ * stack initialization must reference these symbols through the CMSIS portable names.
+ * Renaming them would break the CMSIS startup and linker ABI. The macro expansion
+ * ensures the C declaration resolves to the appropriate linker symbol for each toolchain.
+ */
+/* cppcheck-suppress misra-c2012-5.5 */
 extern uint32_t __INITIAL_SP;
+/* cppcheck-suppress misra-c2012-5.5 */
 extern uint32_t __STACK_LIMIT;
 
 extern __NO_RETURN void __PROGRAM_START(void);
@@ -24,6 +36,7 @@ extern __NO_RETURN void __PROGRAM_START(void);
  *----------------------------------------------------------------------------*/
 __NO_RETURN void Reset_Handler(void);
 __NO_RETURN void Default_Handler(void);
+void Reset_Handler_PreInit(void);
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Handler
@@ -71,8 +84,8 @@ void CLKDIRC_IRQHandler(void)   __attribute__((weak, alias("Default_Handler")));
     #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
-extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
-const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
+extern const VECTOR_TABLE_Type __VECTOR_TABLE[48];
+const VECTOR_TABLE_Type __VECTOR_TABLE[48] __VECTOR_TABLE_ATTRIBUTE =
 {
     (VECTOR_TABLE_Type)(&__INITIAL_SP),       /*       Initial Stack Pointer                            */
     Reset_Handler,                            /*       Reset Handler                                    */
@@ -104,7 +117,7 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     TMR1_IRQHandler,                          /*    9: Timer 1                                          */
     TMR2_IRQHandler,                          /*    10: Timer 2                                         */
     TMR3_IRQHandler,                          /*    11: Timer 3                                         */
-    UART0_IRQHandler,                         /*    12: URAT0                                           */
+    UART0_IRQHandler,                         /*    12: UART0                                           */
     Default_Handler,                          /*    13: Reserved                                        */
     SPI0_IRQHandler,                          /*    14: SPI0                                            */
     Default_Handler,                          /*    15: Reserved                                        */
@@ -122,16 +135,24 @@ const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE =
     Default_Handler,                          /*    27: Reserved                                        */
     PWRWU_IRQHandler,                         /*    28: Clock controller interrupt for chip wake-up     */
     ADC_IRQHandler,                           /*    29: ADC                                             */
-    CLKDIRC_IRQHandler                       /*    30: Clock fail detect and IRC TRIM                  */
+    CLKDIRC_IRQHandler                        /*    30: Clock fail detect and IRC TRIM                  */
 };
 
 #if defined ( __GNUC__ )
     #pragma GCC diagnostic pop
 #endif
 
+/* If some peripherals must be initialized before startup routine
+ *   user can implement its own Reset_Handler_PreInit to do early initialization.
+ *
+ * All code in Reset_Handler_PreInit must have the same load address and execution address;
+ * otherwise, users need to provide their own implementation of Reset_Handler_PreInit.
+ */
 __WEAK void Reset_Handler_PreInit(void)
 {
-    // Empty function
+    /* Prevent using C runtime library functions (e.g. printf)
+     * or reading global variables in this function.
+     */
 }
 
 /*----------------------------------------------------------------------------
@@ -158,6 +179,10 @@ __NO_RETURN void Reset_Handler(void)
 /*---------------------------------------------------------------------------
   Hard Fault Handler
  *---------------------------------------------------------------------------*/
+/**
+ * @brief    This HardFault handler is implemented to
+ *           dump r0, r1, r2, r3, r12, lr, pc, psr in ProcessHardFault.
+ */
 __WEAK void HardFault_Handler(void)
 {
     __ASM(
@@ -174,7 +199,7 @@ __WEAK void HardFault_Handler(void)
  *----------------------------------------------------------------------------*/
 void Default_Handler(void)
 {
-    while (1);
+    while (1) {}
 }
 
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)

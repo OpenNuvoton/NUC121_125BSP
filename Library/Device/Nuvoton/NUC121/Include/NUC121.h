@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     NUC121.h
  * @version  V3.00
  * @brief    NUC121/NUC125 Series Peripheral Access Layer Header File
@@ -58,58 +58,9 @@
  */
 
 /** @addtogroup MCU_CMSIS Device Definitions for CMSIS
-  Interrupt Number Definition and Configurations for CMSIS
-  @{
+    Interrupt Number Definition and Configurations for CMSIS
+    @{
 */
-
-/**
- * @details  Interrupt Number Definition. The maximum of 32 Specific Interrupts are possible.
- */
-
-typedef enum IRQn
-{
-    /******  Cortex-M0 Processor Exceptions Numbers ***********************************************/
-    NonMaskableInt_IRQn       = -14,    /*!< 2 Non Maskable Interrupt                             */
-    HardFault_IRQn            = -13,    /*!< 3 Cortex-M0 Hard Fault Interrupt                     */
-    SVCall_IRQn               = -5,     /*!< 11 Cortex-M0 SV Call Interrupt                       */
-    PendSV_IRQn               = -2,     /*!< 14 Cortex-M0 Pend SV Interrupt                       */
-    SysTick_IRQn              = -1,     /*!< 15 Cortex-M0 System Tick Interrupt                   */
-
-    /******  ARMIKMCU Swift specific Interrupt Numbers ********************************************/
-    BOD_IRQn                  = 0,      /*!< Brown-Out Low Voltage Detected Interrupt             */
-    WDT_IRQn                  = 1,      /*!< Watch Dog Timer Interrupt                            */
-    EINT024_IRQn              = 2,      /*!< EINT0, EINT2 and EINT4 Interrupt                     */
-    EINT135_IRQn              = 3,      /*!< EINT1, EINT3 and EINT5 Interrupt                     */
-    GPAB_IRQn                 = 4,      /*!< GPIO_P0P1 Interrupt                                  */
-    GPCDEF_IRQn               = 5,      /*!< GPIO_P2P3P4P5 Interrupt                              */
-    PWM0_IRQn                 = 6,      /*!< PWM0 Interrupt                                       */
-    PWM1_IRQn                 = 7,      /*!< PWM1 Interrupt                                       */
-    TMR0_IRQn                 = 8,      /*!< TIMER0 Interrupt                                     */
-    TMR1_IRQn                 = 9,      /*!< TIMER1 Interrupt                                     */
-    TMR2_IRQn                 = 10,     /*!< TIMER2 Interrupt                                     */
-    TMR3_IRQn                 = 11,     /*!< TIMER3 Interrupt                                     */
-    UART0_IRQn                = 12,     /*!< UART0 Interrupt                                      */
-    //RESERVE0                  = 13,
-    SPI0_IRQn                 = 14,     /*!< SPI0 Interrupt                                       */
-    //RESERVE1                  = 15,
-    //RESERVE2                  = 16,
-    //RESERVE3                  = 17,
-    I2C0_IRQn                 = 18,     /*!< I2C0 Interrupt                                       */
-    I2C1_IRQn                 = 19,     /*!< I2C1 Interrupt                                       */
-    BPWM0_IRQn                = 20,     /*!< BPWM0 Interrupt                                      */
-    BPWM1_IRQn                = 21,     /*!< BPWM1 Interrupt                                      */
-    USCI_IRQn                 = 22,     /*!< USCI0, USCI1 and USCI2 interrupt                     */
-    USBD_IRQn                 = 23,     /*!< USB Device Interrupt                                 */
-    //RESERVE6                  = 24,
-    PWM_BRAKE_IRQn            = 25,     /*!< PWM Brake Interrupt                                  */
-    PDMA_IRQn                 = 26,     /*!< PDMA Interrupt                                       */
-    //RESERVE7                  = 27,
-    PWRWU_IRQn                = 28,     /*!< Power Down Wake Up Interrupt                         */
-    ADC_IRQn                  = 29,     /*!< ADC Interrupt                                        */
-    CLKDIRC_IRQn              = 30,     /*!< Clock fail detect and IRC TRIM Interrupt             */
-    //RESERVE8                  = 31,
-} IRQn_Type;
-
 
 /*
  * ==========================================================================
@@ -118,14 +69,15 @@ typedef enum IRQn
  */
 
 /* Configuration of the Cortex-M0 Processor and Core Peripherals */
-#define __MPU_PRESENT           0       /*!< armikcmu does not provide a MPU present or not       */
-#define __NVIC_PRIO_BITS        2       /*!< armikcmu Supports 2 Bits for the Priority Levels     */
-#define __Vendor_SysTickConfig  0       /*!< Set to 1 if different SysTick Config is used         */
+#define __MPU_PRESENT           0U       /*!< armikcmu does not provide a MPU present or not       */
+#define __NVIC_PRIO_BITS        2U       /*!< armikcmu Supports 2 Bits for the Priority Levels     */
+#define __Vendor_SysTickConfig  0U       /*!< Set to 1 if different SysTick Config is used         */
 
 /** @} end of group MCU_CMSIS */
 
 
 #include <stdint.h>
+#include "irqn.h"                       /*!< Interrupt Number Definition                          */
 #include "core_cm0.h"                   /*!< Cortex-M0 processor and core peripherals             */
 #include "system_NUC121.h"              /*!< NUC121 System                                        */
 
@@ -138,7 +90,7 @@ typedef enum IRQn
 /*                Device Specific Peripheral registers structures             */
 /******************************************************************************/
 /** @addtogroup REGISTER Control Register
-  @{
+    @{
 */
 
 #include "adc_reg.h"
@@ -168,54 +120,54 @@ typedef enum IRQn
 /*                         Peripheral memory map                              */
 /******************************************************************************/
 /** @addtogroup PERIPHERAL_BASE Peripheral Memory Base
-  Memory Mapped Structure for Series Peripheral
-  @{
+    Memory Mapped Structure for Series Peripheral
+    @{
  */
 /* Peripheral and SRAM base address */
-#define FLASH_BASE          ((uint32_t)0x00000000)
-#define SRAM_BASE           ((uint32_t)0x20000000)
-#define AHB_BASE            ((uint32_t)0x50000000)
-#define APB1_BASE           ((uint32_t)0x40000000)
-#define APB2_BASE           ((uint32_t)0x40100000)
+#define FLASH_BASE          ((uint32_t)0x00000000UL)
+#define SRAM_BASE           ((uint32_t)0x20000000UL)
+#define AHB_BASE            ((uint32_t)0x50000000UL)
+#define APB1_BASE           ((uint32_t)0x40000000UL)
+#define APB2_BASE           ((uint32_t)0x40100000UL)
 
 /* Peripheral memory map */
 /* AHB */
-#define SYS_BASE            (AHB_BASE       + 0x00000)                  /*!< System Global Controller Base Address            */
-#define CLK_BASE            (AHB_BASE       + 0x00200)                  /*!< System Clock Controller Base Address             */
-#define INT_BASE            (AHB_BASE       + 0x00300)                  /*!< Interrupt Source Controller Base Address         */
-#define GPIO_BASE           (AHB_BASE       + 0x04000)                  /*!< GPIO Base Address                                */
-#define PDMA_BASE           (AHB_BASE       + 0x08000)                  /*!< PDMA Base Address                                */
-#define FMC_BASE            (AHB_BASE       + 0x0C000)                  /*!< Flash Memory Controller Base Address             */
+#define SYS_BASE            (AHB_BASE       + 0x00000UL)                  /*!< System Global Controller Base Address            */
+#define CLK_BASE            (AHB_BASE       + 0x00200UL)                  /*!< System Clock Controller Base Address             */
+#define INT_BASE            (AHB_BASE       + 0x00300UL)                  /*!< Interrupt Source Controller Base Address         */
+#define GPIO_BASE           (AHB_BASE       + 0x04000UL)                  /*!< GPIO Base Address                                */
+#define PDMA_BASE           (AHB_BASE       + 0x08000UL)                  /*!< PDMA Base Address                                */
+#define FMC_BASE            (AHB_BASE       + 0x0C000UL)                  /*!< Flash Memory Controller Base Address             */
 
-#define PA_BASE             (GPIO_BASE               )                  /*!< GPIO PA Base Address                             */
-#define PB_BASE             (GPIO_BASE      + 0x00040)                  /*!< GPIO PB Base Address                             */
-#define PC_BASE             (GPIO_BASE      + 0x00080)                  /*!< GPIO PC Base Address                             */
-#define PD_BASE             (GPIO_BASE      + 0x000C0)                  /*!< GPIO PD Base Address                             */
-#define PE_BASE             (GPIO_BASE      + 0x00100)                  /*!< GPIO PE Base Address                             */
-#define PF_BASE             (GPIO_BASE      + 0x00140)                  /*!< GPIO PF Base Address                             */
-#define GPIO_DBCTL_BASE     (GPIO_BASE      + 0x00180)                  /*!< GPIO De-bounce Cycle Control Base Address        */
-#define GPIO_PIN_DATA_BASE  (GPIO_BASE      + 0x00200)                  /*!< GPIO Pin Data Input/Output Control Base Address  */
+#define PA_BASE             (GPIO_BASE                 )                  /*!< GPIO PA Base Address                             */
+#define PB_BASE             (GPIO_BASE      + 0x00040UL)                  /*!< GPIO PB Base Address                             */
+#define PC_BASE             (GPIO_BASE      + 0x00080UL)                  /*!< GPIO PC Base Address                             */
+#define PD_BASE             (GPIO_BASE      + 0x000C0UL)                  /*!< GPIO PD Base Address                             */
+#define PE_BASE             (GPIO_BASE      + 0x00100UL)                  /*!< GPIO PE Base Address                             */
+#define PF_BASE             (GPIO_BASE      + 0x00140UL)                  /*!< GPIO PF Base Address                             */
+#define GPIO_DBCTL_BASE     (GPIO_BASE      + 0x00180UL)                  /*!< GPIO De-bounce Cycle Control Base Address        */
+#define GPIO_PIN_DATA_BASE  (GPIO_BASE      + 0x00200UL)                  /*!< GPIO Pin Data Input/Output Control Base Address  */
 
 /* APB1 */
-#define WDT_BASE            (APB1_BASE      + 0x04000)                  /*!< Watch Dog Timer Base Address                     */
-#define WWDT_BASE           (APB1_BASE      + 0x04100)                  /*!< Window Watch Dog Timer Base Address              */
-#define TIMER0_BASE         (APB1_BASE      + 0x10000)                  /*!< Timer0 Base Address                              */
-#define TIMER1_BASE         (APB1_BASE      + 0x10020)                  /*!< Timer1 Base Address                              */
-#define I2C0_BASE           (APB1_BASE      + 0x20000)                  /*!< I2C0 Base Address                                */
-#define SPI0_BASE           (APB1_BASE      + 0x30000)                  /*!< SPI0 Base Address                                */
-#define BPWM0_BASE          (APB1_BASE      + 0x40000)                  /*!< BPWM0 Base Address                               */
-#define PWM0_BASE           (APB1_BASE      + 0x44000)                  /*!< PWM0 Base Address                                */
-#define UART0_BASE          (APB1_BASE      + 0x50000)                  /*!< UART0 Base Address                               */
-#define USBD_BASE           (APB1_BASE      + 0x60000)                  /*!< USB Device Base Address                          */
-#define USCI0_BASE          (APB1_BASE      + 0x70000)
-#define ADC_BASE            (APB1_BASE      + 0xE0000)                  /*!< ADC Base Address                                 */
+#define WDT_BASE            (APB1_BASE      + 0x04000UL)                  /*!< Watch Dog Timer Base Address                     */
+#define WWDT_BASE           (APB1_BASE      + 0x04100UL)                  /*!< Window Watch Dog Timer Base Address              */
+#define TIMER0_BASE         (APB1_BASE      + 0x10000UL)                  /*!< Timer0 Base Address                              */
+#define TIMER1_BASE         (APB1_BASE      + 0x10020UL)                  /*!< Timer1 Base Address                              */
+#define I2C0_BASE           (APB1_BASE      + 0x20000UL)                  /*!< I2C0 Base Address                                */
+#define SPI0_BASE           (APB1_BASE      + 0x30000UL)                  /*!< SPI0 Base Address                                */
+#define BPWM0_BASE          (APB1_BASE      + 0x40000UL)                  /*!< BPWM0 Base Address                               */
+#define PWM0_BASE           (APB1_BASE      + 0x44000UL)                  /*!< PWM0 Base Address                                */
+#define UART0_BASE          (APB1_BASE      + 0x50000UL)                  /*!< UART0 Base Address                               */
+#define USBD_BASE           (APB1_BASE      + 0x60000UL)                  /*!< USB Device Base Address                          */
+#define USCI0_BASE          (APB1_BASE      + 0x70000UL)
+#define ADC_BASE            (APB1_BASE      + 0xE0000UL)                  /*!< ADC Base Address                                 */
 
 /* APB2 */
-#define TIMER2_BASE         (APB2_BASE      + 0x10000)                  /*!< Timer2 Base Address                              */
-#define TIMER3_BASE         (APB2_BASE      + 0x10020)                  /*!< Timer3 Base Address                              */
-#define I2C1_BASE           (APB2_BASE      + 0x20000)                  /*!< I2C1 Base Address                                */
-#define BPWM1_BASE          (APB2_BASE      + 0x40000)                  /*!< BPWM1 Base Address                               */
-#define PWM1_BASE           (APB2_BASE      + 0x44000)                  /*!< PWM1 Base Address                                */
+#define TIMER2_BASE         (APB2_BASE      + 0x10000UL)                  /*!< Timer2 Base Address                              */
+#define TIMER3_BASE         (APB2_BASE      + 0x10020UL)                  /*!< Timer3 Base Address                              */
+#define I2C1_BASE           (APB2_BASE      + 0x20000UL)                  /*!< I2C1 Base Address                                */
+#define BPWM1_BASE          (APB2_BASE      + 0x40000UL)                  /*!< BPWM1 Base Address                               */
+#define PWM1_BASE           (APB2_BASE      + 0x44000UL)                  /*!< PWM1 Base Address                                */
 
 /** @} end of group PERIPHERAL_BASE */
 
@@ -225,8 +177,8 @@ typedef enum IRQn
 /******************************************************************************/
 
 /** @addtogroup PMODULE Peripheral Pointer
-  The Declaration of Peripheral Pointer
-  @{
+    The Declaration of Peripheral Pointer
+    @{
  */
 #define ADC                 ((ADC_T *) ADC_BASE)                        /*!< ADC Configuration Struct                         */
 
@@ -303,50 +255,50 @@ typedef volatile uint64_t vu64;       ///< Define 64-bit unsigned volatile data 
 #define outp16(port,value)  (*((volatile unsigned short *)(port))=(value))
 #define inp16(port)         ((*((volatile unsigned short *)(port))))
 
-#define E_SUCCESS   0
+#define E_SUCCESS   (0)
 #ifndef NULL
-    #define NULL    0
+    #define NULL    (0)
 #endif
 
-#define TRUE        1
-#define FALSE       0
+#define TRUE        (1UL)
+#define FALSE       (0UL)
 
-#define ENABLE      1
-#define DISABLE     0
+#define ENABLE      (1UL)
+#define DISABLE     (0UL)
 
 /* Bit Mask Definitions */
-#define BIT0    0x00000001
-#define BIT1    0x00000002
-#define BIT2    0x00000004
-#define BIT3    0x00000008
-#define BIT4    0x00000010
-#define BIT5    0x00000020
-#define BIT6    0x00000040
-#define BIT7    0x00000080
-#define BIT8    0x00000100
-#define BIT9    0x00000200
-#define BIT10   0x00000400
-#define BIT11   0x00000800
-#define BIT12   0x00001000
-#define BIT13   0x00002000
-#define BIT14   0x00004000
-#define BIT15   0x00008000
-#define BIT16   0x00010000
-#define BIT17   0x00020000
-#define BIT18   0x00040000
-#define BIT19   0x00080000
-#define BIT20   0x00100000
-#define BIT21   0x00200000
-#define BIT22   0x00400000
-#define BIT23   0x00800000
-#define BIT24   0x01000000
-#define BIT25   0x02000000
-#define BIT26   0x04000000
-#define BIT27   0x08000000
-#define BIT28   0x10000000
-#define BIT29   0x20000000
-#define BIT30   0x40000000
-#define BIT31   0x80000000
+#define BIT0    (0x00000001UL)
+#define BIT1    (0x00000002UL)
+#define BIT2    (0x00000004UL)
+#define BIT3    (0x00000008UL)
+#define BIT4    (0x00000010UL)
+#define BIT5    (0x00000020UL)
+#define BIT6    (0x00000040UL)
+#define BIT7    (0x00000080UL)
+#define BIT8    (0x00000100UL)
+#define BIT9    (0x00000200UL)
+#define BIT10   (0x00000400UL)
+#define BIT11   (0x00000800UL)
+#define BIT12   (0x00001000UL)
+#define BIT13   (0x00002000UL)
+#define BIT14   (0x00004000UL)
+#define BIT15   (0x00008000UL)
+#define BIT16   (0x00010000UL)
+#define BIT17   (0x00020000UL)
+#define BIT18   (0x00040000UL)
+#define BIT19   (0x00080000UL)
+#define BIT20   (0x00100000UL)
+#define BIT21   (0x00200000UL)
+#define BIT22   (0x00400000UL)
+#define BIT23   (0x00800000UL)
+#define BIT24   (0x01000000UL)
+#define BIT25   (0x02000000UL)
+#define BIT26   (0x04000000UL)
+#define BIT27   (0x08000000UL)
+#define BIT28   (0x10000000UL)
+#define BIT29   (0x20000000UL)
+#define BIT30   (0x40000000UL)
+#define BIT31   (0x80000000UL)
 
 /* Byte Mask Definitions */
 #define BYTE0_Msk               (0x000000FF)

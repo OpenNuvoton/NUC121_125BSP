@@ -1,9 +1,9 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Demonstrate SPI data transfer with PDMA.
- *           SPI0 will be configured as Master mode.
- *           Both TX PDMA function and RX PDMA function will be enabled.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   Demonstrate SPI data transfer with PDMA.
+ *          SPI0 will be configured as Master mode.
+ *          Both TX PDMA function and RX PDMA function will be enabled.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -116,9 +116,9 @@ void SYS_Init(void)
     CLK->AHBCLK |= CLK_AHBCLK_PDMACKEN_Msk;
 
     /* Update System Core Clock */
-    PllClock        = 0;                 // PLL
+    PllClock = 0;                 // PLL
     SystemCoreClock = __HIRC;            // HCLK
-    CyclesPerUs     = __HIRC / 1000000;  // For CLK_SysTickDelay()
+    CyclesPerUs = __HIRC / 1000000;  // For CLK_SysTickDelay()
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -150,7 +150,7 @@ void UART_Init(void)
     /* Init UART                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Reset UART IP */
-    SYS->IPRST1 |=  SYS_IPRST1_UART0RST_Msk;
+    SYS->IPRST1 |= SYS_IPRST1_UART0RST_Msk;
     SYS->IPRST1 &= ~SYS_IPRST1_UART0RST_Msk;
 
     /* Configure UART0 and set UART0 baud rate */
@@ -199,7 +199,7 @@ void SPI_LoopTestWithPDMA(void)
         PDMA_OP_BASIC;     /* Basic mode */
     PDMA->DSCT[SPI_MASTER_TX_DMA_CH].SA = (uint32_t)g_au32MasterToSlaveTestPattern;
     PDMA->DSCT[SPI_MASTER_TX_DMA_CH].DA = (uint32_t)&SPI0->TX;
-#if(SPI_MASTER_TX_DMA_CH<=3)
+#if(SPI_MASTER_TX_DMA_CH <= 3)
     PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & (~(0x3Ful << (8 * (SPI_MASTER_TX_DMA_CH % 4))))) |
                       ((0 + 16) << (8 * (SPI_MASTER_TX_DMA_CH % 4))); /* SPIx_TX */
 #else
@@ -220,7 +220,7 @@ void SPI_LoopTestWithPDMA(void)
         PDMA_OP_BASIC;    /* Basic mode */
     PDMA->DSCT[SPI_MASTER_RX_DMA_CH].SA = (uint32_t)&SPI0->RX;
     PDMA->DSCT[SPI_MASTER_RX_DMA_CH].DA = (uint32_t)g_au32MasterRxBuffer;
-#if(SPI_MASTER_RX_DMA_CH<=3)
+#if(SPI_MASTER_RX_DMA_CH <= 3)
     PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & (~(0x3Ful << (8 * (SPI_MASTER_RX_DMA_CH % 4))))) |
                       ((0 + 17) << (8 * (SPI_MASTER_RX_DMA_CH % 4))); /* SPIx_RX */
 #else

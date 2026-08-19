@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     system_NUC121.h
  * @version  V3.00
  * @brief    NUC121 Series System Setting Header File
@@ -38,18 +38,18 @@ extern "C" {
 #endif
 #define __LIRC      (10000UL)       /*!< Internal 10K RC Oscillator Frequency */
 #define __HIRC      (48000000UL)    /*!< Internal 48M RC Oscillator Frequency */
-#define __HIRC_DIV2 (__HIRC/2)
+#define __HIRC_DIV2 (__HIRC/2UL)
 #ifndef __LXT
 #define __LXT       (32768UL)       /*!< External Crystal Clock Frequency 32.768KHz */
 #endif
 #define __HSI       (96000000UL)    /*!< PLL default output is 96MHz@24M HIRC_DIV2 */
-#define __HSI_DIV2  (__HSI/2)
+#define __HSI_DIV2  (__HSI/2UL)
 
 extern uint32_t SystemCoreClock;    /*!< System Clock Frequency (Core Clock)  */
 extern uint32_t CyclesPerUs;        /*!< Cycles per micro second              */
 extern uint32_t PllClock;           /*!< PLL Output Clock Frequency           */
 
-#if USE_ASSERT
+#if defined (USE_ASSERT) && (USE_ASSERT != 0)
 /**
  * @brief      Assert Function
  *

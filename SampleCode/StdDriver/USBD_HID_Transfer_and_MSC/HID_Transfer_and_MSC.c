@@ -504,10 +504,22 @@ static uint8_t  g_u8PageBuff[PAGE_SIZE] = {0};    /* Page buffer to upload/downl
 static uint32_t g_u32BytesInPageBuf = 0;          /* The bytes of data in g_u8PageBuff */
 static uint8_t  g_u8TestPages[TEST_PAGES * PAGE_SIZE] = {0};    /* Test pages to upload/download through HID report */
 
+/*
+ * GetPageBufAddr() maps an arbitrary host page index into the local demo
+ * storage by wrapping it (modulo TEST_PAGES). This guarantees the returned
+ * pointer always stays inside s_au8TestPages, so erase/read/write can never
+ * access memory out of bounds regardless of the page/base parameters used.
+ */
+static uint8_t *GetPageBufAddr(uint32_t u32Page)
+{
+    return g_u8TestPages + ((u32Page % TEST_PAGES) * PAGE_SIZE);
+}
+
 int32_t HID_CmdEraseSectors(CMD_T *pCmd)
 {
     uint32_t u32StartSector;
     uint32_t u32Sectors;
+    uint32_t u32i;
 
     u32StartSector = pCmd->u32Arg1 - START_SECTOR;
     u32Sectors = pCmd->u32Arg2;
@@ -515,7 +527,13 @@ int32_t HID_CmdEraseSectors(CMD_T *pCmd)
     printf("Erase command - Sector: %u   Sector Cnt: %u\n", u32StartSector, u32Sectors);
 
     /* TODO: To erase the sector of storage */
-    memset(g_u8TestPages + u32StartSector * SECTOR_SIZE, 0xFF, sizeof(uint8_t) * u32Sectors * SECTOR_SIZE);
+    /* Erase sector-by-sector through the bounded mapping so the access can
+       never fall outside s_au8TestPages, even if the host addresses a sector
+       far beyond the small RAM-emulated storage. */
+    for (u32i = 0; u32i < u32Sectors; u32i++)
+    {
+        memset(GetPageBufAddr(u32StartSector + u32i), 0xFF, SECTOR_SIZE);
+    }
 
     /* To note the command has been done */
     pCmd->u8Cmd = HID_CMD_NONE;
@@ -538,7 +556,7 @@ int32_t HID_CmdReadPages(CMD_T *pCmd)
     {
         /* Update data to page buffer to upload */
         /* TODO: We need to update the page data if got a page read command. (0xFF is used in this sample code) */
-        memcpy(g_u8PageBuff, g_u8TestPages, sizeof(g_u8PageBuff));
+        memcpy(g_u8PageBuff, GetPageBufAddr(0), sizeof(g_u8PageBuff));
         g_u32BytesInPageBuf = PAGE_SIZE;
 
         /* The signature word is used as page counter */
@@ -703,7 +721,7 @@ void HID_GetOutReport(uint8_t *pu8EpBuf, uint32_t u32Size)
         {
             printf("Writing page %u\n", u32StartPage + u32PageCnt);
             /* TODO: We should program received data to storage here */
-            memcpy(g_u8TestPages + u32PageCnt * PAGE_SIZE, g_u8PageBuff, sizeof(g_u8PageBuff));
+            memcpy(GetPageBufAddr(u32PageCnt), g_u8PageBuff, sizeof(g_u8PageBuff));
             u32PageCnt++;
 
             /* Write command complete! */
@@ -762,7 +780,7 @@ void HID_SetInReport(void)
                 /* The previous page has sent out. Read new page to page buffer */
                 /* TODO: We should update new page data here. (0xFF is used in this sample code) */
                 printf("Reading page %u\n", u32StartPage + u32PageCnt);
-                memcpy(g_u8PageBuff, g_u8TestPages + u32PageCnt * PAGE_SIZE, sizeof(g_u8PageBuff));
+                memcpy(g_u8PageBuff, GetPageBufAddr(u32PageCnt), sizeof(g_u8PageBuff));
 
                 g_u32BytesInPageBuf = PAGE_SIZE;
 
@@ -1119,7 +1137,7 @@ void MSC_Write(void)
             /* Buffer full. Writer it to storage first. */
             if (g_u32Address >= (STORAGE_DATA_BUF + STORAGE_BUFFER_SIZE))
             {
-                DataFlashWrite(g_u32DataFlashStartAddr, STORAGE_BUFFER_SIZE, (uint32_t)STORAGE_DATA_BUF);
+                MSC_WriteMedia(g_u32DataFlashStartAddr, STORAGE_BUFFER_SIZE, (uint8_t *)STORAGE_DATA_BUF);
 
                 g_u32Address = STORAGE_DATA_BUF;
                 g_u32DataFlashStartAddr += STORAGE_BUFFER_SIZE;
@@ -1144,7 +1162,7 @@ void MSC_Write(void)
 
                 if (len)
                 {
-                    DataFlashWrite(g_u32DataFlashStartAddr, len, (uint32_t)STORAGE_DATA_BUF);
+                    MSC_WriteMedia(g_u32DataFlashStartAddr, len, (uint8_t *)STORAGE_DATA_BUF);
                 }
             }
 
@@ -1723,6 +1741,11 @@ void MSC_AckCmd(void)
 void MSC_ReadMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
 {
     DataFlashRead(addr, size, (uint32_t)buffer);
+}
+
+void MSC_WriteMedia(uint32_t addr, uint32_t size, uint8_t *buffer)
+{
+    DataFlashWrite(addr, size, (uint32_t)buffer);
 }
 
 void MSC_SetConfig(void)

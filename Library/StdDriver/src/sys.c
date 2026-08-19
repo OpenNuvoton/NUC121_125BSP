@@ -1,11 +1,11 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     sys.c
  * @version  V3.00
  * @brief    NUC121 series SYS driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+******************************************************************************/
 #include "NuMicro.h"
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -112,11 +112,25 @@ void SYS_ResetCPU(void)
   */
 void SYS_ResetModule(uint32_t u32ModuleIndex)
 {
+    uintptr_t u32IpRstBaseAddr;
+    uintptr_t u32IpRstRegAddr;
+    uint32_t u32IpRstOffset;
+    uint32_t u32ResetBitPos;
+    uint32_t u32ResetBitMask;
+    volatile uint32_t *pu32IpRstReg;
+
+    u32IpRstBaseAddr = (uintptr_t)&SYS->IPRST0;
+    u32IpRstOffset = (u32ModuleIndex >> 24U);
+    u32IpRstRegAddr = u32IpRstBaseAddr + (uintptr_t)u32IpRstOffset;
+    pu32IpRstReg = (volatile uint32_t *)u32IpRstRegAddr;
+    u32ResetBitPos = (u32ModuleIndex & 0x00FFFFFFUL);
+    u32ResetBitMask = ((uint32_t)1U << u32ResetBitPos);
+
     /* Generate reset signal to the corresponding module */
-    *(volatile uint32_t *)((uint32_t)&SYS->IPRST0 + (u32ModuleIndex >> 24))  |= 1 << (u32ModuleIndex & 0x00ffffff);
+    *pu32IpRstReg |= u32ResetBitMask;
 
     /* Release corresponding module from reset state */
-    *(volatile uint32_t *)((uint32_t)&SYS->IPRST0 + (u32ModuleIndex >> 24))  &= ~(1 << (u32ModuleIndex & 0x00ffffff));
+    *pu32IpRstReg &= ~u32ResetBitMask;
 }
 
 
@@ -135,11 +149,15 @@ void SYS_ResetModule(uint32_t u32ModuleIndex)
   */
 void SYS_EnableBOD(int32_t i32Mode, uint32_t u32BODLevel)
 {
+    uint32_t u32Mode;
+
+    u32Mode = (uint32_t)i32Mode;
+
     /* Enable Brown-out Detector function */
     SYS->BODCTL |= SYS_BODCTL_BODEN_Msk;
 
     /* Enable Brown-out interrupt or reset function */
-    SYS->BODCTL = (SYS->BODCTL & ~SYS_BODCTL_BODRSTEN_Msk) | i32Mode;
+    SYS->BODCTL = (SYS->BODCTL & ~SYS_BODCTL_BODRSTEN_Msk) | u32Mode;
 
     /* Select Brown-out Detector threshold voltage */
     SYS->BODCTL = (SYS->BODCTL & ~SYS_BODCTL_BODVL_Msk) | u32BODLevel;

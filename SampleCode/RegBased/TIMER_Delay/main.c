@@ -86,7 +86,7 @@ void UART0_Init(void)
     UART0->LINE = UART_WORD_LEN_8 | UART_PARITY_NONE | UART_STOP_BIT_1;
 }
 
-uint32_t TIMER_GetModuleClock(TIMER_T *timer)
+uint32_t TIMER_GetModuleClock(const TIMER_T *timer)
 {
     uint32_t u32Src, u32Clk;
     const uint32_t au32Clk[] = {__HXT, __LXT, 0, 0, 0, __LIRC, 0, __HIRC_DIV2};
@@ -125,7 +125,7 @@ int32_t TIMER_Delay(TIMER_T *timer, uint32_t u32Usec)
 {
     uint32_t u32Clk = TIMER_GetModuleClock(timer);
     uint32_t u32Prescale = 0UL, u32Delay;
-    uint32_t u32Cmpr, u32Cntr, u32NsecPerTick, i = 0UL;
+    uint32_t u32Cmpr, u32Cntr = 0UL, u32NsecPerTick, i = 0UL;
 
     // Clear current timer configuration/
     timer->CTL = 0;

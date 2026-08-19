@@ -1,9 +1,9 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.0
- * @brief    Configure SPI0 as Slave mode and demonstrate how to communicate
- *           with an off-chip SPI Master device with FIFO mode. This sample
- *           code needs to work with SPI_MasterFifoMode sample code.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.0
+ * @brief   Configure SPI0 as Slave mode and demonstrate how to communicate
+ *          with an off-chip SPI Master device with FIFO mode. This sample
+ *          code needs to work with SPI_MasterFifoMode sample code.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -147,9 +147,9 @@ void SYS_Init(void)
     CLK->AHBCLK |= CLK_AHBCLK_PDMACKEN_Msk;
 
     /* Update System Core Clock */
-    PllClock        = 0;                 // PLL
+    PllClock = 0;                 // PLL
     SystemCoreClock = __HIRC;            // HCLK
-    CyclesPerUs     = __HIRC / 1000000;  // For CLK_SysTickDelay()
+    CyclesPerUs = __HIRC / 1000000;  // For CLK_SysTickDelay()
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */

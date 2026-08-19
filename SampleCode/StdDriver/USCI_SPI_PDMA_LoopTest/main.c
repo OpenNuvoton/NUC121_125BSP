@@ -1,13 +1,13 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
  * @brief   Demonstrate USCI SPI data transfer with PDMA.
  *          USCI_SPI0 (USPI0) will be configured as Master mode and transfer data loopback to self by connect MOSI pin to MISO pin.
  *          Both TX PDMA function and RX PDMA function will be enabled.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ ******************************************************************************/
 #include <stdio.h>
 #include "NuMicro.h"
 
@@ -118,10 +118,10 @@ void SYS_Init(void)
     SYS->GPB_MFPL = SYS_GPB_MFPL_PB0MFP_UART0_RXD | SYS_GPB_MFPL_PB1MFP_UART0_TXD;
 
     /* Set USCI_SPI0 multi-function pins */
-    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC1MFP_Msk))  | (SYS_GPC_MFPL_PC1MFP_USCI0_CTL0);   /* PC.1  */
-    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC0MFP_Msk))  | (SYS_GPC_MFPL_PC0MFP_USCI0_CLK);    /* PC.0  */
-    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC3MFP_Msk))  | (SYS_GPC_MFPL_PC3MFP_USCI0_DAT0);   /* PC.3  */
-    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC2MFP_Msk))  | (SYS_GPC_MFPL_PC2MFP_USCI0_DAT1);   /* PC.2  */
+    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC1MFP_Msk)) | (SYS_GPC_MFPL_PC1MFP_USCI0_CTL0);   /* PC.1  */
+    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC0MFP_Msk)) | (SYS_GPC_MFPL_PC0MFP_USCI0_CLK);    /* PC.0  */
+    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC3MFP_Msk)) | (SYS_GPC_MFPL_PC3MFP_USCI0_DAT0);   /* PC.3  */
+    SYS->GPC_MFPL = (SYS->GPC_MFPL & (~SYS_GPC_MFPL_PC2MFP_Msk)) | (SYS_GPC_MFPL_PC2MFP_USCI0_DAT1);   /* PC.2  */
 }
 
 void USCI_SPI_Init(void)

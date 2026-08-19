@@ -100,8 +100,6 @@ extern uint32_t Storage_Block[];
 /*-------------------------------------------------------------*/
 
 /*-------------------------------------------------------------*/
-void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer);
-void DataFlashRead(uint32_t addr, uint32_t size, uint32_t buffer);
 void MSC_RequestSense(void);
 void MSC_ReadFormatCapacity(void);
 void MSC_Read(void);

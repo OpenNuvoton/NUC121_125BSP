@@ -27,7 +27,7 @@ extern "C"
 /** @addtogroup BPWM_EXPORTED_CONSTANTS BPWM Exported Constants
   @{
 */
-#define BPWM_CHANNEL_NUM                          (6)        /*!< BPWM channel number */
+#define BPWM_CHANNEL_NUM                          (6UL)        /*!< BPWM channel number */
 #define BPWM_CH_0_MASK                            (0x1UL)    /*!< BPWM channel 0 mask */
 #define BPWM_CH_1_MASK                            (0x2UL)    /*!< BPWM channel 1 mask */
 #define BPWM_CH_2_MASK                            (0x4UL)    /*!< BPWM channel 2 mask */
@@ -196,9 +196,9 @@ extern "C"
  */
 #define BPWM_MASK_OUTPUT(bpwm, u32ChannelMask, u32LevelMask) \
     do{ \
-        int i;\
-        for(i = 0; i < 6; i++) { \
-            if((u32ChannelMask) & (1 << i)){ \
+        uint32_t i;\
+        for(i = 0UL; i < BPWM_CHANNEL_NUM; i++) { \
+            if((u32ChannelMask) & (1UL << i)){ \
                 (bpwm)->MSKEN |= (1UL << i); \
                 (bpwm)->MSK = ((bpwm)->MSK & ~(1UL << i)) | ((u32LevelMask) << i); \
             } \
@@ -336,13 +336,13 @@ extern "C"
  */
 #define BPWM_SET_OUTPUT_LEVEL(bpwm, u32ChannelMask, u32ZeroLevel, u32CmpUpLevel, u32PeriodLevel, u32CmpDownLevel) \
     do{ \
-        int i; \
-        for(i = 0; i < 6; i++) { \
-            if((u32ChannelMask) & (1 << i)) { \
-                (bpwm)->WGCTL0 = (((bpwm)->WGCTL0 & ~(3UL << (2 * i))) | ((u32ZeroLevel) << (2 * i))); \
-                (bpwm)->WGCTL0 = (((bpwm)->WGCTL0 & ~(3UL << (BPWM_WGCTL0_PRDPCTL0_Pos + (2 * i)))) | ((u32PeriodLevel) << (BPWM_WGCTL0_PRDPCTL0_Pos + (2 * i)))); \
-                (bpwm)->WGCTL1 = (((bpwm)->WGCTL1 & ~(3UL << (2 * i))) | ((u32CmpUpLevel) << (2 * i))); \
-                (bpwm)->WGCTL1 = (((bpwm)->WGCTL1 & ~(3UL << (BPWM_WGCTL1_CMPDCTL0_Pos + (2 * i)))) | ((u32CmpDownLevel) << (BPWM_WGCTL1_CMPDCTL0_Pos + (2 * i)))); \
+        uint32_t i; \
+        for(i = 0UL; i < BPWM_CHANNEL_NUM; i++) { \
+            if((u32ChannelMask) & (1UL << i)) { \
+                (bpwm)->WGCTL0 = (((bpwm)->WGCTL0 & ~(3UL << (2UL * i))) | ((u32ZeroLevel) << (2UL * i))); \
+                (bpwm)->WGCTL0 = (((bpwm)->WGCTL0 & ~(3UL << (BPWM_WGCTL0_PRDPCTL0_Pos + (2UL * i)))) | ((u32PeriodLevel) << (BPWM_WGCTL0_PRDPCTL0_Pos + (2UL * i)))); \
+                (bpwm)->WGCTL1 = (((bpwm)->WGCTL1 & ~(3UL << (2UL * i))) | ((u32CmpUpLevel) << (2UL * i))); \
+                (bpwm)->WGCTL1 = (((bpwm)->WGCTL1 & ~(3UL << (BPWM_WGCTL1_CMPDCTL0_Pos + (2UL * i)))) | ((u32CmpDownLevel) << (BPWM_WGCTL1_CMPDCTL0_Pos + (2UL * i)))); \
             } \
         } \
     }while(0)
@@ -359,7 +359,7 @@ void BPWM_ForceStop(BPWM_T *bpwm, uint32_t u32ChannelMask);
 void BPWM_EnableADCTrigger(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Condition);
 void BPWM_DisableADCTrigger(BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_ClearADCTriggerFlag(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Condition);
-uint32_t BPWM_GetADCTriggerFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
+uint32_t BPWM_GetADCTriggerFlag(const BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_EnableCapture(BPWM_T *bpwm, uint32_t u32ChannelMask);
 void BPWM_DisableCapture(BPWM_T *bpwm, uint32_t u32ChannelMask);
 void BPWM_EnableOutput(BPWM_T *bpwm, uint32_t u32ChannelMask);
@@ -367,23 +367,23 @@ void BPWM_DisableOutput(BPWM_T *bpwm, uint32_t u32ChannelMask);
 void BPWM_EnableCaptureInt(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Edge);
 void BPWM_DisableCaptureInt(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Edge);
 void BPWM_ClearCaptureIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32Edge);
-uint32_t BPWM_GetCaptureIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
+uint32_t BPWM_GetCaptureIntFlag(const BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_EnableDutyInt(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32IntDutyType);
 void BPWM_DisableDutyInt(BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_ClearDutyIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
-uint32_t BPWM_GetDutyIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
+uint32_t BPWM_GetDutyIntFlag(const BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_EnablePeriodInt(BPWM_T *bpwm, uint32_t u32ChannelNum,  uint32_t u32IntPeriodType);
 void BPWM_DisablePeriodInt(BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_ClearPeriodIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
-uint32_t BPWM_GetPeriodIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
+uint32_t BPWM_GetPeriodIntFlag(const BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_EnableZeroInt(BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_DisableZeroInt(BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_ClearZeroIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
-uint32_t BPWM_GetZeroIntFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
+uint32_t BPWM_GetZeroIntFlag(const BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_EnableLoadMode(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32LoadMode);
 void BPWM_DisableLoadMode(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32LoadMode);
 void BPWM_SetClockSource(BPWM_T *bpwm, uint32_t u32ChannelNum, uint32_t u32ClkSrcSel);
-uint32_t BPWM_GetWrapAroundFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
+uint32_t BPWM_GetWrapAroundFlag(const BPWM_T *bpwm, uint32_t u32ChannelNum);
 void BPWM_ClearWrapAroundFlag(BPWM_T *bpwm, uint32_t u32ChannelNum);
 
 

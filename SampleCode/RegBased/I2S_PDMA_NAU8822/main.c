@@ -1,8 +1,8 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    NUC121 I2S Driver Sample Code
- *           This is a I2S demo with PDMA function connected with NAU8822 codec.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   NUC121 I2S Driver Sample Code
+ *          This is a I2S demo with PDMA function connected with NAU8822 codec.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -19,7 +19,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 //#define BUFF_LEN      512
 #define BUFF_LEN        256
-#define BUFF_HALF_LEN   (BUFF_LEN/2)
+#define BUFF_HALF_LEN   (BUFF_LEN / 2)
 #define I2S_TIMEOUT     (SystemCoreClock >> 2)
 
 typedef struct
@@ -200,9 +200,9 @@ void SYS_Init(void)
     CLK->AHBCLK |= CLK_AHBCLK_PDMACKEN_Msk;
 
     /* Update System Core Clock */
-    PllClock        = 0;                 // PLL
+    PllClock = 0;                 // PLL
     SystemCoreClock = __HIRC;            // HCLK
-    CyclesPerUs     = __HIRC / 1000000;  // For CLK_SysTickDelay()
+    CyclesPerUs = __HIRC / 1000000;  // For CLK_SysTickDelay()
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -242,7 +242,7 @@ void UART0_Init(void)
     /* Init UART                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Reset UART0 */
-    SYS->IPRST1 |=  SYS_IPRST1_UART0RST_Msk;
+    SYS->IPRST1 |= SYS_IPRST1_UART0RST_Msk;
     SYS->IPRST1 &= ~SYS_IPRST1_UART0RST_Msk;
 
     /* Configure UART0 and set UART0 Baudrate */
@@ -253,7 +253,7 @@ void UART0_Init(void)
 /* Configure PDMA to Scatter Gather mode */
 void PDMA_Init(void)
 {
-    volatile int32_t  i32Channel;
+    volatile uint32_t  u32Channel;
 
     /* Tx description */
     g_asDescTable_TX[0].CTL = ((BUFF_LEN - 1) << PDMA_DSCT_CTL_TXCNT_Pos) | PDMA_WIDTH_32 | PDMA_SAR_INC | PDMA_DAR_FIX | PDMA_REQ_SINGLE | PDMA_OP_SCATTER;
@@ -278,8 +278,8 @@ void PDMA_Init(void)
     g_asDescTable_RX[1].FIRST = (uint32_t)&g_asDescTable_RX[0] - (PDMA->SCATBA);   //link to first description
 
     /* Open PDMA channel 1 for SPI TX and channel 2 for SPI RX */
-    for (i32Channel = 0; i32Channel < PDMA_CH_MAX; i32Channel++)
-        PDMA->DSCT[i32Channel].CTL = 0;
+    for (u32Channel = 0; u32Channel < PDMA_CH_MAX; u32Channel++)
+        PDMA->DSCT[u32Channel].CTL = 0;
 
     PDMA->CHCTL |= (1 << 1) | (1 << 2);
 
@@ -317,7 +317,7 @@ void I2C0_Init(void)
     uint32_t u32BusClock;
 
     /* Reset I2C0 */
-    SYS->IPRST1 |=  SYS_IPRST1_I2C0RST_Msk;
+    SYS->IPRST1 |= SYS_IPRST1_I2C0RST_Msk;
     SYS->IPRST1 &= ~SYS_IPRST1_I2C0RST_Msk;
 
     /* Enable I2C0 Controller */

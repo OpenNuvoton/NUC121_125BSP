@@ -20,10 +20,11 @@
     /* Windows 7 will take about 20KB to do formatting. We only get free space, 2 KB, to use after the flash is formatted */
 #endif
 
-
-
 #define FLASH_PAGE_SIZE           512
 #define BUFFER_PAGE_SIZE          512
+
+void DataFlashWrite(uint32_t addr, uint32_t size, uint32_t buffer);
+void DataFlashRead(uint32_t addr, uint32_t size, uint32_t buffer);
 
 #endif  /* __DATA_FLASH_PROG_H__ */
 

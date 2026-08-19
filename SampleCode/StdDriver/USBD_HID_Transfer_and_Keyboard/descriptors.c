@@ -239,12 +239,12 @@ const uint32_t gu32ConfigHidDescIdx[3] =
 
 const S_USBD_INFO_T gsInfo =
 {
-    gu8DeviceDescriptor,
-    gu8ConfigDescriptor,
-    gpu8UsbString,
-    gpu8UsbHidReport,
-    gu32UsbHidReportLen,
-    gu32ConfigHidDescIdx,
+    (uint8_t *)gu8DeviceDescriptor,
+    (uint8_t *)gu8ConfigDescriptor,
+    (uint8_t **)gpu8UsbString,
+    (uint8_t **)gpu8UsbHidReport,
+    (uint32_t *)gu32UsbHidReportLen,
+    (uint32_t *)gu32ConfigHidDescIdx,
     NULL
 };
 

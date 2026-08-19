@@ -1,11 +1,11 @@
-/**************************************************************************//**
+/*******************************************************************************
  * @file     pdma.h
  * @version  V3.00
  * @brief    NUC121 series PDMA driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
- *****************************************************************************/
+ ******************************************************************************/
 #ifndef __PDMA_H__
 #define __PDMA_H__
 
@@ -26,7 +26,8 @@ extern "C"
 /** @addtogroup PDMA_EXPORTED_CONSTANTS PDMA Exported Constants
   @{
 */
-#define PDMA_CH_MAX    5   /*!< Specify Maximum Channels of PDMA */
+
+#define PDMA_CH_MAX    5UL   /*!< Specify Maximum Channels of PDMA  \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  Operation Mode Constant Definitions                                                                    */

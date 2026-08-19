@@ -9,7 +9,7 @@ To experience the powerful features of NUC121/NUC125 series in few minutes, plea
 ## .\Document\
 
 - CMSIS.html<br>
-	Document of CMSIS version 6.1.0.
+	Document of CMSIS.
 
 - NuMicro NUC121_125 Series CMSIS BSP Driver Reference.chm<br>
 	This document describes the usage of drivers in NUC121/NUC125 Series BSP.
@@ -18,13 +18,13 @@ To experience the powerful features of NUC121/NUC125 series in few minutes, plea
 	This document shows the revision history of NUC121/NUC125 Series BSP.
 
 - VS Code Quick Start Guide
-	This documents guide to install, configure and use VS Code.
+	This document guides to install, configure and use VS Code.
 
 
 ## .\Library\
 
 - CMSIS<br>
-	Cortex® Microcontroller Software Interface Standard (CMSIS) V6.1.0 definitions by Arm® Corp.
+	Cortex® Microcontroller Software Interface Standard (CMSIS) definitions by Arm® Corp.
 
 - Device<br>
 	CMSIS compliant device header files.

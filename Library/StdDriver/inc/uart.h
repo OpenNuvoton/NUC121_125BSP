@@ -49,50 +49,50 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART_LINE constants definitions                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_WORD_LEN_5     (0) /*!< UART_LINE setting to set UART word length to 5 bits */
-#define UART_WORD_LEN_6     (1) /*!< UART_LINE setting to set UART word length to 6 bits */
-#define UART_WORD_LEN_7     (2) /*!< UART_LINE setting to set UART word length to 7 bits */
-#define UART_WORD_LEN_8     (3) /*!< UART_LINE setting to set UART word length to 8 bits */
+#define UART_WORD_LEN_5     (0UL) /*!< UART_LINE setting to set UART word length to 5 bits */
+#define UART_WORD_LEN_6     (1UL) /*!< UART_LINE setting to set UART word length to 6 bits */
+#define UART_WORD_LEN_7     (2UL) /*!< UART_LINE setting to set UART word length to 7 bits */
+#define UART_WORD_LEN_8     (3UL) /*!< UART_LINE setting to set UART word length to 8 bits */
 
-#define UART_PARITY_NONE    (0x0 << UART_LINE_PBE_Pos) /*!< UART_LINE setting to set UART as no parity   */
-#define UART_PARITY_ODD     (0x1 << UART_LINE_PBE_Pos) /*!< UART_LINE setting to set UART as odd parity  */
-#define UART_PARITY_EVEN    (0x3 << UART_LINE_PBE_Pos) /*!< UART_LINE setting to set UART as even parity */
-#define UART_PARITY_MARK    (0x5 << UART_LINE_PBE_Pos) /*!< UART_LINE setting to keep parity bit as '1'  */
-#define UART_PARITY_SPACE   (0x7 << UART_LINE_PBE_Pos) /*!< UART_LINE setting to keep parity bit as '0'  */
+#define UART_PARITY_NONE    (0x0UL << UART_LINE_PBE_Pos) /*!< UART_LINE setting to set UART as no parity   */
+#define UART_PARITY_ODD     (0x1UL << UART_LINE_PBE_Pos) /*!< UART_LINE setting to set UART as odd parity  */
+#define UART_PARITY_EVEN    (0x3UL << UART_LINE_PBE_Pos) /*!< UART_LINE setting to set UART as even parity */
+#define UART_PARITY_MARK    (0x5UL << UART_LINE_PBE_Pos) /*!< UART_LINE setting to keep parity bit as '1'  */
+#define UART_PARITY_SPACE   (0x7UL << UART_LINE_PBE_Pos) /*!< UART_LINE setting to keep parity bit as '0'  */
 
-#define UART_STOP_BIT_1     (0x0 << UART_LINE_NSB_Pos) /*!< UART_LINE setting for one stop bit  */
-#define UART_STOP_BIT_1_5   (0x1 << UART_LINE_NSB_Pos) /*!< UART_LINE setting for 1.5 stop bit when 5-bit word length  */
-#define UART_STOP_BIT_2     (0x1 << UART_LINE_NSB_Pos) /*!< UART_LINE setting for two stop bit when 6, 7, 8-bit word length */
+#define UART_STOP_BIT_1     (0x0UL << UART_LINE_NSB_Pos) /*!< UART_LINE setting for one stop bit  */
+#define UART_STOP_BIT_1_5   (0x1UL << UART_LINE_NSB_Pos) /*!< UART_LINE setting for 1.5 stop bit when 5-bit word length  */
+#define UART_STOP_BIT_2     (0x1UL << UART_LINE_NSB_Pos) /*!< UART_LINE setting for two stop bit when 6, 7, 8-bit word length */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART RTS ACTIVE LEVEL constants definitions                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_RTS_IS_LOW_LEV_ACTIVE   (0x1 << UART_MODEM_RTSACTLV_Pos) /*!< Set RTS is Low Level Active */
-#define UART_RTS_IS_HIGH_LEV_ACTIVE  (0x0 << UART_MODEM_RTSACTLV_Pos) /*!< Set RTS is High Level Active */
+#define UART_RTS_IS_LOW_LEV_ACTIVE   (0x1UL << UART_MODEM_RTSACTLV_Pos) /*!< Set RTS is Low Level Active */
+#define UART_RTS_IS_HIGH_LEV_ACTIVE  (0x0UL << UART_MODEM_RTSACTLV_Pos) /*!< Set RTS is High Level Active */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART_IRDA constants definitions                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_IRDA_TXEN      (0x1 << UART_IRDA_TXEN_Pos) /*!< Set IrDA function Tx mode */
-#define UART_IRDA_RXEN      (0x0 << UART_IRDA_TXEN_Pos) /*!< Set IrDA function Rx mode */
+#define UART_IRDA_TXEN      (0x1UL << UART_IRDA_TXEN_Pos) /*!< Set IrDA function Tx mode */
+#define UART_IRDA_RXEN      (0x0UL << UART_IRDA_TXEN_Pos) /*!< Set IrDA function Rx mode */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART_FUNCSEL constants definitions                                                                      */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_FUNCSEL_UART  (0x0 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set UART Function  (Default) */
-#define UART_FUNCSEL_LIN   (0x1 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set LIN Function             */
-#define UART_FUNCSEL_IrDA  (0x2 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set IrDA Function            */
-#define UART_FUNCSEL_RS485 (0x3 << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set RS485 Function           */
+#define UART_FUNCSEL_UART  (0x0UL << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set UART Function  (Default) */
+#define UART_FUNCSEL_LIN   (0x1UL << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set LIN Function             */
+#define UART_FUNCSEL_IrDA  (0x2UL << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set IrDA Function            */
+#define UART_FUNCSEL_RS485 (0x3UL << UART_FUNCSEL_FUNCSEL_Pos) /*!< UART_FUNCSEL setting to set RS485 Function           */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART_LINCTL constants definitions                                                                       */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_LINCTL_BRKFL(x)    (((x)-1) << UART_LINCTL_BRKFL_Pos)  /*!< UART_LINCTL setting to set LIN Break Field Length, x = 10 ~ 15, default value is 12 */
-#define UART_LINCTL_BSL(x)      (((x)-1) << UART_LINCTL_BSL_Pos)    /*!< UART_LINCTL setting to set LIN Break/Sync Delimiter Length, x = 1 ~ 4 */
+#define UART_LINCTL_BRKFL(x)    (((x)-1UL) << UART_LINCTL_BRKFL_Pos)  /*!< UART_LINCTL setting to set LIN Break Field Length, x = 10 ~ 15, default value is 12 */
+#define UART_LINCTL_BSL(x)      (((x)-1UL) << UART_LINCTL_BSL_Pos)    /*!< UART_LINCTL setting to set LIN Break/Sync Delimiter Length, x = 1 ~ 4 */
 #define UART_LINCTL_HSEL_BREAK             (0x0UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field */
 #define UART_LINCTL_HSEL_BREAK_SYNC        (0x1UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field and sync field */
 #define UART_LINCTL_HSEL_BREAK_SYNC_ID     (0x2UL << UART_LINCTL_HSEL_Pos)    /*!< UART_LINCTL setting to set LIN Header Select to break field, sync field and ID field*/
@@ -102,7 +102,7 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* UART BAUDRATE MODE constants definitions                                                                */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UART_BAUD_MODE0     (0) /*!< Set UART Baudrate Mode is Mode0 */
+#define UART_BAUD_MODE0     (0UL) /*!< Set UART Baudrate Mode is Mode0 */
 #define UART_BAUD_MODE2     (UART_BAUD_BAUDM1_Msk | UART_BAUD_BAUDM0_Msk) /*!< Set UART Baudrate Mode is Mode2 */
 
 
@@ -127,7 +127,7 @@ extern "C"
  *
  *    \hideinitializer
  */
-#define UART_BAUD_MODE0_DIVIDER(u32SrcFreq, u32BaudRate)    ((((u32SrcFreq) + ((u32BaudRate)*8)) / (u32BaudRate) >> 4)-2)
+#define UART_BAUD_MODE0_DIVIDER(u32SrcFreq, u32BaudRate)    ((((u32SrcFreq) + ((u32BaudRate)*8ul)) / (u32BaudRate) >> 4ul)-2ul)
 
 
 /**
@@ -142,7 +142,7 @@ extern "C"
  *
  *    \hideinitializer
  */
-#define UART_BAUD_MODE2_DIVIDER(u32SrcFreq, u32BaudRate)    ((((u32SrcFreq) + ((u32BaudRate)/2)) / (u32BaudRate))-2)
+#define UART_BAUD_MODE2_DIVIDER(u32SrcFreq, u32BaudRate)    ((((u32SrcFreq) + ((u32BaudRate)/2ul)) / (u32BaudRate))-2ul)
 
 
 /**
@@ -491,13 +491,13 @@ void UART_DisableInt(UART_T *psUART, uint32_t u32InterruptFlag);
 void UART_EnableFlowCtrl(UART_T *psUART);
 void UART_EnableInt(UART_T *psUART, uint32_t u32InterruptFlag);
 void UART_Open(UART_T *psUART, uint32_t u32Baudrate);
-uint32_t UART_Read(UART_T *psUART, uint8_t *pu8RxBuf, uint32_t u32ReadBytes);
+uint32_t UART_Read(const UART_T *psUART, uint8_t *pu8RxBuf, uint32_t u32ReadBytes);
 void UART_SetLine_Config(UART_T *psUART, uint32_t u32Baudrate, uint32_t u32DataWidth, uint32_t u32Parity, uint32_t u32StopBits);
 void UART_SetTimeoutCnt(UART_T *psUART, uint32_t u32TOC);
 void UART_SelectIrDAMode(UART_T *psUART, uint32_t u32Buadrate, uint32_t u32Direction);
 void UART_SelectRS485Mode(UART_T *psUART, uint32_t u32Mode, uint32_t u32Addr);
 void UART_SelectLINMode(UART_T *psUART, uint32_t u32Mode, uint32_t u32BreakLength);
-uint32_t UART_Write(UART_T *psUART, uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
+uint32_t UART_Write(UART_T *psUART, const uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 
 
 /** @} end of group UART_EXPORTED_FUNCTIONS */
@@ -508,6 +508,7 @@ uint32_t UART_Write(UART_T *psUART, uint8_t *pu8TxBuf, uint32_t u32WriteBytes);
 
 #ifdef __cplusplus
 }
+
 #endif
 
 #endif //__UART_H__

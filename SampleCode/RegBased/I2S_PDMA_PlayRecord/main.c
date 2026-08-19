@@ -1,8 +1,8 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    NUC121 SPI Driver Sample Code
- *           This is a I2S demo for playing and recording data with PDMA function.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   NUC121 SPI Driver Sample Code
+ *          This is a I2S demo for playing and recording data with PDMA function.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -292,7 +292,7 @@ void PDMA_IRQHandler(void)
             /* Reset PDMA Scater-Gatter table */
             PDMA_ResetTxSGTable(g_u8TxIdx);
             g_u8TxIdx ^= 1;
-            g_u32PlayReady ++;
+            g_u32PlayReady++;
         }
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF1_Msk);
@@ -302,7 +302,7 @@ void PDMA_IRQHandler(void)
             /* Reset PDMA Scater-Gatter table */
             PDMA_ResetRxSGTable(g_u8RxIdx);
             g_u8RxIdx ^= 1;
-            g_u32RecReady ++;
+            g_u32RecReady++;
         }
 
         PDMA_CLR_TD_FLAG(PDMA_TDSTS_TDIF2_Msk);

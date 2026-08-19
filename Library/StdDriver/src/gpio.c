@@ -1,11 +1,12 @@
-/**************************************************************************//**
+/*******************************************************************************
  * @file     gpio.c
  * @version  V3.00
- * @brief    NUC121 series GPIO driver source file
+ * @brief    GPIO driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
- * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ * @copyright (C) 2023 Nuvoton Technology Corp. All rights reserved.
+ ******************************************************************************/
+
 #include "NuMicro.h"
 
 /** @addtogroup Standard_Driver Standard Driver
@@ -42,11 +43,11 @@ void GPIO_SetMode(GPIO_T *port, uint32_t u32PinMask, uint32_t u32Mode)
 {
     uint32_t i;
 
-    for (i = 0; i < GPIO_PIN_MAX; i++)
+    for (i = 0UL; i < GPIO_PIN_MAX; i++)
     {
-        if (u32PinMask & (1 << i))
+        if ((u32PinMask & (1UL << i)) != 0UL)
         {
-            port->MODE = (port->MODE & ~(0x3 << (i << 1))) | (u32Mode << (i << 1));
+            port->MODE = (port->MODE & ~(0x3UL << (i << 1))) | (u32Mode << (i << 1));
         }
     }
 }
@@ -73,7 +74,6 @@ void GPIO_EnableInt(GPIO_T *port, uint32_t u32Pin, uint32_t u32IntAttribs)
 {
     /* Configure interrupt mode of specified pin */
     port->INTTYPE |= (((u32IntAttribs >> 24) & 0xFFUL) << u32Pin);
-
     /* Enable interrupt function of specified pin */
     port->INTEN |= ((u32IntAttribs & 0xFFFFFFUL) << u32Pin);
 }
@@ -98,16 +98,13 @@ void GPIO_DisableInt(GPIO_T *port, uint32_t u32Pin)
 {
     /* Configure interrupt mode of specified pin */
     port->INTTYPE &= ~(1UL << u32Pin);
-
     /* Disable interrupt function of specified pin */
     port->INTEN &= ~((0x00010001UL) << u32Pin);
 }
 
 
 /** @} end of group GPIO_EXPORTED_FUNCTIONS */
-
 /** @} end of group GPIO_Driver */
-
 /** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

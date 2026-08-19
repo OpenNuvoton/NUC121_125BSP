@@ -1,9 +1,9 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Configure SPI0 as Master mode and demonstrate how to communicate
- *           with an off-chip SPI Slave device with FIFO mode. This sample
- *           code needs to work with SPI_SlaveFifoMode sample code.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   Configure SPI0 as Master mode and demonstrate how to communicate
+ *          with an off-chip SPI Slave device with FIFO mode. This sample
+ *          code needs to work with SPI_SlaveFifoMode sample code.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -218,6 +218,4 @@ void SPI0_IRQHandler(void)
     }
 }
 
-
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
-

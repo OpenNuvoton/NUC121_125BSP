@@ -1,15 +1,15 @@
-/**************************************************************************//**
+/*******************************************************************************
  * @file     pdma.c
  * @version  V3.00
- * @brief    NUC121 series PDMA driver source file
+ * @brief    PDMA driver source file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
-*****************************************************************************/
+ ******************************************************************************/
+
 #include "NuMicro.h"
 
-
-static uint8_t u32ChSelect[PDMA_CH_MAX];
+static uint32_t u32ChSelect[PDMA_CH_MAX];
 
 /** @addtogroup Standard_Driver Standard Driver
   @{
@@ -18,7 +18,6 @@ static uint8_t u32ChSelect[PDMA_CH_MAX];
 /** @addtogroup PDMA_Driver PDMA Driver
   @{
 */
-
 
 /** @addtogroup PDMA_EXPORTED_FUNCTIONS PDMA Exported Functions
   @{
@@ -38,11 +37,11 @@ static uint8_t u32ChSelect[PDMA_CH_MAX];
  */
 void PDMA_Open(uint32_t u32Mask)
 {
-    int volatile i;
+    uint32_t i;
 
-    for (i = 0; i < PDMA_CH_MAX; i++)
+    for (i = 0UL; i < PDMA_CH_MAX; i++)
     {
-        if ((1 << i) & u32Mask)
+        if (((1UL << i) & u32Mask) != 0UL)
         {
             PDMA->DSCT[i].CTL = 0;
             u32ChSelect[i] = PDMA_MEM;
@@ -61,7 +60,7 @@ void PDMA_Open(uint32_t u32Mask)
  */
 void PDMA_Close(void)
 {
-    PDMA->CHCTL = 0;
+    PDMA->CHCTL = 0UL;
 }
 
 /**
@@ -80,7 +79,7 @@ void PDMA_Close(void)
 void PDMA_SetTransferCnt(uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCount)
 {
     PDMA->DSCT[u32Ch].CTL &= ~(PDMA_DSCT_CTL_TXCNT_Msk | PDMA_DSCT_CTL_TXWIDTH_Msk);
-    PDMA->DSCT[u32Ch].CTL |= (u32Width | ((u32TransCount - 1) << PDMA_DSCT_CTL_TXCNT_Pos));
+    PDMA->DSCT[u32Ch].CTL |= (u32Width | ((u32TransCount - 1UL) << PDMA_DSCT_CTL_TXCNT_Pos));
 }
 
 /**
@@ -95,7 +94,6 @@ void PDMA_SetTransferCnt(uint32_t u32Ch, uint32_t u32Width, uint32_t u32TransCou
  * @param[in]   u32DstCtrl      destination control attribute. Valid values are
  *                - \ref PDMA_DAR_INC
  *                - \ref PDMA_DAR_FIX
- *
  *
  * @details     This function set the selected channel source/destination address and attribute.
  */
@@ -146,36 +144,39 @@ void PDMA_SetTransferMode(uint32_t u32Ch, uint32_t u32Peripheral, uint32_t u32Sc
 
     switch (u32Ch)
     {
-        case 0:
+        case 0UL:
             PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC0_Msk) | u32Peripheral;
             break;
 
-        case 1:
+        case 1UL:
             PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC1_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC1_Pos);
             break;
 
-        case 2:
+        case 2UL:
             PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC2_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC2_Pos);
             break;
 
-        case 3:
+        case 3UL:
             PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC3_Msk) | (u32Peripheral << PDMA_REQSEL0_3_REQSRC3_Pos);
             break;
 
-        case 4:
+        case 4UL:
             PDMA->REQSEL4 = (PDMA->REQSEL4 & ~PDMA_REQSEL4_REQSRC4_Msk) | u32Peripheral;
+            break;
 
         default:
-            ;
+            break;
     }
 
-    if (u32ScatterEn)
+    if (u32ScatterEn != 0UL)
     {
         PDMA->DSCT[u32Ch].FIRST = u32DescAddr - (PDMA->SCATBA);
         PDMA->DSCT[u32Ch].CTL = (PDMA->DSCT[u32Ch].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_SCATTER;
     }
     else
+    {
         PDMA->DSCT[u32Ch].CTL = (PDMA->DSCT[u32Ch].CTL & ~PDMA_DSCT_CTL_OPMODE_Msk) | PDMA_OP_BASIC;
+    }
 }
 
 /**
@@ -257,13 +258,17 @@ void PDMA_SetTimeOut(uint32_t u32Ch, uint32_t u32OnOff, uint32_t u32TimeOutCnt)
             break;
 
         default:
-            ;
+            break;
     }
 
     if (u32OnOff)
-        PDMA->TOUTEN |= (1 << u32Ch);
+    {
+        PDMA->TOUTEN |= (1UL << u32Ch);
+    }
     else
-        PDMA->TOUTEN &= ~(1 << u32Ch);
+    {
+        PDMA->TOUTEN &= ~(1UL << u32Ch);
+    }
 }
 
 /**
@@ -277,7 +282,10 @@ void PDMA_SetTimeOut(uint32_t u32Ch, uint32_t u32OnOff, uint32_t u32TimeOutCnt)
 void PDMA_Trigger(uint32_t u32Ch)
 {
     if (u32ChSelect[u32Ch] == PDMA_MEM)
-        PDMA->SWREQ = (1 << u32Ch);
+    {
+        PDMA->SWREQ = (1UL << u32Ch);
+    }
+    else {}
 }
 
 /**
@@ -298,7 +306,7 @@ void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask)
     switch (u32Mask)
     {
         case PDMA_INT_TRANS_DONE:
-            PDMA->INTEN |= (1 << u32Ch);
+            PDMA->INTEN |= (1UL << u32Ch);
             break;
 
         case PDMA_INT_TEMPTY:
@@ -306,11 +314,11 @@ void PDMA_EnableInt(uint32_t u32Ch, uint32_t u32Mask)
             break;
 
         case PDMA_INT_TIMEOUT:
-            PDMA->TOUTIEN |= (1 << u32Ch);
+            PDMA->TOUTIEN |= (1UL << u32Ch);
             break;
 
         default:
-            ;
+            break;
     }
 }
 
@@ -333,7 +341,7 @@ void PDMA_DisableInt(uint32_t u32Ch, uint32_t u32Mask)
     switch (u32Mask)
     {
         case PDMA_INT_TRANS_DONE:
-            PDMA->INTEN &= ~(1 << u32Ch);
+            PDMA->INTEN &= ~(1UL << u32Ch);
             break;
 
         case PDMA_INT_TEMPTY:
@@ -341,18 +349,16 @@ void PDMA_DisableInt(uint32_t u32Ch, uint32_t u32Mask)
             break;
 
         case PDMA_INT_TIMEOUT:
-            PDMA->TOUTIEN &= ~(1 << u32Ch);
+            PDMA->TOUTIEN &= ~(1UL << u32Ch);
             break;
 
         default:
-            ;
+            break;
     }
 }
 
 /** @} end of group PDMA_EXPORTED_FUNCTIONS */
-
 /** @} end of group PDMA_Driver */
-
 /** @} end of group Standard_Driver */
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

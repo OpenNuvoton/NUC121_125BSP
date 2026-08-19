@@ -1,11 +1,11 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     SYS.h
  * @version  V3.00
  * @brief    NUC121 series SYS driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #ifndef __SYS_H__
 #define __SYS_H__
 
@@ -638,10 +638,10 @@ __STATIC_INLINE void SYS_UnlockReg(void)
 {
     do
     {
-        SYS->REGLCTL = 0x59;
-        SYS->REGLCTL = 0x16;
-        SYS->REGLCTL = 0x88;
-    } while (SYS->REGLCTL == 0);
+        SYS->REGLCTL = 0x59UL;
+        SYS->REGLCTL = 0x16UL;
+        SYS->REGLCTL = 0x88UL;
+    } while (SYS->REGLCTL == 0U);
 }
 
 /**
@@ -651,7 +651,7 @@ __STATIC_INLINE void SYS_UnlockReg(void)
   */
 __STATIC_INLINE void SYS_LockReg(void)
 {
-    SYS->REGLCTL = 0;
+    SYS->REGLCTL = 0U;
 }
 
 /**
@@ -663,7 +663,16 @@ __STATIC_INLINE void SYS_LockReg(void)
   */
 __STATIC_INLINE uint32_t SYS_IsRegLocked(void)
 {
-    return SYS->REGLCTL & 1UL ? 0UL : 1UL;
+    uint32_t u32RegLockStatus;
+
+    u32RegLockStatus = SYS->REGLCTL & 1UL;
+
+    if (u32RegLockStatus != 0U)
+    {
+        return 0U;
+    }
+
+    return 1U;
 }
 
 void SYS_ClearResetSrc(uint32_t u32Src);

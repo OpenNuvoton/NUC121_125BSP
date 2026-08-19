@@ -18,7 +18,7 @@
           <Vendor>Nuvoton</Vendor>
           <PackID>Nuvoton.NuMicroM0_DFP.1.0.0</PackID>
           <PackURL>https://github.com/OpenNuvoton/cmsis-packs/raw/master/Nuvoton_DFP/</PackURL>
-          <Cpu>IRAM(0x20000000,0x2000) IROM(0x00000000,0x8000) CPUTYPE("Cortex-M0") CLOCK(12000000)</Cpu>
+          <Cpu>IRAM(0x20000000,0x2000) IROM(0x00000000,0x8000) CPUTYPE("Cortex-M0") CLOCK(12000000) IROM2(0x00100000,0x1200) IROM3(0x00200000,0x200)</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0NUC121_AP_32 -FS00 -FL08000 -FP0($$Device:NUC121SC2AE$Flash\NUC121_AP_32.FLM))</FlashDriverDll>
@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>0</Optim>
+            <Optim>7</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -337,7 +337,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>-Wconditional-uninitialized</MiscControls>
               <Define></Define>
               <Undefine></Undefine>
               <IncludePath>.\;..\..\..\..\Library\CMSIS\Core\Include;..\..\..\..\Library\StdDriver\inc;..\..\..\..\Library\Device\Nuvoton\NUC121\Include</IncludePath>

@@ -1,9 +1,9 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Demonstrate SPI data transfer with PDMA.
- *           SPI0 will be configured as Master mode.
- *           Both TX PDMA function and RX PDMA function will be enabled.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   Demonstrate SPI data transfer with PDMA.
+ *          SPI0 will be configured as Master mode.
+ *          Both TX PDMA function and RX PDMA function will be enabled.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.

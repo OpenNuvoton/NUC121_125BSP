@@ -1,9 +1,9 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    Configure SPI0 as Master mode and demonstrate how to communicate
- *           with an off-chip SPI Slave device with FIFO mode. This sample
- *           code needs to work with SPI_SlaveFifoMode sample code.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   Configure SPI0 as Master mode and demonstrate how to communicate
+ *          with an off-chip SPI Slave device with FIFO mode. This sample
+ *          code needs to work with SPI_SlaveFifoMode sample code.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -158,9 +158,9 @@ void SYS_Init(void)
     CLK->AHBCLK |= CLK_AHBCLK_PDMACKEN_Msk;
 
     /* Update System Core Clock */
-    PllClock        = 0;                 // PLL
+    PllClock = 0;                 // PLL
     SystemCoreClock = __HIRC;            // HCLK
-    CyclesPerUs     = __HIRC / 1000000;  // For CLK_SysTickDelay()
+    CyclesPerUs = __HIRC / 1000000;  // For CLK_SysTickDelay()
 
     /*---------------------------------------------------------------------------------------------------------*/
     /* Init I/O Multi-function                                                                                 */
@@ -192,7 +192,7 @@ void UART_Init(void)
     /* Init UART                                                                                               */
     /*---------------------------------------------------------------------------------------------------------*/
     /* Reset UART IP */
-    SYS->IPRST1 |=  SYS_IPRST1_UART0RST_Msk;
+    SYS->IPRST1 |= SYS_IPRST1_UART0RST_Msk;
     SYS->IPRST1 &= ~SYS_IPRST1_UART0RST_Msk;
 
     /* Configure UART0 and set UART0 baud rate */
@@ -240,6 +240,5 @@ void SPI0_IRQHandler(void)
             g_au32DestinationData[g_u32RxDataCount++] = SPI0->RX;
     }
 }
-
 
 /*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/

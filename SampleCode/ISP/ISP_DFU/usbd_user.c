@@ -375,7 +375,7 @@ void USBD_StandardRequest(void)
             {
                 if (g_usbd_SetupPacket[2] == FEATURE_ENDPOINT_HALT)
                 {
-                    int32_t epNum, i;
+                    uint32_t epNum, i;
 
                     /* EP number stall is not allow to be clear in MSC class "Error Recovery Test".
                        a flag: g_u32EpStallLock is added to support it */
@@ -495,14 +495,14 @@ void USBD_StandardRequest(void)
   * @details    Prepare data for Control IN transfer.
   *
   */
-void USBD_PrepareCtrlIn(uint8_t *pu8Buf, uint32_t u32Size)
+void USBD_PrepareCtrlIn(const uint8_t *pu8Buf, uint32_t u32Size)
 {
     DBG_PRINTF("Prepare Ctrl In %d\n", u32Size);
 
     if (u32Size > g_usbd_CtrlMaxPktSize)
     {
         // Data size > MXPLD
-        g_usbd_CtrlInPointer = pu8Buf + g_usbd_CtrlMaxPktSize;
+        g_usbd_CtrlInPointer = (uint8_t *)((uintptr_t)pu8Buf + g_usbd_CtrlMaxPktSize);
         g_usbd_CtrlInSize = u32Size - g_usbd_CtrlMaxPktSize;
         USBD_SET_DATA1(EP0);
         USBD_MemCopy((uint8_t *)USBD_BUF_BASE + USBD_GET_EP_BUF_ADDR(EP0), pu8Buf, g_usbd_CtrlMaxPktSize);
@@ -642,8 +642,6 @@ void USBD_CtrlOut(void)
   */
 void USBD_SwReset(void)
 {
-    int i;
-
     // Reset all variables for protocol
     g_usbd_CtrlInPointer = 0;
     g_usbd_CtrlInSize = 0;
@@ -654,7 +652,7 @@ void USBD_SwReset(void)
     memset(g_usbd_SetupPacket, 0, 8);
 
     /* Reset PID DATA0 */
-    for (i = 0; i < USBD_MAX_EP; i++)
+    for (uint32_t i = 0; i < USBD_MAX_EP; i++)
         USBD->EP[i].CFG &= ~USBD_CFG_DSQSYNC_Msk;
 
     // Reset USB device address

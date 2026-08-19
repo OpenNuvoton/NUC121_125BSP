@@ -27,13 +27,13 @@ extern "C"
 */
 typedef struct s_usbd_info
 {
-    const uint8_t *gu8DevDesc;            /*!< Pointer for USB Device Descriptor          */
-    const uint8_t *gu8ConfigDesc;         /*!< Pointer for USB Configuration Descriptor   */
-    const uint8_t **gu8StringDesc;        /*!< Pointer for USB String Descriptor pointers */
-    const uint8_t **gu8HidReportDesc;     /*!< Pointer for USB HID Report Descriptor      */
-    const uint32_t *gu32HidReportSize;    /*!< Pointer for HID Report descriptor Size     */
-    const uint32_t *gu32ConfigHidDescIdx; /*!< Pointer for HID Descriptor start index     */
-    const uint8_t *gu8BosDesc;            /*!< Pointer for BOS Descriptor start index     */
+    uint8_t *gu8DevDesc;            /*!< Pointer for USB Device Descriptor          */
+    uint8_t *gu8ConfigDesc;         /*!< Pointer for USB Configuration Descriptor   */
+    uint8_t **gu8StringDesc;        /*!< Pointer for USB String Descriptor pointers */
+    uint8_t **gu8HidReportDesc;     /*!< Pointer for USB HID Report Descriptor      */
+    uint32_t *gu32HidReportSize;    /*!< Pointer for HID Report descriptor Size     */
+    uint32_t *gu32ConfigHidDescIdx; /*!< Pointer for HID Descriptor start index     */
+    uint8_t *gu8BosDesc;            /*!< Pointer for BOS Descriptor start index     */
 } S_USBD_INFO_T;
 
 extern const S_USBD_INFO_T gsInfo;
@@ -46,73 +46,73 @@ extern const S_USBD_INFO_T gsInfo;
 /** @addtogroup USBD_EXPORTED_CONSTANTS USBD Exported Constants
   @{
 */
-#define USBD_BUF_BASE   (USBD_BASE+0x100)
-#define USBD_MAX_EP                     8
+#define USBD_BUF_BASE   (USBD_BASE+0x100ul)
+#define USBD_MAX_EP                     8ul
 
-#define EP0     0       /*!< Endpoint 0 */
-#define EP1     1       /*!< Endpoint 1 */
-#define EP2     2       /*!< Endpoint 2 */
-#define EP3     3       /*!< Endpoint 3 */
-#define EP4     4       /*!< Endpoint 4 */
-#define EP5     5       /*!< Endpoint 5 */
-#define EP6     6       /*!< Endpoint 6 */
-#define EP7     7       /*!< Endpoint 7 */
+#define EP0     0ul       /*!< Endpoint 0 */
+#define EP1     1ul       /*!< Endpoint 1 */
+#define EP2     2ul       /*!< Endpoint 2 */
+#define EP3     3ul       /*!< Endpoint 3 */
+#define EP4     4ul       /*!< Endpoint 4 */
+#define EP5     5ul       /*!< Endpoint 5 */
+#define EP6     6ul       /*!< Endpoint 6 */
+#define EP7     7ul       /*!< Endpoint 7 */
 
 
 /*!<USB Request Type */
-#define REQ_STANDARD        0x00
-#define REQ_CLASS           0x20
-#define REQ_VENDOR          0x40
+#define REQ_STANDARD        0x00ul
+#define REQ_CLASS           0x20ul
+#define REQ_VENDOR          0x40ul
 
 /*!<USB Standard Request */
-#define GET_STATUS          0x00
-#define CLEAR_FEATURE       0x01
-#define SET_FEATURE         0x03
-#define SET_ADDRESS         0x05
-#define GET_DESCRIPTOR      0x06
-#define SET_DESCRIPTOR      0x07
-#define GET_CONFIGURATION   0x08
-#define SET_CONFIGURATION   0x09
-#define GET_INTERFACE       0x0A
-#define SET_INTERFACE       0x0B
-#define SYNC_FRAME          0x0C
+#define GET_STATUS          0x00ul
+#define CLEAR_FEATURE       0x01ul
+#define SET_FEATURE         0x03ul
+#define SET_ADDRESS         0x05ul
+#define GET_DESCRIPTOR      0x06ul
+#define SET_DESCRIPTOR      0x07ul
+#define GET_CONFIGURATION   0x08ul
+#define SET_CONFIGURATION   0x09ul
+#define GET_INTERFACE       0x0Aul
+#define SET_INTERFACE       0x0Bul
+#define SYNC_FRAME          0x0Cul
 
 /*!<USB Descriptor Type */
-#define DESC_DEVICE         0x01
-#define DESC_CONFIG         0x02
-#define DESC_STRING         0x03
-#define DESC_INTERFACE      0x04
-#define DESC_ENDPOINT       0x05
-#define DESC_QUALIFIER      0x06
-#define DESC_OTHERSPEED     0x07
-#define DESC_BOS            0x0F
-#define DESC_DEVCAP         0x10
+#define DESC_DEVICE         0x01ul
+#define DESC_CONFIG         0x02ul
+#define DESC_STRING         0x03ul
+#define DESC_INTERFACE      0x04ul
+#define DESC_ENDPOINT       0x05ul
+#define DESC_QUALIFIER      0x06ul
+#define DESC_OTHERSPEED     0x07ul
+#define DESC_BOS            0x0Ful
+#define DESC_DEVCAP         0x10ul
 
 /*!<USB HID Descriptor Type */
-#define DESC_HID            0x21
-#define DESC_HID_RPT        0x22
+#define DESC_HID            0x21ul
+#define DESC_HID_RPT        0x22ul
 
 /*!<USB Descriptor Length */
-#define LEN_DEVICE          18
-#define LEN_CONFIG          9
-#define LEN_INTERFACE       9
-#define LEN_ENDPOINT        7
-#define LEN_HID             9
-#define LEN_CCID            0x36
-#define LEN_BOS             5
-#define LEN_DEVCAP          7
+#define LEN_DEVICE          18ul
+#define LEN_CONFIG          9ul
+#define LEN_INTERFACE       9ul
+#define LEN_ENDPOINT        7ul
+#define LEN_HID             9ul
+#define LEN_CCID            0x36ul
+#define LEN_BOS             5ul
+#define LEN_DEVCAP          7ul
 
 /*!<USB Endpoint Type */
-#define EP_ISO              0x01
-#define EP_BULK             0x02
-#define EP_INT              0x03
+#define EP_ISO              0x01ul
+#define EP_BULK             0x02ul
+#define EP_INT              0x03ul
 
-#define EP_INPUT            0x80
-#define EP_OUTPUT           0x00
+#define EP_INPUT            0x80ul
+#define EP_OUTPUT           0x00ul
 
 /*!<USB Feature Selector */
-#define FEATURE_DEVICE_REMOTE_WAKEUP    0x01
-#define FEATURE_ENDPOINT_HALT           0x00
+#define FEATURE_DEVICE_REMOTE_WAKEUP    0x01ul
+#define FEATURE_ENDPOINT_HALT           0x00ul
 
 /******************************************************************************/
 /*                USB Specific Macros                                         */
@@ -548,9 +548,17 @@ extern const S_USBD_INFO_T gsInfo;
   * @details    This function will copy the number of data specified by size and src parameters to the address specified by dest parameter.
   *
   */
-static __INLINE void USBD_MemCopy(uint8_t *dest, uint8_t *src, int32_t size)
+__STATIC_INLINE void USBD_MemCopy(uint8_t *dest, const uint8_t *src, uint32_t size)
 {
-    while (size--) *dest++ = *src++;
+    volatile uint8_t *d = (volatile uint8_t *)dest;
+    volatile const uint8_t *s = (volatile const uint8_t *)src;
+
+    for (uint32_t i = 0ul; i < size; i++)
+    {
+        *d = *s;
+        d++;
+        s++;
+    }
 }
 
 
@@ -563,18 +571,14 @@ static __INLINE void USBD_MemCopy(uint8_t *dest, uint8_t *src, int32_t size)
   * @details     Set USB endpoint stall state. Endpoint will respond STALL token automatically.
   *
   */
-static __INLINE void USBD_SetStall(uint8_t epnum)
+__STATIC_INLINE void USBD_SetStall(uint8_t epnum)
 {
-    uint32_t u32CfgAddr;
-    uint32_t u32Cfg;
-    int i;
-
-    for (i = 0; i < USBD_MAX_EP; i++)
+    for (uint32_t i = 0ul; i < USBD_MAX_EP; i++)
     {
-        u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
-        u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
+        uint32_t u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
+        uint32_t u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
 
-        if ((u32Cfg & 0xf) == epnum)
+        if ((u32Cfg & 0xful) == epnum)
         {
             u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFGP; /* USBD_CFGP0 */
             u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
@@ -593,18 +597,14 @@ static __INLINE void USBD_SetStall(uint8_t epnum)
   *
   * @details     Clear USB endpoint stall state. Endpoint will respond ACK/NAK token.
   */
-static __INLINE void USBD_ClearStall(uint8_t epnum)
+__STATIC_INLINE void USBD_ClearStall(uint8_t epnum)
 {
-    uint32_t u32CfgAddr;
-    uint32_t u32Cfg;
-    int i;
-
-    for (i = 0; i < USBD_MAX_EP; i++)
+    for (uint32_t i = 0ul; i < USBD_MAX_EP; i++)
     {
-        u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
-        u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
+        uint32_t u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
+        uint32_t u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
 
-        if ((u32Cfg & 0xf) == epnum)
+        if ((u32Cfg & 0xfUL) == epnum)
         {
             u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFGP; /* USBD_CFGP0 */
             u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
@@ -621,49 +621,49 @@ static __INLINE void USBD_ClearStall(uint8_t epnum)
   * @param[in]   epnum  USB endpoint number
   *
   * @retval      0      USB endpoint is not stalled.
-  * @retval      Others USB endpoint is stalled.
+  * @retval      1      USB endpoint is stalled.
+  * @retval      0xFF   Endpoint number not found.
   *
-  * @details     Get USB endpoint stall state.
+  * @details     Find the configuration for the specified endpoint number and return its stall state.
   *
   */
-static __INLINE uint32_t USBD_GetStall(uint8_t epnum)
+__STATIC_INLINE uint32_t USBD_GetStall(uint8_t epnum)
 {
-    uint32_t u32CfgAddr;
-    uint32_t u32Cfg;
-    int i;
+    uint32_t i;
 
-    for (i = 0; i < USBD_MAX_EP; i++)
+    for (i = 0ul; i < USBD_MAX_EP; i++)
     {
-        u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFG; /* USBD_CFG0 */
-        u32Cfg = *((__IO uint32_t *)(u32CfgAddr));
-
-        if ((u32Cfg & 0xf) == epnum)
+        if ((USBD->EP[i].CFG & 0xFul) == (uint32_t)epnum)
         {
-            u32CfgAddr = (uint32_t)(i << 4) + (uint32_t)&USBD->EP[0].CFGP; /* USBD_CFGP0 */
-            break;
+            return (USBD->EP[i].CFGP & USBD_CFGP_SSTALL) ? 1ul : 0ul;
         }
     }
 
-    return ((*((__IO uint32_t *)(u32CfgAddr))) & USBD_CFGP_SSTALL);
+    return 0xFFul;
 }
-
-
-extern volatile uint8_t g_USBD_u8RemoteWakeupEn;
-
 
 typedef void (*VENDOR_REQ)(void);           /*!< Functional pointer type definition for Vendor class */
 typedef void (*CLASS_REQ)(void);            /*!< Functional pointer type declaration for USB class request callback handler */
 typedef void (*SET_INTERFACE_REQ)(void);    /*!< Functional pointer type declaration for USB set interface request callback handler */
 typedef void (*SET_CONFIG_CB)(void);       /*!< Functional pointer type declaration for USB set configuration request callback handler */
 
+extern uint8_t g_USBD_au8SetupPacket[8];
+extern volatile uint8_t g_USBD_u8RemoteWakeupEn;
+
+extern VENDOR_REQ g_usbd_pfnVendorRequest;
+extern CLASS_REQ g_usbd_pfnClassRequest;
+extern SET_INTERFACE_REQ g_usbd_pfnSetInterface;
+extern SET_CONFIG_CB g_usbd_pfnSetConfigCallback;
+extern uint32_t g_u32EpStallLock;
 
 /*--------------------------------------------------------------------*/
 void USBD_Open(const S_USBD_INFO_T *param, CLASS_REQ pfnClassReq, SET_INTERFACE_REQ pfnSetInterface);
 void USBD_Start(void);
 void USBD_GetSetupPacket(uint8_t *buf);
 void USBD_ProcessSetupPacket(void);
+void USBD_GetDescriptor(void);
 void USBD_StandardRequest(void);
-void USBD_PrepareCtrlIn(uint8_t *pu8Buf, uint32_t u32Size);
+void USBD_PrepareCtrlIn(const uint8_t *pu8Buf, uint32_t u32Size);
 void USBD_CtrlIn(void);
 void USBD_PrepareCtrlOut(uint8_t *pu8Buf, uint32_t u32Size);
 void USBD_CtrlOut(void);
@@ -680,6 +680,7 @@ void USBD_LockEpStall(uint32_t u32EpBitmap);
 
 #ifdef __cplusplus
 }
+
 #endif
 
 #endif //__USBD_H__

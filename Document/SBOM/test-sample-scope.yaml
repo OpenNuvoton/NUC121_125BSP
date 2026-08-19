@@ -1,0 +1,8 @@
+sbomType: Test Sample SBOM
+include:
+  - path: SampleCode/
+  - path: Tool/
+exclude:
+  - path: Document/
+  - path: Library/
+  - path: Tool/HIDTransferTest/Debug/HIDTransferTest.exe

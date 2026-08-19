@@ -1,8 +1,8 @@
-/**************************************************************************//**
- * @file     main.c
- * @version  V3.00
- * @brief    NUC121 I2S Driver Sample Code
- *           This is a I2S demo with PDMA function connected with NAU8822 codec.
+/*******************************************************************************
+ * @file    main.c
+ * @version V3.00
+ * @brief   NUC121 I2S Driver Sample Code
+ *          This is a I2S demo with PDMA function connected with NAU8822 codec.
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -19,7 +19,7 @@
 /*---------------------------------------------------------------------------------------------------------*/
 //#define BUFF_LEN      512
 #define BUFF_LEN        256
-#define BUFF_HALF_LEN   (BUFF_LEN/2)
+#define BUFF_HALF_LEN   (BUFF_LEN / 2)
 
 typedef struct
 {

@@ -1,4 +1,4 @@
-/**************************************************************************//**
+/*******************************************************************************
  * @file     GPIO.h
  * @version  V3.00
  * @brief    NUC121 series GPIO driver header file
@@ -27,7 +27,8 @@ extern "C"
   @{
 */
 
-#define GPIO_PIN_MAX            16 /*!< Specify Maximum Pins of Each GPIO Port */
+
+#define GPIO_PIN_MAX            16UL /*!< Specify Maximum Pins of Each GPIO Port \hideinitializer */
 
 
 /*---------------------------------------------------------------------------------------------------------*/

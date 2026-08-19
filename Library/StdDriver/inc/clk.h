@@ -1,11 +1,11 @@
-/**************************************************************************//**
+/******************************************************************************
  * @file     clk.h
  * @version  V3.00
  * @brief    NUC121 series CLK driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
- ******************************************************************************/
+ *****************************************************************************/
 #ifndef __CLK_H__
 #define __CLK_H__
 
@@ -156,10 +156,10 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /*  CLKDIV0 constant definitions.                                                                           */
 /*---------------------------------------------------------------------------------------------------------*/
-#define CLK_CLKDIV0_HCLK(x)     (((x)-1) << CLK_CLKDIV0_HCLKDIV_Pos) /*!< CLKDIV0 Setting for HCLK clock divider. It could be 1~16 */
-#define CLK_CLKDIV0_USB(x)      (((x)-1) << CLK_CLKDIV0_USBDIV_Pos)  /*!< CLKDIV0 Setting for USB clock divider. It could be 1~16 */
-#define CLK_CLKDIV0_UART(x)     (((x)-1) << CLK_CLKDIV0_UARTDIV_Pos) /*!< CLKDIV0 Setting for UART clock divider. It could be 1~16 */
-#define CLK_CLKDIV0_ADC(x)      (((x)-1) << CLK_CLKDIV0_ADCDIV_Pos)  /*!< CLKDIV0 Setting for ADC clock divider. It could be 1~256 */
+#define CLK_CLKDIV0_HCLK(x)     (((x)-1U) << CLK_CLKDIV0_HCLKDIV_Pos) /*!< CLKDIV0 Setting for HCLK clock divider. It could be 1~16 */
+#define CLK_CLKDIV0_USB(x)      (((x)-1U) << CLK_CLKDIV0_USBDIV_Pos)  /*!< CLKDIV0 Setting for USB clock divider. It could be 1~16 */
+#define CLK_CLKDIV0_UART(x)     (((x)-1U) << CLK_CLKDIV0_UARTDIV_Pos) /*!< CLKDIV0 Setting for UART clock divider. It could be 1~16 */
+#define CLK_CLKDIV0_ADC(x)      (((x)-1U) << CLK_CLKDIV0_ADCDIV_Pos)  /*!< CLKDIV0 Setting for ADC clock divider. It could be 1~256 */
 
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -202,25 +202,25 @@ extern "C"
 /*---------------------------------------------------------------------------------------------------------*/
 /* APBCLK(31:30)|CLKSEL(29:28)|CLKSEL_Msk(27:25) |CLKSEL_Pos(24:20)|CLKDIV(19:18)|CLKDIV_Msk(17:10)|CLKDIV_Pos(9:5)|IP_EN_Pos(4:0) */
 
-#define MODULE_APBCLK(x)        (((x) >>30) & 0x3)    /*!< Calculate AHBCLK/APBCLK offset on MODULE index, 0x0:AHBCLK, 0x1:APBCLK0, 0x2:APBCLK1 */
-#define MODULE_CLKSEL(x)        (((x) >>28) & 0x3)    /*!< Calculate CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3 */
-#define MODULE_CLKSEL_Msk(x)    (((x) >>25) & 0x7)    /*!< Calculate CLKSEL mask offset on MODULE index */
-#define MODULE_CLKSEL_Pos(x)    (((x) >>20) & 0x1f)   /*!< Calculate CLKSEL position offset on MODULE index */
-#define MODULE_CLKDIV(x)        (((x) >>18) & 0x3)    /*!< Calculate APBCLK CLKDIV on MODULE index, 0x0:CLKDIV, 0x1:CLKDIV1 */
-#define MODULE_CLKDIV_Msk(x)    (((x) >>10) & 0xff)   /*!< Calculate CLKDIV mask offset on MODULE index */
-#define MODULE_CLKDIV_Pos(x)    (((x) >>5 ) & 0x1f)   /*!< Calculate CLKDIV position offset on MODULE index */
-#define MODULE_IP_EN_Pos(x)     (((x) >>0 ) & 0x1f)   /*!< Calculate APBCLK offset on MODULE index */
+#define MODULE_APBCLK(x)        (((x) >>30) & 0x3UL)    /*!< Calculate AHBCLK/APBCLK offset on MODULE index, 0x0:AHBCLK, 0x1:APBCLK0, 0x2:APBCLK1 */
+#define MODULE_CLKSEL(x)        (((x) >>28) & 0x3UL)    /*!< Calculate CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3 */
+#define MODULE_CLKSEL_Msk(x)    (((x) >>25) & 0x7UL)    /*!< Calculate CLKSEL mask offset on MODULE index */
+#define MODULE_CLKSEL_Pos(x)    (((x) >>20) & 0x1fUL)   /*!< Calculate CLKSEL position offset on MODULE index */
+#define MODULE_CLKDIV(x)        (((x) >>18) & 0x3UL)    /*!< Calculate APBCLK CLKDIV on MODULE index, 0x0:CLKDIV, 0x1:CLKDIV1 */
+#define MODULE_CLKDIV_Msk(x)    (((x) >>10) & 0xffUL)   /*!< Calculate CLKDIV mask offset on MODULE index */
+#define MODULE_CLKDIV_Pos(x)    (((x) >>5 ) & 0x1fUL)   /*!< Calculate CLKDIV position offset on MODULE index */
+#define MODULE_IP_EN_Pos(x)     (((x) >>0 ) & 0x1fUL)   /*!< Calculate APBCLK offset on MODULE index */
 #define MODULE_NoMsk            0x0                   /*!< Not mask on MODULE index */
 #define NA                      MODULE_NoMsk          /*!< Not Available */
 
-#define MODULE_APBCLK_ENC(x)        (((x) & 0x03) << 30)   /*!< MODULE index, 0x0:AHBCLK, 0x1:APBCLK0, 0x2:APBCLK1 */
-#define MODULE_CLKSEL_ENC(x)        (((x) & 0x03) << 28)   /*!< CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3 */
-#define MODULE_CLKSEL_Msk_ENC(x)    (((x) & 0x07) << 25)   /*!< CLKSEL mask offset on MODULE index */
-#define MODULE_CLKSEL_Pos_ENC(x)    (((x) & 0x1f) << 20)   /*!< CLKSEL position offset on MODULE index */
-#define MODULE_CLKDIV_ENC(x)        (((x) & 0x03) << 18)   /*!< APBCLK CLKDIV on MODULE index, 0x0:CLKDIV, 0x1:CLKDIV1 */
-#define MODULE_CLKDIV_Msk_ENC(x)    (((x) & 0xff) << 10)   /*!< CLKDIV mask offset on MODULE index */
-#define MODULE_CLKDIV_Pos_ENC(x)    (((x) & 0x1f) <<  5)   /*!< CLKDIV position offset on MODULE index */
-#define MODULE_IP_EN_Pos_ENC(x)     (((x) & 0x1f) <<  0)   /*!< AHBCLK/APBCLK offset on MODULE index */
+#define MODULE_APBCLK_ENC(x)        (((x) & 0x03UL) << 30)   /*!< MODULE index, 0x0:AHBCLK, 0x1:APBCLK0, 0x2:APBCLK1 */
+#define MODULE_CLKSEL_ENC(x)        (((x) & 0x03UL) << 28)   /*!< CLKSEL offset on MODULE index, 0x0:CLKSEL0, 0x1:CLKSEL1, 0x2:CLKSEL2, 0x3:CLKSEL3 */
+#define MODULE_CLKSEL_Msk_ENC(x)    (((x) & 0x07UL) << 25)   /*!< CLKSEL mask offset on MODULE index */
+#define MODULE_CLKSEL_Pos_ENC(x)    (((x) & 0x1fUL) << 20)   /*!< CLKSEL position offset on MODULE index */
+#define MODULE_CLKDIV_ENC(x)        (((x) & 0x03UL) << 18)   /*!< APBCLK CLKDIV on MODULE index, 0x0:CLKDIV, 0x1:CLKDIV1 */
+#define MODULE_CLKDIV_Msk_ENC(x)    (((x) & 0xffUL) << 10)   /*!< CLKDIV mask offset on MODULE index */
+#define MODULE_CLKDIV_Pos_ENC(x)    (((x) & 0x1fUL) <<  5)   /*!< CLKDIV position offset on MODULE index */
+#define MODULE_IP_EN_Pos_ENC(x)     (((x) & 0x1fUL) <<  0)   /*!< AHBCLK/APBCLK offset on MODULE index */
 
 
 //AHBCLK
@@ -348,30 +348,42 @@ extern int32_t g_CLK_i32ErrCode;
   */
 __STATIC_INLINE uint32_t CLK_GetPLLClockFreq(void)
 {
-    uint32_t u32PllFreq = 0, u32PllReg;
-    uint32_t u32FIN, u32NF, u32NR, u32NO;
-    uint8_t au8NoTbl[4] = {1, 2, 2, 4};
+    uint32_t u32PllFreq = 0U;
+    uint32_t u32PllReg;
+    uint32_t u32FIN;
+    uint32_t u32NF;
+    uint32_t u32NR;
+    uint32_t u32NO;
+    static const uint8_t au8NoTbl[4] = {1U, 2U, 2U, 4U};
 
     u32PllReg = CLK->PLLCTL;
 
-    if (u32PllReg & (CLK_PLLCTL_PD_Msk | CLK_PLLCTL_OE_Msk))
-        return 0;           /* PLL is in power down mode or fix low */
+    if ((u32PllReg & (CLK_PLLCTL_PD_Msk | CLK_PLLCTL_OE_Msk)) != 0U)
+    {
+        return 0U;           /* PLL is in power down mode or fix low */
+    }
 
-    if (u32PllReg & CLK_PLLCTL_PLLSRC_HIRC_DIV2)
+    if ((u32PllReg & CLK_PLLCTL_PLLSRC_HIRC_DIV2) != 0U)
+    {
         u32FIN = __HIRC_DIV2;    /* PLL source clock from HIRC_DIV2 */
+    }
     else
+    {
         u32FIN = __HXT;     /* PLL source clock from HXT */
+    }
 
-    if (u32PllReg & CLK_PLLCTL_BP_Msk)
+    if ((u32PllReg & CLK_PLLCTL_BP_Msk) != 0U)
+    {
         return u32FIN;      /* PLL is in bypass mode */
+    }
 
     /* PLL is output enabled in normal work mode */
-    u32NO = au8NoTbl[((u32PllReg & CLK_PLLCTL_OUTDIV_Msk) >> CLK_PLLCTL_OUTDIV_Pos)];
-    u32NF = ((u32PllReg & CLK_PLLCTL_FBDIV_Msk) >> CLK_PLLCTL_FBDIV_Pos) + 2;
-    u32NR = ((u32PllReg & CLK_PLLCTL_INDIV_Msk) >> CLK_PLLCTL_INDIV_Pos) + 2;
+    u32NO = (uint32_t)au8NoTbl[((u32PllReg & CLK_PLLCTL_OUTDIV_Msk) >> CLK_PLLCTL_OUTDIV_Pos)];
+    u32NF = (((u32PllReg & CLK_PLLCTL_FBDIV_Msk) >> CLK_PLLCTL_FBDIV_Pos) + 2U);
+    u32NR = (((u32PllReg & CLK_PLLCTL_INDIV_Msk) >> CLK_PLLCTL_INDIV_Pos) + 2U);
 
     /* u32FIN is shifted 2 bits to avoid overflow */
-    u32PllFreq = (((u32FIN >> 2) * u32NF) / (u32NR * u32NO) << 2);
+    u32PllFreq = (((u32FIN >> 2U) * u32NF) / (u32NR * u32NO)) << 2U;
 
     return u32PllFreq;
 }

@@ -1,7 +1,7 @@
-/**************************************************************************//**
- * @file     USCI_I2C.h
+/*******************************************************************************
+ * @file     usci_i2c.h
  * @version  V3.00
- * @brief    NUC121 series UI2C (USCI-I2C) driver header file
+ * @brief    USCI_I2C driver header file
  *
  * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2016 Nuvoton Technology Corp. All rights reserved.
@@ -14,16 +14,15 @@ extern "C"
 {
 #endif
 
-
 /** @addtogroup Standard_Driver Standard Driver
   @{
 */
 
-/** @addtogroup UI2C_Driver UI2C Driver (USCI I2C Mode Driver)
+/** @addtogroup USCI_I2C_Driver USCI_I2C Driver
   @{
 */
 
-/** @addtogroup UI2C_EXPORTED_CONSTANTS UI2C Exported Constants
+/** @addtogroup USCI_I2C_EXPORTED_CONSTANTS USCI_I2C Exported Constants
   @{
 */
 
@@ -60,38 +59,38 @@ enum UI2C_SLAVE_EVENT
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_CTL constant definitions.                                                                         */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UI2C_CTL_PTRG              0x20UL    /*!< USCI_CTL setting for I2C control bits. It would set PTRG bit */
-#define UI2C_CTL_STA               0x08UL    /*!< USCI_CTL setting for I2C control bits. It would set STA bit */
-#define UI2C_CTL_STO               0x04UL    /*!< USCI_CTL setting for I2C control bits. It would set STO bit */
-#define UI2C_CTL_AA                0x02UL    /*!< USCI_CTL setting for I2C control bits. It would set AA bit  */
+#define UI2C_CTL_PTRG              0x20UL    /*!< USCI_CTL setting for I2C control bits. It would set PTRG bit \hideinitializer */
+#define UI2C_CTL_STA               0x08UL    /*!< USCI_CTL setting for I2C control bits. It would set STA bit \hideinitializer */
+#define UI2C_CTL_STO               0x04UL    /*!< USCI_CTL setting for I2C control bits. It would set STO bit \hideinitializer */
+#define UI2C_CTL_AA                0x02UL    /*!< USCI_CTL setting for I2C control bits. It would set AA bit  \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C GCMode constant definitions.                                                                  */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UI2C_GCMODE_ENABLE         1    /*!< Enable  USCI_I2C GC Mode */
-#define UI2C_GCMODE_DISABLE        0    /*!< Disable USCI_I2C GC Mode */
+#define UI2C_GCMODE_ENABLE         (1U)    /*!< Enable  USCI_I2C GC Mode \hideinitializer */
+#define UI2C_GCMODE_DISABLE        (0U)    /*!< Disable USCI_I2C GC Mode \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /*  USCI_I2C Wakeup Mode constant definitions.                                                             */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UI2C_DATA_TOGGLE_WK        (0x0 << UI2C_WKCTL_WKADDREN_Pos)    /*!< Wakeup according data toggle */
-#define UI2C_ADDR_MATCH_WK         (0x1 << UI2C_WKCTL_WKADDREN_Pos)    /*!< Wakeup according address match */
+#define UI2C_DATA_TOGGLE_WK        (0x0U << UI2C_WKCTL_WKADDREN_Pos)    /*!< Wakeup according data toggle \hideinitializer */
+#define UI2C_ADDR_MATCH_WK         (0x1U << UI2C_WKCTL_WKADDREN_Pos)    /*!< Wakeup according address match \hideinitializer */
 
 /*---------------------------------------------------------------------------------------------------------*/
 /* USCI_I2C interrupt mask definitions                                                                     */
 /*---------------------------------------------------------------------------------------------------------*/
-#define UI2C_TO_INT_MASK           (0x001)    /*!< Time-out interrupt mask */
-#define UI2C_STAR_INT_MASK         (0x002)    /*!< Start condition received interrupt mask */
-#define UI2C_STOR_INT_MASK         (0x004)    /*!< Stop condition received interrupt mask */
-#define UI2C_NACK_INT_MASK         (0x008)    /*!< Non-acknowledge interrupt mask */
-#define UI2C_ARBLO_INT_MASK        (0x010)    /*!< Arbitration lost interrupt mask */
-#define UI2C_ERR_INT_MASK          (0x020)    /*!< Error interrupt mask */
-#define UI2C_ACK_INT_MASK          (0x040)    /*!< Acknowledge interrupt mask */
+#define UI2C_TO_INT_MASK           (0x001U)    /*!< Time-out interrupt mask \hideinitializer */
+#define UI2C_STAR_INT_MASK         (0x002U)    /*!< Start condition received interrupt mask \hideinitializer */
+#define UI2C_STOR_INT_MASK         (0x004U)    /*!< Stop condition received interrupt mask \hideinitializer */
+#define UI2C_NACK_INT_MASK         (0x008U)    /*!< Non-acknowledge interrupt mask \hideinitializer */
+#define UI2C_ARBLO_INT_MASK        (0x010U)    /*!< Arbitration lost interrupt mask \hideinitializer */
+#define UI2C_ERR_INT_MASK          (0x020U)    /*!< Error interrupt mask \hideinitializer */
+#define UI2C_ACK_INT_MASK          (0x040U)    /*!< Acknowledge interrupt mask \hideinitializer */
 
-/** @} end of group UI2C_EXPORTED_CONSTANTS */
+/** @} end of group USCI_I2C_EXPORTED_CONSTANTS */
 
 
-/** @addtogroup UI2C_EXPORTED_FUNCTIONS UI2C Exported Functions
+/** @addtogroup USCI_I2C_EXPORTED_FUNCTIONS USCI_I2C Exported Functions
   @{
 */
 
@@ -101,21 +100,17 @@ enum UI2C_SLAVE_EVENT
  *    @param[in]    ui2c      The pointer of the specified USCI_I2C module.
  *    @param[in]    u8Ctrl    Set the register value of USCI_I2C control register.
  *
- *
- *    @details      Set UI2C_PROTCTL register to control USCI_I2C bus conditions of START, STOP, SI, ACK.
- *
+ *    @details      Set UI2C_PROTCTL register to control USCI_I2C bus conditions of START, STOP, PTRG, ACK.
  *    \hideinitializer
  */
-#define UI2C_SET_CONTROL_REG(ui2c, u8Ctrl) ((ui2c)->PROTCTL = ((ui2c)->PROTCTL & ~0x2E) | (u8Ctrl))
+#define UI2C_SET_CONTROL_REG(ui2c, u8Ctrl) ((ui2c)->PROTCTL = ((ui2c)->PROTCTL & ~0x2EU) | (u8Ctrl))
 
 /**
  *    @brief        This macro only set START bit to protocol control register of USCI_I2C module.
  *
  *    @param[in]    ui2c      The pointer of the specified USCI_I2C module.
  *
- *
  *    @details      Set the USCI_I2C bus START condition in UI2C_PROTCTL register.
- *
  *    \hideinitializer
  */
 #define UI2C_START(ui2c) ((ui2c)->PROTCTL = ((ui2c)->PROTCTL & ~UI2C_PROTCTL_PTRG_Msk) | UI2C_PROTCTL_STA_Msk)
@@ -125,9 +120,7 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c      The pointer of the specified USCI_I2C module.
  *
- *
  *    @details      Set the USCI_I2C bus STOP condition in UI2C_PROTCTL register.
- *
  *    \hideinitializer
  */
 #define UI2C_STOP(ui2c) ((ui2c)->PROTCTL = ((ui2c)->PROTCTL & ~0x2E) | (UI2C_PROTCTL_PTRG_Msk | UI2C_PROTCTL_STO_Msk))
@@ -140,7 +133,6 @@ enum UI2C_SLAVE_EVENT
  *    @return       Data
  *
  *    @details      Read a byte data value of UI2C_RXDAT register from USCI_I2C bus
- *
  *    \hideinitializer
  */
 #define UI2C_GET_DATA(ui2c) ((ui2c)->RXDAT)
@@ -151,12 +143,10 @@ enum UI2C_SLAVE_EVENT
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *    @param[in]    u8Data   The data which will be written to data register of USCI_I2C module.
  *
- *
  *    @details      Write a byte data value of UI2C_TXDAT register, then sends address or data to USCI I2C bus
- *
  *    \hideinitializer
  */
-#define UI2C_SET_DATA(ui2c, u8Data) ((ui2c)->TXDAT = (u8Data))
+#define UI2C_SET_DATA(ui2c, u8Data) ((ui2c)->TXDAT = (uint8_t)(u8Data))
 
 /**
  *    @brief        This macro returns time-out flag
@@ -167,7 +157,6 @@ enum UI2C_SLAVE_EVENT
  *    @retval       1        USCI_I2C bus time-out is happened
  *
  *    @details      USCI_I2C bus occurs time-out event, the time-out flag will be set. If not occurs time-out event, this bit is cleared.
- *
  *    \hideinitializer
  */
 #define UI2C_GET_TIMEOUT_FLAG(ui2c) (((ui2c)->PROTSTS & UI2C_PROTSTS_TOIF_Msk) == UI2C_PROTSTS_TOIF_Msk ? 1:0)
@@ -181,7 +170,6 @@ enum UI2C_SLAVE_EVENT
  *    @retval       1        Chip is woken-up from power-down mode
  *
  *    @details      USCI_I2C controller wake-up flag will be set when USCI_I2C bus occurs wake-up from deep-sleep.
- *
  *    \hideinitializer
  */
 #define UI2C_GET_WAKEUP_FLAG(ui2c) (((ui2c)->WKSTS & UI2C_WKSTS_WKF_Msk) == UI2C_WKSTS_WKF_Msk ? 1:0)
@@ -191,9 +179,7 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *
- *
  *    @details      If USCI_I2C wake-up flag is set, use this macro to clear it.
- *
  *    \hideinitializer
  */
 #define UI2C_CLR_WAKEUP_FLAG(ui2c)  ((ui2c)->WKSTS = UI2C_WKSTS_WKF_Msk)
@@ -203,9 +189,7 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *
- *
  *    @details      The UI2C_I2C is 7-bit address mode, when disable USCI_I2C 10-bit address match function.
- *
  *    \hideinitializer
  */
 #define UI2C_DISABLE_10BIT_ADDR_MODE(ui2c)  ((ui2c)->PROTCTL &= ~(UI2C_PROTCTL_ADDR10EN_Msk))
@@ -215,9 +199,7 @@ enum UI2C_SLAVE_EVENT
  *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *
- *
  *    @details      To enable USCI_I2C 10-bit address match function.
- *
  *    \hideinitializer
  */
 #define UI2C_ENABLE_10BIT_ADDR_MODE(ui2c)  ((ui2c)->PROTCTL |= UI2C_PROTCTL_ADDR10EN_Msk)
@@ -230,13 +212,13 @@ enum UI2C_SLAVE_EVENT
  *    @return       A word data of USCI_I2C_PROTSTS register
  *
  *    @details      Read a word data of USCI_I2C PROTSTS register to get USCI_I2C bus Interrupt flags or status.
- *
  *    \hideinitializer
  */
 #define UI2C_GET_PROT_STATUS(ui2c)    ((ui2c)->PROTSTS)
 
 /**
  *    @brief        This macro clears specified protocol interrupt flag
+ *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *    @param[in]    u32IntTypeFlag Interrupt Type Flag, should be
  *                                  - \ref UI2C_PROTSTS_ACKIF_Msk
@@ -248,13 +230,13 @@ enum UI2C_SLAVE_EVENT
  *                                  - \ref UI2C_PROTSTS_TOIF_Msk
  *
  *    @details      To clear interrupt flag when USCI_I2C occurs interrupt and set interrupt flag.
- *
  *    \hideinitializer
  */
 #define UI2C_CLR_PROT_INT_FLAG(ui2c,u32IntTypeFlag)    ((ui2c)->PROTSTS = (u32IntTypeFlag))
 
 /**
  *    @brief        This macro enables specified protocol interrupt
+ *
  *    @param[in]    ui2c     The pointer of the specified USCI_I2C module.
  *    @param[in]    u32IntSel Interrupt Type, should be
  *                                  - \ref UI2C_PROTIEN_ACKIEN_Msk
@@ -266,7 +248,6 @@ enum UI2C_SLAVE_EVENT
  *                                  - \ref UI2C_PROTIEN_TOIEN_Msk
  *
  *    @details      Set specified USCI_I2C protocol interrupt bits to enable interrupt function.
- *
  *    \hideinitializer
  */
 #define UI2C_ENABLE_PROT_INT(ui2c, u32IntSel)    ((ui2c)->PROTIEN |= (u32IntSel))
@@ -283,8 +264,7 @@ enum UI2C_SLAVE_EVENT
  *                                  - \ref UI2C_PROTIEN_STARIEN_Msk
  *                                  - \ref UI2C_PROTIEN_TOIEN_Msk
  *
- *    @details      Clear specified USCI_I2C protocol interrupt bits to disable interrupt funtion.
- *
+ *    @details      Clear specified USCI_I2C protocol interrupt bits to disable interrupt function.
  *    \hideinitializer
  */
 #define UI2C_DISABLE_PROT_INT(ui2c, u32IntSel)    ((ui2c)->PROTIEN &= ~ (u32IntSel))
@@ -296,11 +276,11 @@ void UI2C_ClearTimeoutFlag(UI2C_T *ui2c);
 void UI2C_Trigger(UI2C_T *ui2c, uint8_t u8Start, uint8_t u8Stop, uint8_t u8Ptrg, uint8_t u8Ack);
 void UI2C_DisableInt(UI2C_T *ui2c, uint32_t u32Mask);
 void UI2C_EnableInt(UI2C_T *ui2c, uint32_t u32Mask);
-uint32_t UI2C_GetBusClockFreq(UI2C_T *ui2c);
+uint32_t UI2C_GetBusClockFreq(const UI2C_T *ui2c);
 uint32_t UI2C_SetBusClockFreq(UI2C_T *ui2c, uint32_t u32BusClock);
-uint32_t UI2C_GetIntFlag(UI2C_T *ui2c, uint32_t u32Mask);
+uint32_t UI2C_GetIntFlag(const UI2C_T *ui2c, uint32_t u32Mask);
 void UI2C_ClearIntFlag(UI2C_T *ui2c, uint32_t u32Mask);
-uint32_t UI2C_GetData(UI2C_T *ui2c);
+uint32_t UI2C_GetData(const UI2C_T *ui2c);
 void UI2C_SetData(UI2C_T *ui2c, uint8_t u8Data);
 void UI2C_SetSlaveAddr(UI2C_T *ui2c, uint8_t u8SlaveNo, uint16_t u16SlaveAddr, uint8_t u8GCMode);
 void UI2C_SetSlaveAddrMask(UI2C_T *ui2c, uint8_t u8SlaveNo, uint16_t u16SlaveAddrMask);
@@ -308,28 +288,25 @@ void UI2C_EnableTimeout(UI2C_T *ui2c, uint32_t u32TimeoutCnt);
 void UI2C_DisableTimeout(UI2C_T *ui2c);
 void UI2C_EnableWakeup(UI2C_T *ui2c, uint8_t u8WakeupMode);
 void UI2C_DisableWakeup(UI2C_T *ui2c);
-uint8_t UI2C_WriteByte(UI2C_T *ui2c, uint8_t u8SlaveAddr, const uint8_t data);
-uint32_t UI2C_WriteMultiBytes(UI2C_T *ui2c, uint8_t u8SlaveAddr, const uint8_t *data, uint32_t u32wLen);
-uint8_t UI2C_WriteByteOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, const uint8_t data);
-uint32_t UI2C_WriteMultiBytesOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, const uint8_t *data, uint32_t u32wLen);
-uint8_t UI2C_WriteByteTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t data);
-uint32_t UI2C_WriteMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t *data, uint32_t u32wLen);
+uint8_t UI2C_WriteByte(UI2C_T *ui2c, uint8_t u8SlaveAddr, const uint8_t u8Data);
+uint32_t UI2C_WriteMultiBytes(UI2C_T *ui2c, uint8_t u8SlaveAddr, const uint8_t *pu8Data, uint32_t u32wLen);
+uint8_t UI2C_WriteByteOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, const uint8_t u8Data);
+uint32_t UI2C_WriteMultiBytesOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, const uint8_t *pu8Data, uint32_t u32wLen);
+uint8_t UI2C_WriteByteTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t u8Data);
+uint32_t UI2C_WriteMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, const uint8_t *pu8Data, uint32_t u32wLen);
 uint8_t UI2C_ReadByte(UI2C_T *ui2c, uint8_t u8SlaveAddr);
-uint32_t UI2C_ReadMultiBytes(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t *rdata, uint32_t u32rLen);
+uint32_t UI2C_ReadMultiBytes(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t *pu8Data, uint32_t u32rLen);
 uint8_t UI2C_ReadByteOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr);
-uint32_t UI2C_ReadMultiBytesOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, uint8_t *rdata, uint32_t u32rLen);
+uint32_t UI2C_ReadMultiBytesOneReg(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint8_t u8DataAddr, uint8_t *pu8Data, uint32_t u32rLen);
 uint8_t UI2C_ReadByteTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr);
-uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *rdata, uint32_t u32rLen);
-/** @} end of group UI2C_EXPORTED_FUNCTIONS */
+uint32_t UI2C_ReadMultiBytesTwoRegs(UI2C_T *ui2c, uint8_t u8SlaveAddr, uint16_t u16DataAddr, uint8_t *pu8Data, uint32_t u32rLen);
 
-/** @} end of group UI2C_Driver */
-
+/** @} end of group USCI_I2C_EXPORTED_FUNCTIONS */
+/** @} end of group USCI_I2C_Driver */
 /** @} end of group Standard_Driver */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //__USCI_I2C_H__
-
-/*** (C) COPYRIGHT 2016 Nuvoton Technology Corp. ***/
+#endif

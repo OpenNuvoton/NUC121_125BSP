@@ -3,7 +3,7 @@
  * @version V3.01
  * @brief   Show hard fault information when hard fault happened.
  *
- * @copyright SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: Apache-2.0
  * @copyright (C) 2024 Nuvoton Technology Corp. All rights reserved.
  *****************************************************************************/
 
